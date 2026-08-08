@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 import {
   isVideoUrl,
   isVimeoUrl,
@@ -43,6 +44,19 @@ export function SmartMedia({
   poster?: string;
   objectFit?: "cover" | "contain";
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isMuted = Boolean(muted ?? autoPlay);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = isMuted;
+    if (!isMuted) {
+      el.volume = 1;
+      void el.play().catch(() => {});
+    }
+  }, [isMuted, src]);
+
   if (!src) return null;
   const fit = fitClassName(objectFit);
 
@@ -50,22 +64,19 @@ export function SmartMedia({
     const youtube = isYoutubeUrl(src);
     const embed = youtube ? youtubeEmbedUrl(src) : vimeoEmbedUrl(src);
     const params = new URLSearchParams();
-    const shouldMute = Boolean(muted || autoPlay);
 
     if (youtube) {
       params.set("autoplay", autoPlay ? "1" : "0");
-      params.set("mute", shouldMute ? "1" : "0");
+      params.set("mute", isMuted ? "1" : "0");
       params.set("playsinline", "1");
       params.set("rel", "0");
       params.set("modestbranding", "1");
       params.set("iv_load_policy", "3");
       if (loop) {
         params.set("loop", "1");
-        // YouTube needs playlist=VIDEO_ID for loop to work
         const id = embed.split("/embed/")[1]?.split("?")[0];
         if (id) params.set("playlist", id);
       }
-      // Hide YouTube chrome for ambient/hero playback
       if (!controls) {
         params.set("controls", "0");
         params.set("disablekb", "1");
@@ -73,7 +84,7 @@ export function SmartMedia({
       }
     } else {
       params.set("autoplay", autoPlay ? "1" : "0");
-      params.set("muted", shouldMute ? "1" : "0");
+      params.set("muted", isMuted ? "1" : "0");
       params.set("playsinline", "1");
       if (loop) params.set("loop", "1");
       if (!controls) {
@@ -86,6 +97,7 @@ export function SmartMedia({
 
     return (
       <iframe
+        key={srcUrl}
         src={srcUrl}
         title={alt || "Video"}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -103,11 +115,12 @@ export function SmartMedia({
   if (isVideoUrl(src)) {
     return (
       <video
+        ref={videoRef}
         src={src}
         poster={poster}
         controls={controls}
         autoPlay={autoPlay}
-        muted={muted ?? autoPlay}
+        muted={isMuted}
         loop={loop}
         playsInline={playsInline}
         className={cn(
@@ -139,7 +152,7 @@ export function SmartMedia({
     <img
       src={src}
       alt={alt}
-      className={cn("h-auto w-full max-w-full", fit, className)}
+      className={cn("block h-auto w-full max-w-full", className)}
     />
   );
 }

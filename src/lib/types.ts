@@ -150,3 +150,18 @@ export interface Review {
   project: string;
   avatar?: string;
 }
+
+export interface Offer {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  image: string;
+  badge: string;
+  highlights: string[];
+  ctaLabel: string;
+  ctaHref: string;
+  active: boolean;
+  sortOrder: number;
+  validUntil: string;
+}

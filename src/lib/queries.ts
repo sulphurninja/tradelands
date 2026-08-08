@@ -3,6 +3,7 @@ import {
   serializeBlog,
   serializeConcept,
   serializeMedia,
+  serializeOffer,
   serializeProject,
   serializeReview,
 } from "@/lib/serialize";
@@ -10,6 +11,7 @@ import { ProjectModel } from "@/models/Project";
 import { Concept } from "@/models/Concept";
 import { Blog } from "@/models/Blog";
 import { Review } from "@/models/Review";
+import { Offer } from "@/models/Offer";
 import { Media } from "@/models/Media";
 import { Lead } from "@/models/Lead";
 import { SiteVisit } from "@/models/SiteVisit";
@@ -94,6 +96,15 @@ export async function getReviews() {
   return docs.map((d) => serializeReview(d as never));
 }
 
+export async function getOffers(options?: { activeOnly?: boolean }) {
+  await connectDB();
+  const query = options?.activeOnly ? { active: true } : {};
+  const docs = await Offer.find(query)
+    .sort({ sortOrder: 1, createdAt: -1 })
+    .lean();
+  return docs.map((d) => serializeOffer(d as never));
+}
+
 export async function getMedia(filters?: { category?: string; type?: string }) {
   await connectDB();
   const query: Record<string, string> = {};
@@ -110,6 +121,7 @@ export async function getAdminStats() {
     blogs,
     concepts,
     reviews,
+    offers,
     media,
     leads,
     visits,
@@ -119,10 +131,21 @@ export async function getAdminStats() {
     Blog.countDocuments(),
     Concept.countDocuments(),
     Review.countDocuments(),
+    Offer.countDocuments(),
     Media.countDocuments(),
     Lead.countDocuments(),
     SiteVisit.countDocuments(),
     User.countDocuments(),
   ]);
-  return { projects, blogs, concepts, reviews, media, leads, visits, users };
+  return {
+    projects,
+    blogs,
+    concepts,
+    reviews,
+    offers,
+    media,
+    leads,
+    visits,
+    users,
+  };
 }

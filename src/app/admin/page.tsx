@@ -21,6 +21,7 @@ export default async function AdminHomePage() {
     { label: "Concepts", value: stats.concepts, href: "/admin/concepts" },
     { label: "Blogs", value: stats.blogs, href: "/admin/blogs" },
     { label: "Media", value: stats.media, href: "/admin/media" },
+    { label: "Offers", value: stats.offers, href: "/admin/offers" },
     { label: "Reviews", value: stats.reviews, href: "/admin/reviews" },
     { label: "Leads", value: stats.leads, href: "/admin/leads" },
     { label: "Site visits", value: stats.visits, href: "/admin/site-visits" },
@@ -58,6 +59,7 @@ export default async function AdminHomePage() {
               { href: "/admin/blogs", label: "Blog editor" },
               { href: "/admin/concepts", label: "Investment concepts" },
               { href: "/admin/media", label: "Media library" },
+              { href: "/admin/offers", label: "Home offers" },
             ].map((item) => (
               <Link
                 key={item.href}

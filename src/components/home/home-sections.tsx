@@ -9,7 +9,13 @@ import { SectionHeading } from "@/components/home/section-heading";
 import { SmartMedia } from "@/components/media/smart-media";
 import { Button } from "@/components/ui/button";
 import { successStories, whyInvest } from "@/lib/content";
-import type { BlogPost, InvestmentConcept, Project, Review } from "@/lib/types";
+import type {
+  BlogPost,
+  InvestmentConcept,
+  Offer,
+  Project,
+  Review,
+} from "@/lib/types";
 
 const fadeUp = {
   initial: { opacity: 0, y: 28 },
@@ -342,6 +348,183 @@ export function MediaStrip({
             />
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+export function OffersSection({ offers }: { offers: Offer[] }) {
+  if (!offers.length) return null;
+
+  const [featured, ...rest] = offers;
+
+  return (
+    <section className="bg-muted/45 py-20 lg:py-28">
+      <div className="container-premium section-pad">
+        <div className="mb-12 flex flex-col gap-6 sm:mb-14 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+          <div className="min-w-0 max-w-3xl">
+            <div className="mb-4 inline-flex items-center gap-2.5">
+              <span className="h-px w-8 bg-primary sm:w-10" />
+              <p className="text-[13px] font-semibold tracking-[0.18em] text-primary uppercase">
+                Exclusive offers
+              </p>
+            </div>
+            <h2 className="text-[2.15rem] leading-[1.02] font-semibold tracking-[-0.035em] text-balance break-words text-foreground sm:text-[3.25rem] lg:text-[3.75rem]">
+              Limited packages.
+              <span className="mt-1 block text-primary sm:mt-0 sm:inline sm:before:content-['\00a0']">
+                Clear benefits.
+              </span>
+            </h2>
+            <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-muted-foreground sm:text-[18px]">
+              Launch pricing and time-bound benefits — updated live from the desk.
+            </p>
+          </div>
+          <Button asChild variant="outline" className="w-fit rounded-full">
+            <Link href="/projects">
+              <span>All projects</span>
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
+
+        {/* Featured — editorial split, theme tokens only */}
+        <motion.article
+          {...fadeUp}
+          className="grid overflow-hidden rounded-[1.5rem] bg-card lg:grid-cols-2"
+        >
+          <div className="relative aspect-[4/3] bg-muted lg:aspect-auto lg:min-h-[420px]">
+            {featured.image ? (
+              <Image
+                src={featured.image}
+                alt={featured.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
+            ) : (
+              <div className="absolute inset-0 gradient-emerald" />
+            )}
+            {featured.badge ? (
+              <span className="absolute top-5 left-5 rounded-full bg-primary px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.12em] text-primary-foreground uppercase">
+                {featured.badge}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-12 lg:px-12">
+            <p className="text-[12px] font-medium tracking-[0.08em] text-primary uppercase">
+              {featured.eyebrow || "Offer"}
+              {featured.validUntil ? (
+                <span className="text-muted-foreground">
+                  {" "}
+                  · Till {featured.validUntil}
+                </span>
+              ) : null}
+            </p>
+            <h3 className="mt-3 text-[1.75rem] leading-[1.1] font-semibold tracking-[-0.03em] text-balance break-words text-foreground sm:text-[2.25rem]">
+              {featured.title}
+            </h3>
+            <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground sm:text-[17px]">
+              {featured.description}
+            </p>
+            {featured.highlights.length > 0 ? (
+              <ul className="mt-6 space-y-2.5">
+                {featured.highlights.map((h) => (
+                  <li
+                    key={h}
+                    className="flex items-start gap-2.5 text-[14px] text-foreground/90 sm:text-[15px]"
+                  >
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <div className="mt-8">
+              <Button
+                asChild
+                size="lg"
+                className="h-11 rounded-full bg-primary px-7 text-primary-foreground hover:bg-primary/90"
+              >
+                <Link href={featured.ctaHref || "/projects"}>
+                  {featured.ctaLabel || "View offer"}
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </motion.article>
+
+        {rest.length > 0 ? (
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            {rest.map((offer, i) => (
+              <motion.article
+                key={offer.id}
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.08 + i * 0.06 }}
+                className="flex min-w-0 flex-col overflow-hidden rounded-2xl bg-card"
+              >
+                <div className="relative aspect-[16/10] bg-muted">
+                  {offer.image ? (
+                    <Image
+                      src={offer.image}
+                      alt={offer.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 gradient-emerald opacity-80" />
+                  )}
+                  {offer.badge ? (
+                    <span className="absolute top-4 left-4 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-primary-foreground uppercase">
+                      {offer.badge}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="flex flex-1 flex-col px-6 py-6 sm:px-7 sm:py-7">
+                  <p className="text-[12px] font-medium tracking-[0.08em] text-primary uppercase">
+                    {offer.eyebrow || "Offer"}
+                    {offer.validUntil ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        · Till {offer.validUntil}
+                      </span>
+                    ) : null}
+                  </p>
+                  <h3 className="mt-2 text-[1.35rem] font-semibold tracking-[-0.02em] text-balance break-words text-foreground">
+                    {offer.title}
+                  </h3>
+                  <p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted-foreground">
+                    {offer.description}
+                  </p>
+                  {offer.highlights.length > 0 ? (
+                    <ul className="mt-4 space-y-2">
+                      {offer.highlights.slice(0, 3).map((h) => (
+                        <li
+                          key={h}
+                          className="flex items-start gap-2.5 text-sm text-foreground/90"
+                        >
+                          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  <div className="mt-6">
+                    <Button asChild variant="outline" className="rounded-full">
+                      <Link href={offer.ctaHref || "/projects"}>
+                        {offer.ctaLabel || "View offer"}
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        ) : null}
       </div>
     </section>
   );

@@ -557,6 +557,45 @@ const reviews = [
   },
 ];
 
+const offers = [
+  {
+    eyebrow: "Limited offer",
+    title: "Mulshi early-bird plantation package",
+    description:
+      "Book selected Emerald Acres plots this month and get a free site visit with plantation advisory included.",
+    image: img.farm,
+    badge: "Early bird",
+    highlights: [
+      "Free private site visit",
+      "Plantation advisory included",
+      "Flexible booking amount",
+    ],
+    ctaLabel: "View Emerald Acres",
+    ctaHref: "/projects/emerald-acres-mulshi",
+    active: true,
+    sortOrder: 0,
+    validUntil: "31 Aug 2026",
+  },
+  {
+    eyebrow: "New launch",
+    title: "Lonavala NA villa plots — launch benefits",
+    description:
+      "Priority inventory and launch pricing on Orlane Villas. Clear NA papers and ready villa packages.",
+    image: img.villa,
+    badge: "New launch",
+    highlights: [
+      "Priority plot choice",
+      "Clear NA documentation",
+      "Villa package options",
+    ],
+    ctaLabel: "Explore Orlane",
+    ctaHref: "/projects/orlane-villas-lonavala",
+    active: true,
+    sortOrder: 1,
+    validUntil: "15 Sep 2026",
+  },
+];
+
 const mediaItems = [
   {
     title: "Drone over Mulshi",
@@ -636,12 +675,14 @@ const ProjectSchema = new mongoose.Schema({}, { strict: false, timestamps: true 
 const ConceptSchema = new mongoose.Schema({}, { strict: false, timestamps: true });
 const BlogSchema = new mongoose.Schema({}, { strict: false, timestamps: true });
 const ReviewSchema = new mongoose.Schema({}, { strict: false, timestamps: true });
+const OfferSchema = new mongoose.Schema({}, { strict: false, timestamps: true });
 const MediaSchema = new mongoose.Schema({}, { strict: false, timestamps: true });
 
 const Project = mongoose.models.Project || mongoose.model("Project", ProjectSchema);
 const Concept = mongoose.models.Concept || mongoose.model("Concept", ConceptSchema);
 const Blog = mongoose.models.Blog || mongoose.model("Blog", BlogSchema);
 const Review = mongoose.models.Review || mongoose.model("Review", ReviewSchema);
+const Offer = mongoose.models.Offer || mongoose.model("Offer", OfferSchema);
 const Media = mongoose.models.Media || mongoose.model("Media", MediaSchema);
 const User =
   mongoose.models.User ||
@@ -734,6 +775,7 @@ async function seed() {
     Concept.deleteMany({}),
     Blog.deleteMany({}),
     Review.deleteMany({}),
+    Offer.deleteMany({}),
     Media.deleteMany({}),
     User.deleteMany({
       email: { $in: seedUsers.map((u) => u.email) },
@@ -745,6 +787,7 @@ async function seed() {
   await Concept.insertMany(concepts);
   await Blog.insertMany(blogs);
   await Review.insertMany(reviews);
+  await Offer.insertMany(offers);
   await Media.insertMany(mediaItems);
   await PlatformSettings.create({
     key: "default",
@@ -785,6 +828,7 @@ async function seed() {
   console.log(`Seeded ${concepts.length} concepts`);
   console.log(`Seeded ${blogs.length} blogs`);
   console.log(`Seeded ${reviews.length} reviews`);
+  console.log(`Seeded ${offers.length} offers`);
   console.log(`Seeded ${mediaItems.length} media items`);
   console.log(`Seeded ${users.length} users`);
   console.log("Seeded platform settings");

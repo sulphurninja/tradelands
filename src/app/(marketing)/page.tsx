@@ -5,6 +5,7 @@ import {
   FeaturedProjects,
   InvestmentConcepts,
   MediaStrip,
+  OffersSection,
   ReviewsSection,
   SuccessStories,
   TrendingStrip,
@@ -15,6 +16,7 @@ import {
   getConcepts,
   getFeaturedProjects,
   getMedia,
+  getOffers,
   getProjects,
   getProjectsByStatus,
   getReviews,
@@ -24,17 +26,27 @@ import { isVideoUrl } from "@/lib/media";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featured, trendingRaw, upcoming, concepts, blogs, reviews, all, media] =
-    await Promise.all([
-      getFeaturedProjects(),
-      getProjectsByStatus("trending"),
-      getProjectsByStatus("upcoming"),
-      getConcepts(),
-      getBlogs(),
-      getReviews(),
-      getProjects(),
-      getMedia(),
-    ]);
+  const [
+    featured,
+    trendingRaw,
+    upcoming,
+    concepts,
+    blogs,
+    reviews,
+    offers,
+    all,
+    media,
+  ] = await Promise.all([
+    getFeaturedProjects(),
+    getProjectsByStatus("trending"),
+    getProjectsByStatus("upcoming"),
+    getConcepts(),
+    getBlogs(),
+    getReviews(),
+    getOffers({ activeOnly: true }),
+    getProjects(),
+    getMedia(),
+  ]);
 
   const newLaunches = await getProjectsByStatus("new-launch");
   const trending = [...trendingRaw, ...newLaunches]
@@ -134,6 +146,7 @@ export default async function HomePage() {
         </section>
       )}
       <InvestmentConcepts concepts={concepts} />
+      <OffersSection offers={offers} />
       <WhyChoose />
       <ReviewsSection reviews={reviews} />
       <SuccessStories />

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import { LandSearchSection } from "@/components/home/land-search-section";
 import { SmartMedia } from "@/components/media/smart-media";
 import { isVideoUrl } from "@/lib/media";
@@ -52,6 +52,7 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
   const items = slides && slides.length > 0 ? slides : FALLBACK_SLIDES;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [muted, setMuted] = useState(true);
 
   const current = items[index];
   const isVideo = isVideoUrl(current.src);
@@ -70,39 +71,68 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
     return () => window.clearInterval(id);
   }, [go, items.length, paused, isVideo, index]);
 
+  // Reset mute when changing slides so autoplay keeps working
+  useEffect(() => {
+    setMuted(true);
+  }, [current.id]);
+
   return (
     <section className="overflow-x-clip bg-background pt-14 sm:pt-16">
       <div
-        className="relative w-full bg-black"
+        className="relative w-full bg-background"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {/* True full-bleed width — no max-width/height (those were shrinking the media) */}
-        <div className="relative aspect-video w-full overflow-hidden bg-black">
+        {/*
+          Intrinsic height (w-full h-auto): full-bleed width, natural aspect,
+          no letterbox bars, no cropping.
+        */}
+        <div className="relative w-full">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={current.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-              className="absolute inset-0 overflow-hidden"
+              transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+              className="relative w-full"
             >
               <SmartMedia
                 src={current.src}
                 alt={current.title}
-                fill
                 priority={index === 0}
                 autoPlay={isVideo}
-                muted
+                muted={muted}
                 loop
                 controls={false}
                 playsInline
                 poster={current.poster}
                 objectFit="contain"
+                className="block h-auto w-full"
               />
             </motion.div>
           </AnimatePresence>
+
+          {isVideo ? (
+            <button
+              type="button"
+              onClick={() => setMuted((m) => !m)}
+              aria-label={muted ? "Unmute video" : "Mute video"}
+              className="absolute right-3 bottom-3 z-20 inline-flex h-10 items-center gap-2 rounded-full border border-white/20 bg-black/55 px-3.5 text-[13px] font-medium text-white backdrop-blur-md sm:right-5 sm:bottom-5 sm:h-11 sm:px-4"
+            >
+              {muted ? (
+                <>
+                  <VolumeX className="size-4" />
+                  <span>Unmute</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="size-4" />
+                  <span>Mute</span>
+                </>
+              )}
+            </button>
+          ) : null}
 
           {items.length > 1 ? (
             <>
@@ -110,7 +140,7 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
                 type="button"
                 aria-label="Previous slide"
                 onClick={() => go(-1)}
-                className="absolute top-1/2 left-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur sm:left-6 sm:size-12"
+                className="absolute top-1/2 left-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-md backdrop-blur-md hover:bg-black/75 sm:left-4 sm:size-11"
               >
                 <ChevronLeft className="size-5 sm:size-6" />
               </button>
@@ -118,7 +148,7 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
                 type="button"
                 aria-label="Next slide"
                 onClick={() => go(1)}
-                className="absolute top-1/2 right-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur sm:right-6 sm:size-12"
+                className="absolute top-1/2 right-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-md backdrop-blur-md hover:bg-black/75 sm:right-4 sm:size-11"
               >
                 <ChevronRight className="size-5 sm:size-6" />
               </button>
@@ -126,17 +156,16 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
           ) : null}
         </div>
 
-        {/* Copy below media — never overlays/clips the asset */}
-        <div className="bg-black px-4 pt-4 pb-6 text-center sm:px-6 sm:pt-6 sm:pb-8">
+        <div className="bg-background px-4 pt-5 pb-6 text-center sm:px-6 sm:pt-7 sm:pb-8">
           <div className="mx-auto max-w-4xl">
-            <p className="mb-1.5 text-[11px] font-medium tracking-[0.08em] text-white/55 uppercase sm:mb-2 sm:text-[14px]">
+            <p className="mb-1.5 text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase sm:mb-2 sm:text-[14px]">
               TradeLands.IND
             </p>
-            <h1 className="px-1 text-[1.35rem] leading-[1.15] font-semibold tracking-[-0.03em] break-words text-white sm:text-[2.75rem] lg:text-[3.5rem]">
+            <h1 className="px-1 text-[1.35rem] leading-[1.15] font-semibold tracking-[-0.03em] break-words text-foreground sm:text-[2.75rem] lg:text-[3.5rem]">
               {current.title}
             </h1>
             {current.subtitle ? (
-              <p className="mx-auto mt-2 max-w-2xl px-1 text-[13px] leading-snug break-words text-white/70 sm:mt-3 sm:text-[19px]">
+              <p className="mx-auto mt-2 max-w-2xl px-1 text-[13px] leading-snug break-words text-muted-foreground sm:mt-3 sm:text-[19px]">
                 {current.subtitle}
               </p>
             ) : null}
@@ -169,7 +198,7 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
                       "h-2 rounded-full transition-all",
                       i === index
                         ? "w-7 bg-primary"
-                        : "w-2 bg-white/35 hover:bg-white/55"
+                        : "w-2 bg-foreground/20 hover:bg-foreground/35"
                     )}
                   />
                 ))}

@@ -14,6 +14,7 @@ import {
   Settings,
   Shield,
   Sparkles,
+  Tag,
   UserRound,
   Users,
 } from "lucide-react";
@@ -39,6 +40,7 @@ const adminCmsNav: PortalNavItem[] = [
   { href: "/admin/concepts", label: "Concepts", icon: Sparkles },
   { href: "/admin/blogs", label: "Blogs", icon: BookOpen },
   { href: "/admin/media", label: "Media & Docs", icon: Camera },
+  { href: "/admin/offers", label: "Offers", icon: Tag },
   { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
   { href: "/admin/leads", label: "Leads", icon: Users },
   { href: "/admin/site-visits", label: "Site Visits", icon: PhoneCall },

@@ -1,6 +1,7 @@
 import type {
   BlogPost,
   InvestmentConcept,
+  Offer,
   Project,
   Review,
 } from "@/lib/types";
@@ -104,6 +105,25 @@ export function serializeReview(doc: Doc): Review {
     quote: String(doc.quote ?? ""),
     project: String(doc.project ?? ""),
     avatar: doc.avatar ? String(doc.avatar) : undefined,
+  };
+}
+
+export function serializeOffer(doc: Doc): Offer {
+  return {
+    id: doc._id?.toString() ?? "",
+    eyebrow: String(doc.eyebrow ?? "Offer"),
+    title: String(doc.title ?? ""),
+    description: String(doc.description ?? ""),
+    image: String(doc.image ?? ""),
+    badge: String(doc.badge ?? ""),
+    highlights: Array.isArray(doc.highlights)
+      ? (doc.highlights as string[]).map(String).filter(Boolean)
+      : [],
+    ctaLabel: String(doc.ctaLabel ?? "View offer"),
+    ctaHref: String(doc.ctaHref ?? "/projects"),
+    active: doc.active !== false,
+    sortOrder: Number(doc.sortOrder ?? 0),
+    validUntil: String(doc.validUntil ?? ""),
   };
 }
 
