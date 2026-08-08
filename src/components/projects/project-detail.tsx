@@ -15,6 +15,7 @@ import { SITE } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SmartMedia } from "@/components/media/smart-media";
+import { LandSearchSection } from "@/components/home/land-search-section";
 
 export function ProjectDetail({ project }: { project: Project }) {
   const available = project.plots.filter((p) => p.status === "available").length;
@@ -22,9 +23,9 @@ export function ProjectDetail({ project }: { project: Project }) {
 
   return (
     <article className="overflow-x-clip pb-24 lg:pb-0">
-      <section className="relative overflow-hidden bg-black pt-20 sm:pt-24">
-        {/* Media stage — always contain so nothing is clipped */}
-        <div className="relative aspect-video w-full overflow-hidden bg-black sm:aspect-auto sm:min-h-[62svh] lg:min-h-[70vh]">
+      <section className="overflow-hidden bg-black pt-20 sm:pt-24">
+        {/* True full-bleed width — aspect follows viewport (no max-width/height caps) */}
+        <div className="relative aspect-video w-full overflow-hidden bg-black">
           <SmartMedia
             src={heroSrc}
             alt={project.name}
@@ -40,9 +41,9 @@ export function ProjectDetail({ project }: { project: Project }) {
           />
         </div>
 
-        {/* Mobile: titles below media. Desktop: soft bottom overlay */}
-        <div className="relative z-10 bg-black px-5 pt-4 pb-6 sm:absolute sm:inset-x-0 sm:bottom-0 sm:bg-gradient-to-t sm:from-black sm:via-black/80 sm:to-transparent sm:pt-28 sm:pb-10">
-          <div className="mx-auto w-full max-w-[980px] sm:px-8 lg:max-w-[1060px] lg:px-12 xl:max-w-[1120px] xl:px-16">
+        {/* Titles sit below media so the asset stays fully visible */}
+        <div className="bg-black px-5 pt-4 pb-6 sm:px-8 sm:pt-6 sm:pb-10 lg:px-12">
+          <div className="mx-auto w-full max-w-[980px] lg:max-w-[1060px] xl:max-w-[1120px]">
             <div className="flex max-w-full flex-wrap gap-1.5 sm:gap-2">
               <Badge className="bg-white/15 text-white backdrop-blur-md">
                 {categoryLabel(project.category)}
@@ -360,6 +361,14 @@ export function ProjectDetail({ project }: { project: Project }) {
           </aside>
         </div>
       </section>
+
+      <LandSearchSection
+        className="border-t border-border/60 bg-muted/30 pb-28 lg:pb-16"
+        initial={{
+          state: project.location.state,
+          category: project.category,
+        }}
+      />
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/92 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-3">
