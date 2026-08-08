@@ -1,7 +1,11 @@
+import { Suspense } from "react";
+import Link from "next/link";
 import { ProjectCard } from "@/components/projects/project-card";
+import { ProjectsFilter } from "@/components/projects/projects-filter";
 import { PageHero } from "@/components/layout/page-hero";
 import { getProjects } from "@/lib/queries";
 import type { Project } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -29,12 +33,18 @@ function filterProjects(
       return false;
     if (params.budget) {
       const [min, max] = params.budget.split("-").map(Number);
-      if (p.pricing.minPrice > max || p.pricing.maxPrice < min) return false;
+      if (
+        Number.isFinite(min) &&
+        Number.isFinite(max) &&
+        (p.pricing.minPrice > max || p.pricing.maxPrice < min)
+      ) {
+        return false;
+      }
     }
     if (params.q) {
       const q = params.q.toLowerCase();
       const hay =
-        `${p.name} ${p.location.village} ${p.location.district}`.toLowerCase();
+        `${p.name} ${p.tagline} ${p.location.village} ${p.location.district} ${p.location.state} ${p.location.taluka}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -49,6 +59,13 @@ export default async function ProjectsPage({ searchParams }: Props) {
   const params = await searchParams;
   const all = await getProjects();
   const filtered = filterProjects(all, params);
+  const filteredActive = Boolean(
+    params.state ||
+      params.category ||
+      params.budget ||
+      params.attribute ||
+      params.q
+  );
 
   return (
     <>
@@ -60,18 +77,30 @@ export default async function ProjectsPage({ searchParams }: Props) {
         compact
       />
       <section className="container-premium section-pad pb-20 lg:pb-28">
-        <p className="mb-8 text-sm text-muted-foreground">
+        <Suspense
+          fallback={
+            <div className="mb-8 h-40 animate-pulse rounded-2xl bg-muted" />
+          }
+        >
+          <ProjectsFilter />
+        </Suspense>
+
+        <p className="mb-6 text-sm text-muted-foreground">
           {filtered.length} project{filtered.length === 1 ? "" : "s"}
-          {params.state || params.category || params.budget || params.attribute
-            ? " matching filters"
-            : ""}
+          {filteredActive ? " matching filters" : ""}
         </p>
+
         {filtered.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border py-20 text-center">
-            <p className="font-display text-2xl">No projects match</p>
-            <p className="mt-2 text-muted-foreground">
-              Try different filters or browse all projects.
+            <p className="text-2xl font-semibold tracking-[-0.02em]">
+              No projects match
             </p>
+            <p className="mt-2 text-muted-foreground">
+              Try different filters or clear them to browse everything.
+            </p>
+            <Button asChild className="mt-6 rounded-full">
+              <Link href="/projects">Clear filters</Link>
+            </Button>
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

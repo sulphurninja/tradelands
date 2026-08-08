@@ -22,7 +22,7 @@ export function ProjectDetail({ project }: { project: Project }) {
 
   return (
     <article>
-      <section className="relative min-h-[70vh] overflow-hidden pt-24">
+      <section className="relative min-h-[70vh] overflow-hidden bg-black pt-24">
         <SmartMedia
           src={heroSrc}
           alt={project.name}
@@ -32,21 +32,26 @@ export function ProjectDetail({ project }: { project: Project }) {
           muted
           loop
           controls={false}
+          playsInline
           poster={project.coverImage}
+          objectFit={project.heroVideo ? "contain" : "cover"}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-forest/50 to-forest/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/25" />
         <div className="container-premium section-pad relative flex min-h-[70vh] flex-col justify-end pb-12">
           <div className="flex flex-wrap gap-2">
             <Badge className="bg-white/15 text-white backdrop-blur-md">
               {categoryLabel(project.category)}
             </Badge>
             {project.status.map((s) => (
-              <Badge key={s} className="bg-gold/90 text-on-gold capitalize">
+              <Badge
+                key={s}
+                className="bg-primary text-primary-foreground capitalize"
+              >
                 {s.replace("-", " ")}
               </Badge>
             ))}
           </div>
-          <h1 className="font-display mt-4 max-w-4xl text-5xl text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-4 max-w-4xl text-5xl font-semibold tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
             {project.name}
           </h1>
           <p className="mt-3 flex items-center gap-2 text-white/80">
@@ -96,7 +101,7 @@ export function ProjectDetail({ project }: { project: Project }) {
                 <p className="mt-2 text-sm text-muted-foreground">
                   Aerial walkthrough of the land and surroundings.
                 </p>
-                <div className="relative mt-6 aspect-video overflow-hidden rounded-2xl border border-border bg-forest">
+                <div className="relative mt-6 aspect-video overflow-hidden rounded-2xl bg-black">
                   <SmartMedia
                     src={project.droneVideo}
                     alt={`${project.name} drone video`}
@@ -104,6 +109,7 @@ export function ProjectDetail({ project }: { project: Project }) {
                     controls
                     playsInline
                     poster={project.coverImage}
+                    objectFit="contain"
                   />
                 </div>
               </div>
@@ -115,9 +121,15 @@ export function ProjectDetail({ project }: { project: Project }) {
                 {project.gallery.map((src) => (
                   <div
                     key={src}
-                    className="relative aspect-[4/3] overflow-hidden rounded-xl"
+                    className="relative aspect-[4/3] overflow-hidden rounded-xl bg-black"
                   >
-                    <SmartMedia src={src} alt="" fill controls />
+                    <SmartMedia
+                      src={src}
+                      alt=""
+                      fill
+                      controls={false}
+                      objectFit="cover"
+                    />
                   </div>
                 ))}
               </div>

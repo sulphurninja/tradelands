@@ -15,12 +15,21 @@ const budgets = [
   { label: "₹3Cr+", value: "30000000-999999999" },
 ];
 
-export function PropertySearch() {
+export function PropertySearch({
+  initial,
+}: {
+  initial?: {
+    state?: string;
+    category?: string;
+    budget?: string;
+    attribute?: string;
+  };
+}) {
   const router = useRouter();
-  const [state, setState] = useState("all");
-  const [category, setCategory] = useState("all");
-  const [budget, setBudget] = useState("all");
-  const [attribute, setAttribute] = useState("all");
+  const [state, setState] = useState(initial?.state || "all");
+  const [category, setCategory] = useState(initial?.category || "all");
+  const [budget, setBudget] = useState(initial?.budget || "all");
+  const [attribute, setAttribute] = useState(initial?.attribute || "all");
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
