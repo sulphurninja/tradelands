@@ -35,6 +35,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { SiteLogo } from "@/components/brand/site-logo";
 
 type PortalUser = {
   name: string;
@@ -134,19 +135,14 @@ export function AppShell({
           : "Portal";
 
   return (
-    <div className="min-h-screen bg-[#f4f7f5] dark:bg-background">
+    <div className="min-h-screen bg-[#f5f5f7] dark:bg-background">
       <div className="flex min-h-screen">
         <aside className="sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col border-r border-border bg-card lg:flex">
-          <div className="flex h-16 items-center border-b border-border px-5">
-            <Link
-              href={config.homeHref}
-              className="font-display text-[1.45rem] leading-none tracking-[-0.02em]"
-            >
-              Trade<span className="text-gold">Lands</span>
-              <span className="ml-1.5 align-middle font-body text-xs font-semibold tracking-[0.14em] text-primary uppercase">
-                {brand}
-              </span>
-            </Link>
+          <div className="flex h-16 items-center gap-2 border-b border-border px-4">
+            <SiteLogo href={config.homeHref} />
+            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+              {brand}
+            </span>
           </div>
           <div className="flex-1 overflow-y-auto py-2">
             <p className="px-5 pb-2 text-[0.65rem] tracking-[0.16em] text-muted-foreground uppercase">
@@ -174,8 +170,9 @@ export function AppShell({
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[280px] p-0">
                   <SheetHeader className="border-b border-border px-4 py-4 text-left">
-                    <SheetTitle className="font-display text-xl">
-                      Trade<span className="text-gold">Lands</span> {brand}
+                    <SheetTitle className="flex items-center gap-2 text-base font-semibold">
+                      <SiteLogo href={config.homeHref} />
+                      <span className="text-muted-foreground">{brand}</span>
                     </SheetTitle>
                   </SheetHeader>
                   <NavList

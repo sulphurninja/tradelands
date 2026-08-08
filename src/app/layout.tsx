@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Outfit, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
 import "./globals.css";
-
-const display = Cormorant_Garamond({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const body = Outfit({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -41,9 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${display.variable} ${body.variable} ${geistMono.variable} h-full`}
+      className={`${geistMono.variable} h-full`}
     >
-      <body className="min-h-full font-body antialiased">
+      <body className="min-h-full antialiased">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

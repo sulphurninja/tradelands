@@ -38,9 +38,9 @@ export function PropertySearch() {
   return (
     <form
       onSubmit={onSearch}
-      className="glass rounded-2xl p-3 sm:p-4 lg:rounded-3xl"
+      className="rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
     >
-      <div className="grid items-end gap-2 lg:grid-cols-[1.1fr_1.1fr_1.1fr_1.1fr_auto]">
+      <div className="grid items-end gap-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
         <div className="flex min-h-[4.5rem] flex-col justify-end rounded-xl bg-background/75 px-1 pb-1 pt-2.5 dark:bg-background/55">
           <span className="px-3 pb-1 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
             State
@@ -110,8 +110,7 @@ export function PropertySearch() {
 
         <Button
           type="submit"
-          size="lg"
-          className="h-14 w-full rounded-xl gradient-emerald px-8 text-white lg:min-h-[4.5rem]"
+          className="h-11 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 lg:mb-1 lg:h-10 lg:w-auto lg:px-5"
         >
           <Search className="size-4" />
           <span>Search</span>

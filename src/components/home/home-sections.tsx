@@ -347,24 +347,22 @@ export function MediaStrip({
 export function BookVisitCta() {
   return (
     <section className="container-premium section-pad py-16 lg:py-24">
-      <div className="relative overflow-hidden rounded-[2rem] bg-forest px-8 py-14 text-white sm:px-12 lg:px-16 lg:py-20">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_right,oklch(0.45_0.1_158/0.55),transparent_55%)]" />
-        <div className="absolute top-0 right-0 h-px w-1/2 bg-gradient-to-l from-transparent via-gold to-transparent" />
-        <div className="relative max-w-2xl">
-          <p className="text-[0.7rem] tracking-[0.28em] text-gold uppercase">
+      <div className="relative overflow-hidden rounded-[1.75rem] bg-black px-8 py-14 text-white sm:px-12 lg:px-16 lg:py-20">
+        <div className="relative mx-auto max-w-2xl text-center">
+          <p className="text-[12px] font-medium tracking-[0.08em] text-[#a1a1a6] uppercase">
             Visit the land
           </p>
-          <h2 className="font-display mt-4 text-4xl sm:text-5xl lg:text-6xl">
+          <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.03em] sm:text-[2.75rem] lg:text-[3.25rem]">
             Book a private site visit
           </h2>
-          <p className="mt-4 text-base text-white/70">
+          <p className="mt-4 text-[17px] text-[#a1a1a6]">
             Pick a project, date, and pickup. We confirm and guide you on site.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button
               asChild
               size="lg"
-              className="rounded-full bg-gold text-on-gold hover:bg-gold/90"
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Link href="/book-site-visit">Schedule Visit</Link>
             </Button>

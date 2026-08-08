@@ -23,31 +23,30 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-x-clip",
-        compact ? "pt-28 pb-12 lg:pt-32 lg:pb-16" : "pt-32 pb-16 lg:pt-40 lg:pb-24"
+        "relative overflow-x-clip bg-background",
+        compact ? "pt-24 pb-10 lg:pt-28 lg:pb-14" : "pt-28 pb-14 lg:pt-32 lg:pb-20"
       )}
     >
-      {image && (
+      {image ? (
         <>
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${image})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-forest/85 via-forest/70 to-background" />
+          <div className="absolute inset-0 bg-black/55" />
         </>
-      )}
-      {!image && (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,oklch(0.9_0.05_155/0.7),transparent_50%)]" />
+      ) : (
+        <div className="absolute inset-0 bg-muted" />
       )}
 
       <div
         className={cn(
-          "container-premium section-pad relative",
+          "container-premium section-pad relative text-center",
           image && "text-white"
         )}
       >
         {crumbs && (
-          <div className="mb-6 flex flex-wrap items-center gap-2 text-xs tracking-wide uppercase opacity-70">
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-muted-foreground">
             <Link href="/">Home</Link>
             {crumbs.map((c) => (
               <span key={c.href} className="contents">
@@ -60,8 +59,8 @@ export function PageHero({
         {eyebrow && (
           <p
             className={cn(
-              "mb-4 text-[0.7rem] tracking-[0.28em] uppercase",
-              image ? "text-gold" : "text-primary"
+              "mb-3 text-[12px] font-medium tracking-[0.08em] uppercase",
+              image ? "text-white/70" : "text-muted-foreground"
             )}
           >
             {eyebrow}
@@ -69,10 +68,10 @@ export function PageHero({
         )}
         <h1
           className={cn(
-            "font-display max-w-4xl text-balance",
+            "mx-auto max-w-4xl text-balance font-semibold tracking-[-0.03em]",
             compact
-              ? "text-4xl sm:text-5xl"
-              : "text-5xl sm:text-6xl lg:text-7xl"
+              ? "text-[2rem] sm:text-[2.75rem]"
+              : "text-[2.5rem] sm:text-[3.5rem] lg:text-[4rem]"
           )}
         >
           {title}
@@ -80,14 +79,18 @@ export function PageHero({
         {description && (
           <p
             className={cn(
-              "mt-5 max-w-2xl text-base leading-relaxed sm:text-lg",
+              "mx-auto mt-4 max-w-2xl text-[17px] leading-relaxed sm:text-[19px]",
               image ? "text-white/75" : "text-muted-foreground"
             )}
           >
             {description}
           </p>
         )}
-        {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
+        {actions && (
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {actions}
+          </div>
+        )}
       </div>
     </section>
   );
