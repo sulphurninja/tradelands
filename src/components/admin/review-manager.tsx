@@ -87,7 +87,7 @@ export function ReviewManager({ initial }: { initial: Review[] }) {
             onChange={(e) => setForm((f) => ({ ...f, quote: e.target.value }))}
           />
         </div>
-        <Button type="submit" className="gradient-emerald text-white">
+        <Button type="submit" className="gradient-emerald text-white dark:text-white">
           Add review
         </Button>
       </form>

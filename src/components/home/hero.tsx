@@ -72,14 +72,14 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
   }, [go, items.length, paused, isVideo, index]);
 
   return (
-    <section className="bg-background pt-14 sm:pt-16">
-      {/* Black stage — no white letterbox / no white gradient wash */}
+    <section className="overflow-x-clip bg-background pt-14 sm:pt-16">
       <div
         className="relative w-full bg-black"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        <div className="relative min-h-[72svh] w-full sm:min-h-[78svh] lg:min-h-[86svh]">
+        {/* Media stage — contain so landscape assets stay fully visible */}
+        <div className="relative aspect-video w-full max-w-[100vw] overflow-hidden bg-black sm:aspect-auto sm:min-h-[72svh] lg:min-h-[82svh]">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={current.id}
@@ -87,7 +87,7 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-              className="absolute inset-0"
+              className="absolute inset-0 overflow-hidden"
             >
               <SmartMedia
                 src={current.src}
@@ -105,78 +105,78 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
             </motion.div>
           </AnimatePresence>
 
-          {/* Copy sits in a clean bottom panel — no fog over the video */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black via-black/80 to-transparent pt-28 pb-8 sm:pt-36 sm:pb-10">
-            <div className="pointer-events-auto mx-auto max-w-4xl px-5 text-center sm:px-10">
-              <p className="mb-2 text-[13px] font-medium tracking-[0.08em] text-white/55 uppercase sm:text-[14px]">
-                TradeLands.IND
-              </p>
-              <h1 className="text-[2.1rem] leading-[1.05] font-semibold tracking-[-0.035em] text-white sm:text-[3.25rem] lg:text-[4rem]">
-                {current.title}
-              </h1>
-              {current.subtitle ? (
-                <p className="mx-auto mt-3 max-w-2xl text-[17px] leading-snug text-white/70 sm:text-[21px]">
-                  {current.subtitle}
-                </p>
-              ) : null}
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-6 text-[17px] sm:text-[19px]">
-                {current.href ? (
-                  <Link
-                    href={current.href}
-                    className="font-medium text-primary transition-opacity hover:opacity-80"
-                  >
-                    Learn more ›
-                  </Link>
-                ) : null}
-                <Link
-                  href="/book-site-visit"
-                  className="font-medium text-primary transition-opacity hover:opacity-80"
-                >
-                  Book a visit ›
-                </Link>
-              </div>
-
-              {items.length > 1 ? (
-                <div className="mt-7 flex items-center justify-center gap-2.5">
-                  {items.map((slide, i) => (
-                    <button
-                      key={slide.id}
-                      type="button"
-                      aria-label={`Go to slide ${i + 1}`}
-                      onClick={() => setIndex(i)}
-                      className={cn(
-                        "h-2 rounded-full transition-all",
-                        i === index
-                          ? "w-7 bg-primary"
-                          : "w-2 bg-white/35 hover:bg-white/55"
-                      )}
-                    />
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </div>
-
           {items.length > 1 ? (
             <>
               <button
                 type="button"
                 aria-label="Previous slide"
                 onClick={() => go(-1)}
-                className="absolute top-1/2 left-3 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur sm:left-6 sm:size-12"
+                className="absolute top-1/2 left-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur sm:left-6 sm:size-12"
               >
-                <ChevronLeft className="size-6" />
+                <ChevronLeft className="size-5 sm:size-6" />
               </button>
               <button
                 type="button"
                 aria-label="Next slide"
                 onClick={() => go(1)}
-                className="absolute top-1/2 right-3 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur sm:right-6 sm:size-12"
+                className="absolute top-1/2 right-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur sm:right-6 sm:size-12"
               >
-                <ChevronRight className="size-6" />
+                <ChevronRight className="size-5 sm:size-6" />
               </button>
             </>
           ) : null}
+        </div>
+
+        {/* Mobile: copy sits below media. Desktop: soft overlay at bottom */}
+        <div className="relative z-10 bg-black px-4 pt-4 pb-6 text-center sm:absolute sm:inset-x-0 sm:bottom-0 sm:bg-gradient-to-t sm:from-black sm:via-black/85 sm:to-transparent sm:bg-transparent sm:pt-32 sm:pb-10">
+          <div className="pointer-events-auto mx-auto max-w-4xl sm:px-6">
+            <p className="mb-1.5 text-[11px] font-medium tracking-[0.08em] text-white/55 uppercase sm:mb-2 sm:text-[14px]">
+              TradeLands.IND
+            </p>
+            <h1 className="px-1 text-[1.35rem] leading-[1.15] font-semibold tracking-[-0.03em] break-words text-white sm:text-[3.25rem] lg:text-[4rem]">
+              {current.title}
+            </h1>
+            {current.subtitle ? (
+              <p className="mx-auto mt-2 max-w-2xl px-1 text-[13px] leading-snug break-words text-white/70 sm:mt-3 sm:text-[21px]">
+                {current.subtitle}
+              </p>
+            ) : null}
+            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[14px] sm:mt-5 sm:gap-6 sm:text-[19px]">
+              {current.href ? (
+                <Link
+                  href={current.href}
+                  className="font-medium text-primary transition-opacity hover:opacity-80"
+                >
+                  Learn more ›
+                </Link>
+              ) : null}
+              <Link
+                href="/book-site-visit"
+                className="font-medium text-primary transition-opacity hover:opacity-80"
+              >
+                Book a visit ›
+              </Link>
+            </div>
+
+            {items.length > 1 ? (
+              <div className="mt-4 flex items-center justify-center gap-2 sm:mt-7 sm:gap-2.5">
+                {items.map((slide, i) => (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    aria-label={`Go to slide ${i + 1}`}
+                    onClick={() => setIndex(i)}
+                    className={cn(
+                      "h-2 rounded-full transition-all",
+                      i === index
+                        ? "w-7 bg-primary"
+                        : "w-2 bg-white/35 hover:bg-white/55"
+                    )}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 

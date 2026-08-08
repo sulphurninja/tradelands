@@ -42,18 +42,15 @@ export function PropertySearch({
   }
 
   const triggerClass =
-    "h-9 border-0 bg-transparent px-3 shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent";
+    "h-9 w-full min-w-0 border-0 bg-transparent px-3 shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent";
 
   return (
     <form
       onSubmit={onSearch}
-      className="rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
+      className="w-full min-w-0 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
     >
-      <div className="grid items-end gap-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
-        <div className="flex min-h-[4.5rem] flex-col justify-end rounded-xl bg-background/75 px-1 pb-1 pt-2.5 dark:bg-background/55">
-          <span className="px-3 pb-1 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
-            State
-          </span>
+      <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+        <SearchField label="State">
           <FormSelect
             value={state}
             onValueChange={setState}
@@ -64,12 +61,9 @@ export function PropertySearch({
               ...states.map((s) => ({ value: s, label: s })),
             ]}
           />
-        </div>
+        </SearchField>
 
-        <div className="flex min-h-[4.5rem] flex-col justify-end rounded-xl bg-background/75 px-1 pb-1 pt-2.5 dark:bg-background/55">
-          <span className="px-3 pb-1 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
-            Category
-          </span>
+        <SearchField label="Category">
           <FormSelect
             value={category}
             onValueChange={setCategory}
@@ -80,28 +74,19 @@ export function PropertySearch({
               ...CATEGORIES.map((c) => ({ value: c.value, label: c.label })),
             ]}
           />
-        </div>
+        </SearchField>
 
-        <div className="flex min-h-[4.5rem] flex-col justify-end rounded-xl bg-background/75 px-1 pb-1 pt-2.5 dark:bg-background/55">
-          <span className="px-3 pb-1 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
-            Budget
-          </span>
+        <SearchField label="Budget">
           <FormSelect
             value={budget}
             onValueChange={setBudget}
             triggerClassName={triggerClass}
             placeholder="Any Budget"
-            options={[
-              { value: "all", label: "Any Budget" },
-              ...budgets,
-            ]}
+            options={[{ value: "all", label: "Any Budget" }, ...budgets]}
           />
-        </div>
+        </SearchField>
 
-        <div className="flex min-h-[4.5rem] flex-col justify-end rounded-xl bg-background/75 px-1 pb-1 pt-2.5 dark:bg-background/55">
-          <span className="px-3 pb-1 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
-            Attribute
-          </span>
+        <SearchField label="Attribute">
           <FormSelect
             value={attribute}
             onValueChange={setAttribute}
@@ -115,16 +100,33 @@ export function PropertySearch({
               })),
             ]}
           />
-        </div>
+        </SearchField>
 
         <Button
           type="submit"
-          className="h-11 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 lg:mb-1 lg:h-10 lg:w-auto lg:px-5"
+          className="h-11 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 sm:col-span-2 lg:col-span-1 lg:mb-1 lg:h-10 lg:w-auto"
         >
           <Search className="size-4" />
           <span>Search</span>
         </Button>
       </div>
     </form>
+  );
+}
+
+function SearchField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex min-h-[4.5rem] min-w-0 flex-col justify-end rounded-xl bg-background/75 px-1 pt-2.5 pb-1 dark:bg-background/55">
+      <span className="px-3 pb-1 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
+        {label}
+      </span>
+      {children}
+    </div>
   );
 }

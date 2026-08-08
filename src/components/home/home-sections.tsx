@@ -117,14 +117,16 @@ export function InvestmentConcepts({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-forest via-forest/40 to-transparent" />
               </div>
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
                 <p className="text-[0.7rem] tracking-[0.28em] text-gold uppercase">
                   {concept.brand}
                 </p>
-                <h3 className="font-display mt-2 text-3xl text-white">
+                <h3 className="font-display mt-2 text-2xl break-words text-white sm:text-3xl">
                   {concept.name}
                 </h3>
-                <p className="mt-2 text-sm text-white/70">{concept.tagline}</p>
+                <p className="mt-2 text-sm break-words text-white/70">
+                  {concept.tagline}
+                </p>
               </div>
             </Link>
           </motion.div>
@@ -327,7 +329,7 @@ export function MediaStrip({
         {list.map((item, i) => (
           <div
             key={item.id}
-            className={`relative overflow-hidden bg-muted ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-square"}`}
+            className={`relative min-w-0 overflow-hidden bg-black ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-square"}`}
           >
             <SmartMedia
               src={item.url}
@@ -336,6 +338,7 @@ export function MediaStrip({
               controls={item.type === "video" || item.type === "drone"}
               muted
               playsInline
+              objectFit="cover"
             />
           </div>
         ))}
@@ -347,22 +350,22 @@ export function MediaStrip({
 export function BookVisitCta() {
   return (
     <section className="container-premium section-pad py-16 lg:py-24">
-      <div className="relative overflow-hidden rounded-[1.75rem] bg-black px-8 py-14 text-white sm:px-12 lg:px-16 lg:py-20">
+      <div className="relative overflow-hidden rounded-[1.5rem] bg-black px-5 py-12 text-white sm:rounded-[1.75rem] sm:px-12 sm:py-14 lg:px-16 lg:py-20">
         <div className="relative mx-auto max-w-2xl text-center">
           <p className="text-[12px] font-medium tracking-[0.08em] text-[#a1a1a6] uppercase">
             Visit the land
           </p>
-          <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.03em] sm:text-[2.75rem] lg:text-[3.25rem]">
+          <h2 className="mt-3 text-[1.75rem] font-semibold tracking-[-0.03em] text-balance sm:text-[2.75rem] lg:text-[3.25rem]">
             Book a private site visit
           </h2>
-          <p className="mt-4 text-[17px] text-[#a1a1a6]">
+          <p className="mt-4 text-[15px] text-[#a1a1a6] sm:text-[17px]">
             Pick a project, date, and pickup. We confirm and guide you on site.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Button
               asChild
               size="lg"
-              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
             >
               <Link href="/book-site-visit">Schedule Visit</Link>
             </Button>
@@ -370,7 +373,7 @@ export function BookVisitCta() {
               asChild
               size="lg"
               variant="ghost"
-              className="rounded-full border border-white/20 text-white hover:bg-white/10 hover:text-white"
+              className="w-full rounded-full border border-white/20 text-white hover:bg-white/10 hover:text-white sm:w-auto"
             >
               <Link href="/contact">Talk to Desk</Link>
             </Button>

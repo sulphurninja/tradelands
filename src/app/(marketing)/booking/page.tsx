@@ -67,7 +67,7 @@ export default async function BookingPage({ searchParams }: Props) {
                     {plot.areaGuntha} Guntha · {formatINR(plot.price)}
                   </p>
                 </div>
-                <Button asChild size="sm" className="gradient-emerald text-white">
+                <Button asChild size="sm" className="gradient-emerald text-white dark:text-white">
                   <Link href="/register">Continue to KYC</Link>
                 </Button>
               </div>

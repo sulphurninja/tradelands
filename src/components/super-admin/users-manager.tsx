@@ -194,7 +194,7 @@ export function UsersManager({
                 />
               </div>
               <Button
-                className="w-full gradient-emerald text-white"
+                className="w-full gradient-emerald text-white dark:text-white"
                 disabled={saving}
                 onClick={() => void createUser()}
               >

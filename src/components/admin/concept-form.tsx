@@ -202,7 +202,7 @@ export function ConceptForm({ concept }: { concept?: InvestmentConcept }) {
           Add FAQ
         </Button>
       </div>
-      <Button type="submit" disabled={saving} className="gradient-emerald text-white">
+      <Button type="submit" disabled={saving} className="gradient-emerald text-white dark:text-white">
         {saving ? "Saving…" : "Save concept"}
       </Button>
     </form>

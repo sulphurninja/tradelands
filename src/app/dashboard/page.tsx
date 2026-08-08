@@ -51,7 +51,7 @@ export default async function DashboardPage() {
         title={`Welcome, ${session.name.split(" ")[0]}`}
         description="Track visits, bookings, payments, and saved projects."
         actions={
-          <Button asChild className="gradient-emerald text-white">
+          <Button asChild className="gradient-emerald text-white dark:text-white">
             <Link href="/book-site-visit">
               Book site visit
               <ArrowUpRight className="size-4" />

@@ -74,7 +74,7 @@ export function EnquiryForm({ interest }: { interest?: string }) {
       <Button
         type="submit"
         disabled={loading}
-        className="gradient-emerald text-white"
+        className="gradient-emerald text-white dark:text-white"
       >
         {loading ? "Sending…" : "Send Enquiry"}
       </Button>

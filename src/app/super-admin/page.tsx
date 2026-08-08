@@ -42,7 +42,7 @@ export default async function SuperAdminHomePage() {
             <Button asChild variant="outline">
               <Link href="/super-admin/users">Manage users</Link>
             </Button>
-            <Button asChild className="gradient-emerald text-white">
+            <Button asChild className="gradient-emerald text-white dark:text-white">
               <Link href="/super-admin/settings">Platform settings</Link>
             </Button>
           </>

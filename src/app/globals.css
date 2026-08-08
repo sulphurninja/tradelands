@@ -149,6 +149,7 @@
   html {
     scroll-behavior: smooth;
     color-scheme: light;
+    overflow-x: clip;
   }
 
   html.dark {
@@ -160,6 +161,15 @@
     font-family: var(--font-apple);
     letter-spacing: -0.01em;
     background-image: none;
+    overflow-x: clip;
+  }
+
+  img,
+  video,
+  iframe,
+  canvas,
+  svg {
+    max-width: 100%;
   }
 
   .dark body {
@@ -204,8 +214,9 @@
     @apply bg-muted;
   }
 
+  /* Dark ink on lime/gold chips — readable in light and dark */
   .text-on-gold {
-    color: #ffffff;
+    color: #0b1610;
   }
 
   .gold-line {
@@ -230,12 +241,15 @@
     border-color: var(--gold);
   }
 
+  /* CTA gradient: always deep enough for white label text */
   .gradient-emerald {
     background: linear-gradient(135deg, #1f9d55 0%, #14b8a6 100%);
+    color: #ffffff;
   }
 
   .dark .gradient-emerald {
-    background: linear-gradient(135deg, #9fe870 0%, #2dd4bf 100%);
+    background: linear-gradient(135deg, #178a48 0%, #0f766e 100%);
+    color: #ffffff;
   }
 
   .text-balance {

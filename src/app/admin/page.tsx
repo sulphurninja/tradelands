@@ -33,7 +33,7 @@ export default async function AdminHomePage() {
         title="Admin overview"
         description="Manage inventory, content, media, leads, and site operations."
         actions={
-          <Button asChild className="gradient-emerald text-white">
+          <Button asChild className="gradient-emerald text-white dark:text-white">
             <Link href="/admin/projects/new">Add project</Link>
           </Button>
         }

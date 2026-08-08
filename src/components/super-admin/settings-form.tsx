@@ -174,7 +174,7 @@ export function SettingsForm({ initial }: { initial: SiteConfig }) {
 
       <div className="flex justify-end">
         <Button
-          className="gradient-emerald text-white"
+          className="gradient-emerald text-white dark:text-white"
           disabled={saving}
           onClick={() => void onSave()}
         >

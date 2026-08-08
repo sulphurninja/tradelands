@@ -93,25 +93,25 @@ export function ProjectsFilter() {
           e.preventDefault();
           apply();
         }}
-        className="rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
+        className="w-full min-w-0 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
       >
-        <div className="mb-3">
+        <div className="mb-3 min-w-0">
           <label className="sr-only" htmlFor="project-q">
             Search projects
           </label>
-          <div className="relative">
+          <div className="relative min-w-0">
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               id="project-q"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search by name, village, or district…"
-              className="h-11 rounded-xl border-border/80 bg-background pl-10"
+              className="h-11 w-full min-w-0 rounded-xl border-border/80 bg-background pl-10"
             />
           </div>
         </div>
 
-        <div className="grid items-end gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+        <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
           <FilterField label="State">
             <FormSelect
               value={state}
@@ -120,7 +120,7 @@ export function ProjectsFilter() {
                 { value: "all", label: "All States" },
                 ...states.map((s) => ({ value: s, label: s })),
               ]}
-              triggerClassName="h-10 border-0 bg-transparent shadow-none"
+              triggerClassName="h-10 w-full min-w-0 border-0 bg-transparent shadow-none"
             />
           </FilterField>
 
@@ -132,7 +132,7 @@ export function ProjectsFilter() {
                 { value: "all", label: "All Categories" },
                 ...CATEGORIES.map((c) => ({ value: c.value, label: c.label })),
               ]}
-              triggerClassName="h-10 border-0 bg-transparent shadow-none"
+              triggerClassName="h-10 w-full min-w-0 border-0 bg-transparent shadow-none"
             />
           </FilterField>
 
@@ -141,7 +141,7 @@ export function ProjectsFilter() {
               value={budget}
               onValueChange={(v) => onSelect("budget", v)}
               options={[{ value: "all", label: "Any Budget" }, ...budgets]}
-              triggerClassName="h-10 border-0 bg-transparent shadow-none"
+              triggerClassName="h-10 w-full min-w-0 border-0 bg-transparent shadow-none"
             />
           </FilterField>
 
@@ -156,14 +156,14 @@ export function ProjectsFilter() {
                   label: a.label,
                 })),
               ]}
-              triggerClassName="h-10 border-0 bg-transparent shadow-none"
+              triggerClassName="h-10 w-full min-w-0 border-0 bg-transparent shadow-none"
             />
           </FilterField>
 
           <Button
             type="submit"
             disabled={pending}
-            className="h-10 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 lg:mb-0.5 lg:w-auto"
+            className="h-10 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 sm:col-span-2 lg:col-span-1 lg:mb-0.5 lg:w-auto"
           >
             <Search className="size-4" />
             Search
@@ -219,7 +219,7 @@ function FilterField({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl bg-muted/60 px-1 pt-2 pb-1">
+    <div className="min-w-0 rounded-xl bg-muted/60 px-1 pt-2 pb-1">
       <span className="px-3 text-[0.62rem] tracking-[0.16em] text-muted-foreground uppercase">
         {label}
       </span>

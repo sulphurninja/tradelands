@@ -103,9 +103,11 @@ export default async function ProjectsPage({ searchParams }: Props) {
             </Button>
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <div key={project.id} className="min-w-0">
+                <ProjectCard project={project} />
+              </div>
             ))}
           </div>
         )}

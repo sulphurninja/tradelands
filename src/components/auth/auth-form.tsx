@@ -104,7 +104,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       <Button
         type="submit"
         disabled={loading}
-        className="h-11 w-full gradient-emerald text-white"
+        className="h-11 w-full gradient-emerald text-white dark:text-white"
       >
         {loading
           ? "Please wait…"

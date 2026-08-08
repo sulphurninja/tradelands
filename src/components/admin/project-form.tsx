@@ -605,7 +605,7 @@ export function ProjectForm({ project }: { project?: Project }) {
         <Button
           type="submit"
           disabled={saving}
-          className="gradient-emerald text-white"
+          className="gradient-emerald text-white dark:text-white"
         >
           {saving ? "Saving…" : project ? "Update project" : "Create project"}
         </Button>

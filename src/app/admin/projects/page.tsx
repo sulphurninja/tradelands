@@ -18,7 +18,7 @@ export default async function AdminProjectsPage() {
         title="Projects"
         description="Full project details, plots, docs, and media."
         actions={
-          <Button asChild className="gradient-emerald text-white">
+          <Button asChild className="gradient-emerald text-white dark:text-white">
             <Link href="/admin/projects/new">Add project</Link>
           </Button>
         }

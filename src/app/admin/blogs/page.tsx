@@ -15,7 +15,7 @@ export default async function AdminBlogsPage() {
         title="Blogs"
         description="Guides and articles shown on the site."
         actions={
-          <Button asChild className="gradient-emerald text-white">
+          <Button asChild className="gradient-emerald text-white dark:text-white">
             <Link href="/admin/blogs/new">Add blog</Link>
           </Button>
         }

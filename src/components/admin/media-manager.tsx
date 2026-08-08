@@ -146,7 +146,7 @@ export function MediaManager({ initial }: { initial: MediaItem[] }) {
         <Button
           type="submit"
           disabled={saving}
-          className="gradient-emerald text-white"
+          className="gradient-emerald text-white dark:text-white"
         >
           {saving ? "Saving…" : "Add to library"}
         </Button>

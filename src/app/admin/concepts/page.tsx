@@ -15,7 +15,7 @@ export default async function AdminConceptsPage() {
         title="Investment concepts"
         description="AVENZA, ORLANE, FLORAVE and any new brands."
         actions={
-          <Button asChild className="gradient-emerald text-white">
+          <Button asChild className="gradient-emerald text-white dark:text-white">
             <Link href="/admin/concepts/new">Add concept</Link>
           </Button>
         }

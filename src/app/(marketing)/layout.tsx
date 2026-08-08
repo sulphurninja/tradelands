@@ -8,10 +8,10 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="flex min-h-full flex-col overflow-x-clip">
       <MaintenanceBanner />
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
       <SiteFooter />
     </div>
   );

@@ -10,6 +10,12 @@ import {
 } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
+function fitClassName(objectFit: "cover" | "contain") {
+  return objectFit === "cover"
+    ? "object-cover object-center"
+    : "object-contain object-center";
+}
+
 export function SmartMedia({
   src,
   alt = "",
@@ -38,19 +44,56 @@ export function SmartMedia({
   objectFit?: "cover" | "contain";
 }) {
   if (!src) return null;
+  const fit = fitClassName(objectFit);
 
   if (isYoutubeUrl(src) || isVimeoUrl(src)) {
-    const embed = isYoutubeUrl(src)
-      ? youtubeEmbedUrl(src)
-      : vimeoEmbedUrl(src);
+    const youtube = isYoutubeUrl(src);
+    const embed = youtube ? youtubeEmbedUrl(src) : vimeoEmbedUrl(src);
+    const params = new URLSearchParams();
+    const shouldMute = Boolean(muted || autoPlay);
+
+    if (youtube) {
+      params.set("autoplay", autoPlay ? "1" : "0");
+      params.set("mute", shouldMute ? "1" : "0");
+      params.set("playsinline", "1");
+      params.set("rel", "0");
+      params.set("modestbranding", "1");
+      params.set("iv_load_policy", "3");
+      if (loop) {
+        params.set("loop", "1");
+        // YouTube needs playlist=VIDEO_ID for loop to work
+        const id = embed.split("/embed/")[1]?.split("?")[0];
+        if (id) params.set("playlist", id);
+      }
+      // Hide YouTube chrome for ambient/hero playback
+      if (!controls) {
+        params.set("controls", "0");
+        params.set("disablekb", "1");
+        params.set("fs", "0");
+      }
+    } else {
+      params.set("autoplay", autoPlay ? "1" : "0");
+      params.set("muted", shouldMute ? "1" : "0");
+      params.set("playsinline", "1");
+      if (loop) params.set("loop", "1");
+      if (!controls) {
+        params.set("controls", "0");
+        params.set("background", "1");
+      }
+    }
+
+    const srcUrl = `${embed}${embed.includes("?") ? "&" : "?"}${params.toString()}`;
+
     return (
       <iframe
-        src={`${embed}${embed.includes("?") ? "&" : "?"}autoplay=${autoPlay ? 1 : 0}&mute=${muted || autoPlay ? 1 : 0}`}
+        src={srcUrl}
         title={alt || "Video"}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
+        allowFullScreen={controls}
         className={cn(
-          fill ? "absolute inset-0 h-full w-full" : "h-full w-full",
+          fill
+            ? "absolute inset-0 h-full w-full max-w-none"
+            : "aspect-video h-auto w-full max-w-full",
           className
         )}
       />
@@ -68,8 +111,10 @@ export function SmartMedia({
         loop={loop}
         playsInline={playsInline}
         className={cn(
-          fill ? "absolute inset-0 h-full w-full" : "h-full w-full",
-          objectFit === "cover" ? "object-cover" : "object-contain",
+          fill
+            ? "absolute inset-0 h-full w-full max-w-none"
+            : "h-auto w-full max-w-full",
+          fit,
           className
         )}
       />
@@ -83,10 +128,8 @@ export function SmartMedia({
         alt={alt}
         fill
         priority={priority}
-        className={cn(
-          objectFit === "cover" ? "object-cover" : "object-contain",
-          className
-        )}
+        sizes="100vw"
+        className={cn(fit, className)}
       />
     );
   }
@@ -96,10 +139,7 @@ export function SmartMedia({
     <img
       src={src}
       alt={alt}
-      className={cn(
-        objectFit === "cover" ? "object-cover" : "object-contain",
-        className
-      )}
+      className={cn("h-auto w-full max-w-full", fit, className)}
     />
   );
 }

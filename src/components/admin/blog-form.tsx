@@ -135,7 +135,7 @@ export function BlogForm({ blog }: { blog?: BlogPost }) {
           folder="tradelands/blogs"
         />
       </div>
-      <Button type="submit" disabled={saving} className="gradient-emerald text-white">
+      <Button type="submit" disabled={saving} className="gradient-emerald text-white dark:text-white">
         {saving ? "Saving…" : "Save blog"}
       </Button>
     </form>

@@ -105,7 +105,7 @@ export default function ComparePage() {
             </div>
 
             {left && right && (
-              <div className="overflow-x-auto rounded-2xl ring-1 ring-border/70">
+              <div className="-mx-1 overflow-x-auto overscroll-x-contain rounded-2xl ring-1 ring-border/70 sm:mx-0">
                 <table className="w-full min-w-[640px] text-sm">
                   <thead className="bg-muted/80">
                     <tr>

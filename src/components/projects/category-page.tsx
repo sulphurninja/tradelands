@@ -38,14 +38,14 @@ export async function CategoryPage({
           <>
             <Button
               asChild
-              className="rounded-full bg-white text-on-gold hover:bg-white/90"
+              className="w-full rounded-full bg-white text-[#0b1610] hover:bg-white/90 sm:w-auto"
             >
               <Link href="/book-site-visit">Book Site Visit</Link>
             </Button>
             <Button
               asChild
               variant="ghost"
-              className="rounded-full border border-white/25 text-white hover:bg-white/10 hover:text-white"
+              className="w-full rounded-full border border-white/25 text-white hover:bg-white/10 hover:text-white sm:w-auto"
             >
               <Link href="/projects">All Projects</Link>
             </Button>

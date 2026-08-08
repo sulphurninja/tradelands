@@ -68,10 +68,10 @@ export function PageHero({
         )}
         <h1
           className={cn(
-            "mx-auto max-w-4xl text-balance font-semibold tracking-[-0.03em]",
+            "mx-auto max-w-4xl px-1 text-balance break-words font-semibold tracking-[-0.03em]",
             compact
-              ? "text-[2rem] sm:text-[2.75rem]"
-              : "text-[2.5rem] sm:text-[3.5rem] lg:text-[4rem]"
+              ? "text-[1.75rem] sm:text-[2.75rem]"
+              : "text-[2rem] sm:text-[3.5rem] lg:text-[4rem]"
           )}
         >
           {title}
@@ -79,7 +79,7 @@ export function PageHero({
         {description && (
           <p
             className={cn(
-              "mx-auto mt-4 max-w-2xl text-[17px] leading-relaxed sm:text-[19px]",
+              "mx-auto mt-4 max-w-2xl px-1 text-[15px] leading-relaxed break-words sm:text-[19px]",
               image ? "text-white/75" : "text-muted-foreground"
             )}
           >
@@ -87,7 +87,7 @@ export function PageHero({
           </p>
         )}
         {actions && (
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             {actions}
           </div>
         )}

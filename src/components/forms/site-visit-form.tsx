@@ -137,7 +137,7 @@ export function SiteVisitForm({ defaultProject }: { defaultProject?: string }) {
       <Button
         type="submit"
         disabled={loading}
-        className="h-11 w-full gradient-emerald text-white sm:w-auto sm:px-10"
+        className="h-11 w-full gradient-emerald text-white dark:text-white sm:w-auto sm:px-10"
       >
         {loading ? "Submitting…" : "Confirm Site Visit Request"}
       </Button>

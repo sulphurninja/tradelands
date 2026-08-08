@@ -60,10 +60,10 @@ export function ProjectCard({
         )}
       >
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0 flex-1">
             <h3
               className={cn(
-                "font-display text-2xl text-foreground transition-colors group-hover:text-primary",
+                "font-display text-xl break-words text-foreground transition-colors group-hover:text-primary sm:text-2xl",
                 variant === "featured" && "lg:text-3xl lg:text-white"
               )}
             >
@@ -71,12 +71,14 @@ export function ProjectCard({
             </h3>
             <p
               className={cn(
-                "mt-1 flex items-center gap-1.5 text-sm text-muted-foreground",
+                "mt-1 flex items-start gap-1.5 text-sm text-muted-foreground sm:items-center",
                 variant === "featured" && "lg:text-white/75"
               )}
             >
-              <MapPin className="size-3.5 shrink-0" />
-              {project.location.village}, {project.location.district}
+              <MapPin className="mt-0.5 size-3.5 shrink-0 sm:mt-0" />
+              <span className="min-w-0 break-words">
+                {project.location.village}, {project.location.district}
+              </span>
             </p>
           </div>
           <span
@@ -100,11 +102,11 @@ export function ProjectCard({
 
         <div
           className={cn(
-            "mt-5 flex items-end justify-between border-t border-border/60 pt-4",
+            "mt-5 flex flex-wrap items-end justify-between gap-3 border-t border-border/60 pt-4",
             variant === "featured" && "lg:border-white/15"
           )}
         >
-          <div>
+          <div className="min-w-0">
             <p
               className={cn(
                 "text-[0.65rem] tracking-[0.16em] text-muted-foreground uppercase",
@@ -115,7 +117,7 @@ export function ProjectCard({
             </p>
             <p
               className={cn(
-                "mt-0.5 font-medium text-foreground",
+                "mt-0.5 font-medium break-words text-foreground",
                 variant === "featured" && "lg:text-gold"
               )}
             >
@@ -124,7 +126,7 @@ export function ProjectCard({
           </div>
           <p
             className={cn(
-              "text-sm text-muted-foreground",
+              "shrink-0 text-sm text-muted-foreground",
               variant === "featured" && "lg:text-white/70"
             )}
           >
