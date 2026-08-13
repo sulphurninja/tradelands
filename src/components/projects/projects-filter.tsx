@@ -31,6 +31,7 @@ export function ProjectsFilter() {
   const [attribute, setAttribute] = useState(
     searchParams.get("attribute") || "all"
   );
+  const [stage, setStage] = useState(searchParams.get("stage") || "all");
 
   useEffect(() => {
     setQ(searchParams.get("q") || "");
@@ -38,6 +39,7 @@ export function ProjectsFilter() {
     setCategory(searchParams.get("category") || "all");
     setBudget(searchParams.get("budget") || "all");
     setAttribute(searchParams.get("attribute") || "all");
+    setStage(searchParams.get("stage") || "all");
   }, [searchParams]);
 
   const hasFilters =
@@ -45,7 +47,8 @@ export function ProjectsFilter() {
     Boolean(searchParams.get("state")) ||
     Boolean(searchParams.get("category")) ||
     Boolean(searchParams.get("budget")) ||
-    Boolean(searchParams.get("attribute"));
+    Boolean(searchParams.get("attribute")) ||
+    Boolean(searchParams.get("stage"));
 
   function apply(next?: {
     q?: string;
@@ -53,6 +56,7 @@ export function ProjectsFilter() {
     category?: string;
     budget?: string;
     attribute?: string;
+    stage?: string;
   }) {
     const params = new URLSearchParams();
     const values = {
@@ -61,6 +65,7 @@ export function ProjectsFilter() {
       category: next?.category ?? category,
       budget: next?.budget ?? budget,
       attribute: next?.attribute ?? attribute,
+      stage: next?.stage ?? stage,
     };
 
     if (values.q.trim()) params.set("q", values.q.trim());
@@ -68,6 +73,7 @@ export function ProjectsFilter() {
     if (values.category !== "all") params.set("category", values.category);
     if (values.budget !== "all") params.set("budget", values.budget);
     if (values.attribute !== "all") params.set("attribute", values.attribute);
+    if (values.stage !== "all") params.set("stage", values.stage);
 
     const qs = params.toString();
     startTransition(() => {
@@ -76,13 +82,14 @@ export function ProjectsFilter() {
   }
 
   function onSelect(
-    key: "state" | "category" | "budget" | "attribute",
+    key: "state" | "category" | "budget" | "attribute" | "stage",
     value: string
   ) {
     if (key === "state") setState(value);
     if (key === "category") setCategory(value);
     if (key === "budget") setBudget(value);
     if (key === "attribute") setAttribute(value);
+    if (key === "stage") setStage(value);
     apply({ [key]: value });
   }
 
@@ -111,7 +118,7 @@ export function ProjectsFilter() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+        <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
           <FilterField label="State">
             <FormSelect
               value={state}
@@ -145,6 +152,19 @@ export function ProjectsFilter() {
             />
           </FilterField>
 
+          <FilterField label="Stage">
+            <FormSelect
+              value={stage}
+              onValueChange={(v) => onSelect("stage", v)}
+              options={[
+                { value: "all", label: "Any stage" },
+                { value: "developed", label: "Developed" },
+                { value: "under-development", label: "Under development" },
+              ]}
+              triggerClassName="h-10 w-full min-w-0 border-0 bg-transparent shadow-none"
+            />
+          </FilterField>
+
           <FilterField label="Attribute">
             <FormSelect
               value={attribute}
@@ -163,7 +183,7 @@ export function ProjectsFilter() {
           <Button
             type="submit"
             disabled={pending}
-            className="h-10 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 sm:col-span-2 lg:col-span-1 lg:mb-0.5 lg:w-auto"
+            className="h-10 w-full touch-manipulation rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 sm:col-span-2 lg:col-span-1 lg:mb-0.5 lg:w-auto"
           >
             <Search className="size-4" />
             Search
@@ -180,6 +200,7 @@ export function ProjectsFilter() {
               ["state", searchParams.get("state")],
               ["category", searchParams.get("category")],
               ["budget", searchParams.get("budget")],
+              ["stage", searchParams.get("stage")],
               ["attribute", searchParams.get("attribute")],
             ] as const
           )
@@ -196,7 +217,11 @@ export function ProjectsFilter() {
                     : key === "attribute"
                       ? LOCATION_ATTRIBUTES.find((a) => a.value === value)
                           ?.label || value
-                      : value}
+                      : key === "stage"
+                        ? value === "developed"
+                          ? "Developed"
+                          : "Under development"
+                        : value}
               </span>
             ))}
           <Button asChild variant="ghost" size="sm" className="h-8 px-2">

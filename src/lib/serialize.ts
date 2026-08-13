@@ -52,6 +52,13 @@ export function serializeProject(doc: Doc): Project {
     appreciation: doc.appreciation ? String(doc.appreciation) : undefined,
     legalStatus: String(doc.legalStatus ?? ""),
     featured: Boolean(doc.featured),
+    developmentStage:
+      (doc.developmentStage as Project["developmentStage"]) ||
+      "under-development",
+    viewCount: Number(doc.viewCount ?? 0),
+    interestCount: Number(doc.interestCount ?? 0),
+    ratingAvg: Number(doc.ratingAvg ?? 0),
+    ratingCount: Number(doc.ratingCount ?? 0),
     createdAt:
       typeof doc.createdAt === "string"
         ? doc.createdAt

@@ -55,6 +55,11 @@ const emptyProject = (): Omit<Project, "id" | "createdAt"> => ({
   plots: [],
   legalStatus: "",
   featured: true,
+  developmentStage: "under-development",
+  viewCount: 0,
+  interestCount: 0,
+  ratingAvg: 0,
+  ratingCount: 0,
 });
 
 export function ProjectForm({ project }: { project?: Project }) {
@@ -186,6 +191,25 @@ export function ProjectForm({ project }: { project?: Project }) {
           />
           Featured on home
         </label>
+        <div className="space-y-2 md:col-span-2">
+          <Label>Development stage</Label>
+          <FormSelect
+            value={form.developmentStage || "under-development"}
+            onValueChange={(v) =>
+              patch(
+                "developmentStage",
+                v as Project["developmentStage"]
+              )
+            }
+            options={[
+              { value: "developed", label: "Developed" },
+              {
+                value: "under-development",
+                label: "Under development",
+              },
+            ]}
+          />
+        </div>
       </section>
 
       <section className="grid gap-4 rounded-2xl border border-border p-5 md:grid-cols-2">

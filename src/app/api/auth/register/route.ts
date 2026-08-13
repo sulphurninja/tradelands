@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { connectDB } from "@/lib/db";
 import { hashPassword, setAuthCookie, signToken } from "@/lib/auth";
+import { isEmailOtpEnabled } from "@/lib/email-otp-flag";
+import { issueEmailOtp } from "@/lib/otp";
 import { getSiteConfig } from "@/lib/platform-settings";
 import { User } from "@/models/User";
 
@@ -27,7 +29,8 @@ export async function POST(request: Request) {
 
     await connectDB();
 
-    const existing = await User.findOne({ email: data.email.toLowerCase() });
+    const email = data.email.toLowerCase().trim();
+    const existing = await User.findOne({ email });
     if (existing) {
       return NextResponse.json(
         { error: "An account with this email already exists." },
@@ -35,15 +38,28 @@ export async function POST(request: Request) {
       );
     }
 
+    const otpOn = isEmailOtpEnabled();
     const passwordHash = await hashPassword(data.password);
     const user = await User.create({
       name: data.name,
-      email: data.email.toLowerCase(),
+      email,
       phone: data.phone,
       passwordHash,
       role: "customer",
       active: true,
+      emailVerified: !otpOn,
+      phoneVerified: false,
+      wishlist: [],
     });
+
+    if (otpOn) {
+      await issueEmailOtp(email, "verify-email");
+      return NextResponse.json({
+        needsVerification: true,
+        email: user.email,
+        message: "Account created. Enter the OTP sent to your email.",
+      });
+    }
 
     const token = await signToken({
       sub: user._id.toString(),
@@ -59,6 +75,7 @@ export async function POST(request: Request) {
         name: user.name,
         email: user.email,
         role: user.role,
+        emailVerified: true,
       },
     });
   } catch (error) {
@@ -70,7 +87,7 @@ export async function POST(request: Request) {
     }
     console.error("Register error:", error);
     return NextResponse.json(
-      { error: "Unable to register. Is MongoDB running?" },
+      { error: "Unable to register right now." },
       { status: 500 }
     );
   }

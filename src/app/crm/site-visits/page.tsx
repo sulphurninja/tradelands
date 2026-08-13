@@ -1,20 +1,32 @@
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth";
+import { agentVisitFilter } from "@/lib/agent-scope";
 import { connectDB } from "@/lib/db";
 import { SiteVisit } from "@/models/SiteVisit";
 import { VisitStatusSelect } from "@/components/admin/visit-status-select";
 import { PortalPageHeader, PortalPanel } from "@/components/portal/portal-page";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "CRM · Site Visits" };
+export const metadata = { title: "Agent · Site Visits" };
 
 export default async function CrmSiteVisitsPage() {
+  const session = await getSession();
+  if (!session) redirect("/login?next=/crm/site-visits");
+
   await connectDB();
-  const visits = await SiteVisit.find().sort({ createdAt: -1 }).lean();
+  const visits = await SiteVisit.find(agentVisitFilter(session))
+    .sort({ createdAt: -1 })
+    .lean();
 
   return (
     <div>
       <PortalPageHeader
         title="Site visits"
-        description="Confirm schedules and keep investors moving."
+        description={
+          session.role === "sales"
+            ? "Visits attributed to your referral or booking."
+            : "Confirm schedules and keep investors moving."
+        }
       />
       <PortalPanel>
         <div className="overflow-x-auto">

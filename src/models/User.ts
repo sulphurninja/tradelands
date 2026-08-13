@@ -9,6 +9,9 @@ export interface IUser {
   passwordHash: string;
   role: UserRole;
   active: boolean;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  referralCode?: string;
   wishlist: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -32,6 +35,9 @@ const UserSchema = new Schema<IUser>(
       default: "customer",
     },
     active: { type: Boolean, default: true },
+    emailVerified: { type: Boolean, default: false },
+    phoneVerified: { type: Boolean, default: false },
+    referralCode: { type: String, trim: true, sparse: true },
     wishlist: [{ type: String }],
   },
   { timestamps: true }

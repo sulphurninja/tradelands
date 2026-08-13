@@ -12,6 +12,8 @@ export type ProjectStatus =
   | "upcoming"
   | "sold-out";
 
+export type DevelopmentStage = "developed" | "under-development";
+
 export type LocationAttribute =
   | "road-touch"
   | "river-touch"
@@ -107,6 +109,11 @@ export interface Project {
   appreciation?: string;
   legalStatus: string;
   featured?: boolean;
+  developmentStage: DevelopmentStage;
+  viewCount: number;
+  interestCount: number;
+  ratingAvg: number;
+  ratingCount: number;
   createdAt: string;
 }
 

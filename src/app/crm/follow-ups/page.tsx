@@ -1,14 +1,21 @@
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth";
+import { agentLeadFilter } from "@/lib/agent-scope";
 import { connectDB } from "@/lib/db";
 import { Lead } from "@/models/Lead";
 import { LeadStatusSelect } from "@/components/admin/lead-status-select";
 import { PortalPageHeader, PortalPanel } from "@/components/portal/portal-page";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "CRM · Follow-ups" };
+export const metadata = { title: "Agent · Follow-ups" };
 
 export default async function CrmFollowUpsPage() {
+  const session = await getSession();
+  if (!session) redirect("/login?next=/crm/follow-ups");
+
   await connectDB();
   const leads = await Lead.find({
+    ...agentLeadFilter(session),
     status: { $in: ["contacted", "qualified", "site-visit"] },
   })
     .sort({ updatedAt: -1 })
@@ -55,7 +62,8 @@ export default async function CrmFollowUpsPage() {
                     colSpan={4}
                     className="px-4 py-12 text-center text-muted-foreground"
                   >
-                    No active follow-ups. Move leads out of “new” to see them here.
+                    No active follow-ups. Move leads out of “new” to see them
+                    here.
                   </td>
                 </tr>
               )}

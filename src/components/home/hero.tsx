@@ -71,7 +71,6 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
     return () => window.clearInterval(id);
   }, [go, items.length, paused, isVideo, index]);
 
-  // Reset mute when changing slides so autoplay keeps working
   useEffect(() => {
     setMuted(true);
   }, [current.id]);
@@ -83,10 +82,6 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {/*
-          Intrinsic height (w-full h-auto): full-bleed width, natural aspect,
-          no letterbox bars, no cropping.
-        */}
         <div className="relative w-full">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -113,21 +108,27 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
             </motion.div>
           </AnimatePresence>
 
+          {/* Readable base for overlaid copy */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[42%] bg-gradient-to-t from-black/75 via-black/35 to-transparent sm:h-[38%]"
+          />
+
           {isVideo ? (
             <button
               type="button"
               onClick={() => setMuted((m) => !m)}
               aria-label={muted ? "Unmute video" : "Mute video"}
-              className="absolute right-3 bottom-3 z-20 inline-flex h-10 items-center gap-2 rounded-full border border-white/20 bg-black/55 px-3.5 text-[13px] font-medium text-white backdrop-blur-md sm:right-5 sm:bottom-5 sm:h-11 sm:px-4"
+              className="absolute top-3 right-3 z-20 inline-flex h-9 items-center gap-1.5 rounded-full border border-white/20 bg-black/55 px-3 text-xs font-medium text-white backdrop-blur-md sm:top-5 sm:right-5 sm:h-10 sm:px-3.5 sm:text-[13px]"
             >
               {muted ? (
                 <>
-                  <VolumeX className="size-4" />
+                  <VolumeX className="size-3.5 sm:size-4" />
                   <span>Unmute</span>
                 </>
               ) : (
                 <>
-                  <Volume2 className="size-4" />
+                  <Volume2 className="size-3.5 sm:size-4" />
                   <span>Mute</span>
                 </>
               )}
@@ -140,70 +141,70 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
                 type="button"
                 aria-label="Previous slide"
                 onClick={() => go(-1)}
-                className="absolute top-1/2 left-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-md backdrop-blur-md hover:bg-black/75 sm:left-4 sm:size-11"
+                className="absolute top-1/2 left-2 z-20 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/55 text-white backdrop-blur-md hover:bg-black/70 sm:left-4 sm:size-10"
               >
-                <ChevronLeft className="size-5 sm:size-6" />
+                <ChevronLeft className="size-4 sm:size-5" />
               </button>
               <button
                 type="button"
                 aria-label="Next slide"
                 onClick={() => go(1)}
-                className="absolute top-1/2 right-2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-md backdrop-blur-md hover:bg-black/75 sm:right-4 sm:size-11"
+                className="absolute top-1/2 right-2 z-20 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/55 text-white backdrop-blur-md hover:bg-black/70 sm:right-4 sm:size-10"
               >
-                <ChevronRight className="size-5 sm:size-6" />
+                <ChevronRight className="size-4 sm:size-5" />
               </button>
             </>
           ) : null}
-        </div>
 
-        <div className="bg-background px-4 pt-5 pb-6 text-center sm:px-6 sm:pt-7 sm:pb-8">
-          <div className="mx-auto max-w-4xl">
-            <p className="mb-1.5 text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase sm:mb-2 sm:text-[14px]">
-              TradeLands.IND
-            </p>
-            <h1 className="px-1 text-[1.35rem] leading-[1.15] font-semibold tracking-[-0.03em] break-words text-foreground sm:text-[2.75rem] lg:text-[3.5rem]">
-              {current.title}
-            </h1>
-            {current.subtitle ? (
-              <p className="mx-auto mt-2 max-w-2xl px-1 text-[13px] leading-snug break-words text-muted-foreground sm:mt-3 sm:text-[19px]">
-                {current.subtitle}
+          <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-10 text-center sm:px-8 sm:pb-7 sm:pt-16">
+            <div className="mx-auto max-w-3xl">
+              <p className="mb-1 text-[10px] font-medium tracking-[0.14em] text-white/70 uppercase sm:mb-1.5 sm:text-xs">
+                TradeLands.IND
               </p>
-            ) : null}
-            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[14px] sm:mt-5 sm:gap-6 sm:text-[18px]">
-              {current.href ? (
-                <Link
-                  href={current.href}
-                  className="font-medium text-primary transition-opacity hover:opacity-80"
-                >
-                  Learn more ›
-                </Link>
+              <h1 className="px-1 text-[1.125rem] leading-[1.2] font-semibold tracking-[-0.03em] text-balance break-words text-white sm:text-3xl lg:text-4xl xl:text-[2.75rem]">
+                {current.title}
+              </h1>
+              {current.subtitle ? (
+                <p className="mx-auto mt-1 max-w-xl px-1 text-[12px] leading-snug text-white/80 sm:mt-2 sm:text-base lg:text-lg">
+                  {current.subtitle}
+                </p>
               ) : null}
-              <Link
-                href="/book-site-visit"
-                className="font-medium text-primary transition-opacity hover:opacity-80"
-              >
-                Book a visit ›
-              </Link>
-            </div>
-
-            {items.length > 1 ? (
-              <div className="mt-4 flex items-center justify-center gap-2 sm:mt-6 sm:gap-2.5">
-                {items.map((slide, i) => (
-                  <button
-                    key={slide.id}
-                    type="button"
-                    aria-label={`Go to slide ${i + 1}`}
-                    onClick={() => setIndex(i)}
-                    className={cn(
-                      "h-2 rounded-full transition-all",
-                      i === index
-                        ? "w-7 bg-primary"
-                        : "w-2 bg-foreground/20 hover:bg-foreground/35"
-                    )}
-                  />
-                ))}
+              <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] sm:mt-4 sm:gap-5 sm:text-[15px]">
+                {current.href ? (
+                  <Link
+                    href={current.href}
+                    className="font-medium text-white transition-opacity hover:opacity-80"
+                  >
+                    Learn more ›
+                  </Link>
+                ) : null}
+                <Link
+                  href="/book-site-visit"
+                  className="font-medium text-white/90 transition-opacity hover:opacity-80"
+                >
+                  Book a visit ›
+                </Link>
               </div>
-            ) : null}
+
+              {items.length > 1 ? (
+                <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-5 sm:gap-2">
+                  {items.map((slide, i) => (
+                    <button
+                      key={slide.id}
+                      type="button"
+                      aria-label={`Go to slide ${i + 1}`}
+                      onClick={() => setIndex(i)}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all",
+                        i === index
+                          ? "w-5 bg-white sm:w-6"
+                          : "w-1.5 bg-white/40 hover:bg-white/65"
+                      )}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

@@ -12,7 +12,13 @@ import type { Project } from "@/lib/types";
 
 const times = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
 
-export function SiteVisitForm({ defaultProject }: { defaultProject?: string }) {
+export function SiteVisitForm({
+  defaultProject,
+  onSuccess,
+}: {
+  defaultProject?: string;
+  onSuccess?: () => void;
+}) {
   const [loading, setLoading] = useState(false);
   const [pickup, setPickup] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -48,6 +54,7 @@ export function SiteVisitForm({ defaultProject }: { defaultProject?: string }) {
       time,
       pickupRequired: pickup,
       pickupAddress: String(form.get("pickupAddress") || ""),
+      referralCode: String(form.get("referralCode") || "").trim() || undefined,
     };
 
     try {
@@ -65,6 +72,7 @@ export function SiteVisitForm({ defaultProject }: { defaultProject?: string }) {
       e.currentTarget.reset();
       setPickup(false);
       setTime(times[0]);
+      onSuccess?.();
     } catch {
       toast.error("Unable to submit right now. Please try again.");
     } finally {
@@ -87,6 +95,15 @@ export function SiteVisitForm({ defaultProject }: { defaultProject?: string }) {
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input id="email" name="email" type="email" className="h-10" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="referralCode">Agent / CP referral code (optional)</Label>
+        <Input
+          id="referralCode"
+          name="referralCode"
+          className="h-10"
+          placeholder="e.g. TL-AGENT01"
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="projectSlug">Project</Label>

@@ -27,6 +27,15 @@ const ProjectSchema = new Schema(
       required: true,
     },
     status: [String],
+    developmentStage: {
+      type: String,
+      enum: ["developed", "under-development"],
+      default: "under-development",
+    },
+    viewCount: { type: Number, default: 0 },
+    interestCount: { type: Number, default: 0 },
+    ratingAvg: { type: Number, default: 0 },
+    ratingCount: { type: Number, default: 0 },
     location: {
       state: String,
       district: String,

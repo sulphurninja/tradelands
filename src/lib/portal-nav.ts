@@ -86,11 +86,11 @@ export function getPortalConfig(role: UserRole): PortalConfig {
   if (role === "sales") {
     return {
       key: "sales",
-      title: "Sales CRM",
+      title: "Agent / Channel Partner",
       homeHref: "/crm",
       nav: [
         { href: "/crm", label: "Overview", icon: LayoutDashboard, exact: true },
-        { href: "/crm/leads", label: "Leads", icon: Users },
+        { href: "/crm/leads", label: "My leads", icon: Users },
         { href: "/crm/site-visits", label: "Site Visits", icon: CalendarDays },
         { href: "/crm/follow-ups", label: "Follow-ups", icon: PhoneCall },
         { href: "/crm/profile", label: "Profile", icon: UserRound },
@@ -127,7 +127,7 @@ export function getPortalConfig(role: UserRole): PortalConfig {
 export function roleLabel(role: UserRole) {
   const map: Record<UserRole, string> = {
     customer: "Investor",
-    sales: "Sales",
+    sales: "Agent / CP",
     admin: "Admin",
     superadmin: "Super Admin",
   };

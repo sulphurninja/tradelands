@@ -15,6 +15,8 @@ const LeadSchema = new Schema(
       default: "new",
     },
     assignedTo: String,
+    agentId: { type: Schema.Types.ObjectId, ref: "User" },
+    referralCode: String,
   },
   { timestamps: true }
 );

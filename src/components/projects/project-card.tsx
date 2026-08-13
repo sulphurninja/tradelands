@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, ArrowUpRight } from "lucide-react";
+import { Eye, Heart, MapPin, ArrowUpRight, Star } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { categoryLabel, formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { WishlistButton } from "@/components/projects/wishlist-button";
 
 interface ProjectCardProps {
   project: Project;
@@ -18,6 +19,10 @@ export function ProjectCard({
   variant = "default",
   className,
 }: ProjectCardProps) {
+  const rating = project.ratingAvg || 0;
+  const interests = project.interestCount || 0;
+  const views = project.viewCount || 0;
+
   return (
     <Link
       href={`/projects/${project.slug}`}
@@ -30,7 +35,9 @@ export function ProjectCard({
       <div
         className={cn(
           "relative overflow-hidden",
-          variant === "featured" ? "aspect-[4/3] lg:absolute lg:inset-0 lg:aspect-auto" : "aspect-[5/4]"
+          variant === "featured"
+            ? "aspect-[4/3] lg:absolute lg:inset-0 lg:aspect-auto"
+            : "aspect-[5/4]"
         )}
       >
         <Image
@@ -50,6 +57,33 @@ export function ProjectCard({
               New Launch
             </span>
           )}
+          {project.status.includes("trending") && (
+            <span className="rounded-full bg-primary/90 px-3 py-1 text-[0.65rem] tracking-[0.14em] text-white uppercase">
+              Trending
+            </span>
+          )}
+        </div>
+        <div className="absolute top-4 right-4 z-20">
+          <WishlistButton projectSlug={project.slug} />
+        </div>
+        <div className="absolute bottom-3 left-4 right-4 z-10 flex flex-wrap items-center gap-2 text-[11px] text-white/90">
+          {rating > 0 ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 backdrop-blur-sm">
+              <Star className="size-3 fill-gold text-gold" />
+              {rating.toFixed(1)}
+              {project.ratingCount ? (
+                <span className="text-white/70">({project.ratingCount})</span>
+              ) : null}
+            </span>
+          ) : null}
+          <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 backdrop-blur-sm">
+            <Heart className="size-3" />
+            {interests}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 backdrop-blur-sm">
+            <Eye className="size-3" />
+            {views}
+          </span>
         </div>
       </div>
 
@@ -126,11 +160,14 @@ export function ProjectCard({
           </div>
           <p
             className={cn(
-              "shrink-0 text-sm text-muted-foreground",
+              "shrink-0 text-sm capitalize text-muted-foreground",
               variant === "featured" && "lg:text-white/70"
             )}
           >
-            {project.area.minGuntha}–{project.area.maxGuntha} Guntha
+            {(project.developmentStage || "under-development").replace(
+              "-",
+              " "
+            )}
           </p>
         </div>
       </div>

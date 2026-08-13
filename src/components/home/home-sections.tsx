@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Quote, Star } from "lucide-react";
 import { ProjectCard } from "@/components/projects/project-card";
 import { SectionHeading } from "@/components/home/section-heading";
-import { SmartMedia } from "@/components/media/smart-media";
+import { DualRowGallery } from "@/components/media/dual-row-gallery";
 import { Button } from "@/components/ui/button";
 import { successStories, whyInvest } from "@/lib/content";
 import type {
@@ -63,9 +63,17 @@ export function TrendingStrip({ projects }: { projects: Project[] }) {
     <section className="border-y border-border/60 bg-muted/50 py-16 lg:py-20">
       <div className="container-premium section-pad">
         <SectionHeading
-          eyebrow="Now watching"
-          title="Trending & new launches"
-          description="Projects buyers are looking at right now."
+          eyebrow="Trending now"
+          title="What buyers are watching"
+          description="Admin-flagged trending and new-launch projects — ratings and interest show on each card."
+          action={
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/projects">
+                <span>All projects</span>
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          }
         />
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, i) => (
@@ -302,26 +310,34 @@ export function MediaStrip({
 }: {
   items: { id: string; url: string; title?: string; type?: string }[];
 }) {
-  const fallback: {
-    id: string;
-    url: string;
-    title?: string;
-    type?: string;
-  }[] = [
+  const fallback = [
     "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=900&q=80",
     "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=80",
     "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=900&q=80",
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80",
-  ].map((url, i) => ({ id: `fallback-${i}`, url, type: "image" }));
+    "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=900&q=80",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80",
+  ].map((url, i) => ({
+    id: `fallback-${i}`,
+    url,
+    title: "TradeLands land",
+    type: "image",
+  }));
 
-  const list = (items.length > 0 ? items : fallback).slice(0, 4);
+  const list = (items.length > 0 ? items : fallback).map((item) => ({
+    id: item.id,
+    url: item.url,
+    title: item.title || "Gallery",
+    type: item.type,
+  }));
 
   return (
-    <section className="pb-8">
+    <section className="overflow-hidden pb-8">
       <div className="container-premium section-pad mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           eyebrow="Media"
           title="Land, light, and progress"
+          description="Dual-row gallery — scroll the page to move the rows."
           className="mb-0"
         />
         <Button asChild variant="ghost" className="w-fit">
@@ -331,24 +347,7 @@ export function MediaStrip({
           </Link>
         </Button>
       </div>
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
-        {list.map((item, i) => (
-          <div
-            key={item.id}
-            className={`relative min-w-0 overflow-hidden bg-black ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-square"}`}
-          >
-            <SmartMedia
-              src={item.url}
-              alt={item.title || ""}
-              fill
-              controls={item.type === "video" || item.type === "drone"}
-              muted
-              playsInline
-              objectFit="cover"
-            />
-          </div>
-        ))}
-      </div>
+      <DualRowGallery items={list} />
     </section>
   );
 }

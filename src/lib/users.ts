@@ -7,6 +7,8 @@ export type PublicUser = {
   phone?: string;
   role: UserRole;
   active: boolean;
+  emailVerified: boolean;
+  referralCode?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -18,6 +20,8 @@ export function serializeUser(doc: {
   phone?: string;
   role: UserRole;
   active?: boolean;
+  emailVerified?: boolean;
+  referralCode?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }): PublicUser {
@@ -28,6 +32,8 @@ export function serializeUser(doc: {
     phone: doc.phone,
     role: doc.role,
     active: doc.active !== false,
+    emailVerified: Boolean(doc.emailVerified),
+    referralCode: doc.referralCode || undefined,
     createdAt: doc.createdAt ? new Date(doc.createdAt).toISOString() : "",
     updatedAt: doc.updatedAt ? new Date(doc.updatedAt).toISOString() : "",
   };

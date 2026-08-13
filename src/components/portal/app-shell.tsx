@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
-  Bell,
   ChevronRight,
   ExternalLink,
+  Home,
   LogOut,
   Menu,
   Moon,
@@ -36,6 +36,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SiteLogo } from "@/components/brand/site-logo";
+import { NotificationBell } from "@/components/portal/notification-bell";
 
 type PortalUser = {
   name: string;
@@ -131,7 +132,7 @@ export function AppShell({
       : config.key === "admin"
         ? "Admin"
         : config.key === "sales"
-          ? "CRM"
+          ? "Agent"
           : "Portal";
 
   return (
@@ -150,13 +151,20 @@ export function AppShell({
             </p>
             <NavList items={config.nav} pathname={pathname} />
           </div>
-          <div className="border-t border-border p-3">
+          <div className="space-y-1 border-t border-border p-3">
             <Link
               href="/"
+              className="flex h-10 items-center gap-2 rounded-lg bg-primary/10 px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
+            >
+              <Home className="size-4" />
+              Home / Public site
+            </Link>
+            <Link
+              href="/projects"
               className="flex h-10 items-center gap-2 rounded-lg px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <ExternalLink className="size-4" />
-              View public site
+              Browse projects
             </Link>
           </div>
         </aside>
@@ -211,16 +219,7 @@ export function AppShell({
                 />
               </div>
 
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label="Notifications"
-                className="relative"
-              >
-                <Bell className="size-4" />
-                <span className="absolute top-2.5 right-2.5 size-1.5 rounded-full bg-primary" />
-              </Button>
+              <NotificationBell />
 
               <Button
                 type="button"

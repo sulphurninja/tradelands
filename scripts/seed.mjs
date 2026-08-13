@@ -109,6 +109,11 @@ const projects = [
     appreciation: "Around 12–18% over 5 years (estimate)",
     legalStatus: "Clear title · Mutation done",
     featured: true,
+    developmentStage: "developed",
+    viewCount: 128,
+    interestCount: 24,
+    ratingAvg: 4.6,
+    ratingCount: 18,
   },
   {
     slug: "orlane-villas-lonavala",
@@ -700,6 +705,9 @@ const User =
           default: "customer",
         },
         active: { type: Boolean, default: true },
+        emailVerified: { type: Boolean, default: false },
+        phoneVerified: { type: Boolean, default: false },
+        referralCode: String,
         wishlist: [String],
       },
       { timestamps: true }
@@ -755,6 +763,7 @@ const seedUsers = [
     phone: "+919876543212",
     role: "sales",
     password: "Sales@12345",
+    referralCode: "TL-AGENT01",
   },
   {
     name: "Demo Investor",
@@ -783,7 +792,16 @@ async function seed() {
     PlatformSettings.deleteMany({ key: "default" }),
   ]);
 
-  await Project.insertMany(projects);
+  await Project.insertMany(
+    projects.map((p, i) => ({
+      developmentStage: i % 2 === 0 ? "developed" : "under-development",
+      viewCount: 40 + i * 17,
+      interestCount: 5 + i * 3,
+      ratingAvg: 4 + (i % 10) / 10,
+      ratingCount: 4 + i * 2,
+      ...p,
+    }))
+  );
   await Concept.insertMany(concepts);
   await Blog.insertMany(blogs);
   await Review.insertMany(reviews);
@@ -818,6 +836,9 @@ async function seed() {
       phone: u.phone,
       role: u.role,
       active: true,
+      emailVerified: true,
+      phoneVerified: false,
+      referralCode: u.referralCode || undefined,
       passwordHash: await bcrypt.hash(u.password, 12),
       wishlist: [],
     }))

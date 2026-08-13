@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { FormSelect } from "@/components/ui/form-select";
 import { CATEGORIES, LOCATION_ATTRIBUTES } from "@/lib/constants";
 
@@ -19,26 +20,33 @@ export function PropertySearch({
   initial,
 }: {
   initial?: {
+    q?: string;
     state?: string;
     category?: string;
     budget?: string;
     attribute?: string;
+    stage?: string;
   };
 }) {
   const router = useRouter();
+  const [q, setQ] = useState(initial?.q || "");
   const [state, setState] = useState(initial?.state || "all");
   const [category, setCategory] = useState(initial?.category || "all");
   const [budget, setBudget] = useState(initial?.budget || "all");
   const [attribute, setAttribute] = useState(initial?.attribute || "all");
+  const [stage, setStage] = useState(initial?.stage || "all");
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
     const params = new URLSearchParams();
+    if (q.trim()) params.set("q", q.trim());
     if (state !== "all") params.set("state", state);
     if (category !== "all") params.set("category", category);
     if (budget !== "all") params.set("budget", budget);
     if (attribute !== "all") params.set("attribute", attribute);
-    router.push(`/projects?${params.toString()}`);
+    if (stage !== "all") params.set("stage", stage);
+    const qs = params.toString();
+    router.push(qs ? `/projects?${qs}` : "/projects");
   }
 
   const triggerClass =
@@ -49,7 +57,23 @@ export function PropertySearch({
       onSubmit={onSearch}
       className="w-full min-w-0 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4"
     >
-      <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+      <div className="mb-2 min-w-0">
+        <label className="sr-only" htmlFor="home-q">
+          Search
+        </label>
+        <div className="relative">
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="home-q"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search by name, village, or district…"
+            className="h-11 w-full rounded-xl border-border/80 bg-background pl-10"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         <SearchField label="State">
           <FormSelect
             value={state}
@@ -86,6 +110,20 @@ export function PropertySearch({
           />
         </SearchField>
 
+        <SearchField label="Stage">
+          <FormSelect
+            value={stage}
+            onValueChange={setStage}
+            triggerClassName={triggerClass}
+            placeholder="Any stage"
+            options={[
+              { value: "all", label: "Any stage" },
+              { value: "developed", label: "Developed" },
+              { value: "under-development", label: "Under development" },
+            ]}
+          />
+        </SearchField>
+
         <SearchField label="Attribute">
           <FormSelect
             value={attribute}
@@ -104,7 +142,7 @@ export function PropertySearch({
 
         <Button
           type="submit"
-          className="h-11 w-full rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 sm:col-span-2 lg:col-span-1 lg:mb-1 lg:h-10 lg:w-auto"
+          className="h-11 w-full touch-manipulation rounded-full bg-primary px-5 text-sm text-primary-foreground hover:bg-primary/90 sm:col-span-2 lg:col-span-1 lg:mb-1 lg:h-10 lg:w-auto"
         >
           <Search className="size-4" />
           <span>Search</span>

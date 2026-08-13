@@ -16,6 +16,7 @@ interface Props {
     budget?: string;
     attribute?: string;
     q?: string;
+    stage?: string;
   }>;
 }
 
@@ -41,6 +42,7 @@ function filterProjects(
         return false;
       }
     }
+    if (params.stage && p.developmentStage !== params.stage) return false;
     if (params.q) {
       const q = params.q.toLowerCase();
       const hay =
@@ -64,7 +66,8 @@ export default async function ProjectsPage({ searchParams }: Props) {
       params.category ||
       params.budget ||
       params.attribute ||
-      params.q
+      params.q ||
+      params.stage
   );
 
   return (

@@ -13,6 +13,7 @@ const createSchema = z.object({
   password: z.string().min(8),
   role: z.enum(["customer", "sales", "admin", "superadmin"]),
   active: z.boolean().optional(),
+  referralCode: z.string().optional(),
 });
 
 export async function GET(request: Request) {
@@ -56,6 +57,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const referralCode =
+      body.referralCode?.trim() ||
+      (body.role === "sales"
+        ? `TL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+        : undefined);
+
     const user = await User.create({
       name: body.name,
       email: body.email.toLowerCase(),
@@ -63,6 +70,8 @@ export async function POST(request: Request) {
       passwordHash: await hashPassword(body.password),
       role: body.role,
       active: body.active ?? true,
+      emailVerified: true,
+      referralCode,
       wishlist: [],
     });
 

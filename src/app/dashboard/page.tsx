@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowUpRight, CalendarDays, FileText, Heart } from "lucide-react";
+import { ArrowUpRight, CalendarDays, FileText, Heart, Home } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
 import { SiteVisit } from "@/models/SiteVisit";
 import { Booking } from "@/models/Booking";
+import { User } from "@/models/User";
 import {
   PortalPageHeader,
   PortalPanel,
@@ -20,6 +21,9 @@ export default async function DashboardPage() {
   if (!session) redirect("/login?next=/dashboard");
 
   await connectDB();
+  const user = await User.findById(session.sub).select("wishlist").lean();
+  const wishlistCount = user?.wishlist?.length || 0;
+
   const [visits, bookings] = await Promise.all([
     SiteVisit.countDocuments({
       $or: [{ userId: session.sub }, { email: session.email }],
@@ -28,6 +32,11 @@ export default async function DashboardPage() {
   ]);
 
   const quick = [
+    {
+      href: "/",
+      label: "Home / Public site",
+      desc: "Back to the marketing homepage",
+    },
     {
       href: "/projects",
       label: "Browse projects",
@@ -38,11 +47,6 @@ export default async function DashboardPage() {
       label: "Book a site visit",
       desc: "Pick a date and project",
     },
-    {
-      href: "/dashboard/documents",
-      label: "Your documents",
-      desc: "KYC and agreements",
-    },
   ];
 
   return (
@@ -51,19 +55,31 @@ export default async function DashboardPage() {
         title={`Welcome, ${session.name.split(" ")[0]}`}
         description="Track visits, bookings, payments, and saved projects."
         actions={
-          <Button asChild className="gradient-emerald text-white dark:text-white">
-            <Link href="/book-site-visit">
-              Book site visit
-              <ArrowUpRight className="size-4" />
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline">
+              <Link href="/">
+                <Home className="size-4" />
+                Home
+              </Link>
+            </Button>
+            <Button asChild className="gradient-emerald text-white dark:text-white">
+              <Link href="/book-site-visit">
+                Book site visit
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <PortalStatCard label="Site visits" value={visits} hint="Requested / booked" />
         <PortalStatCard label="Bookings" value={bookings} hint="Plot reservations" />
-        <PortalStatCard label="Wishlist" value="—" hint="Coming from saved projects" />
+        <PortalStatCard
+          label="Wishlist"
+          value={wishlistCount}
+          hint="Saved projects"
+        />
         <PortalStatCard label="Open tickets" value={0} hint="Support" />
       </div>
 

@@ -17,6 +17,8 @@ const SiteVisitSchema = new Schema(
       default: "requested",
     },
     feedback: String,
+    agentId: { type: Schema.Types.ObjectId, ref: "User" },
+    referralCode: String,
   },
   { timestamps: true }
 );

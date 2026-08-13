@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { connectDB } from "@/lib/db";
 import { Lead } from "@/models/Lead";
+import { User } from "@/models/User";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -11,6 +12,7 @@ const schema = z.object({
   interest: z.string().optional(),
   message: z.string().optional(),
   source: z.string().optional(),
+  referralCode: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -19,10 +21,24 @@ export async function POST(request: Request) {
     const data = schema.parse(body);
 
     await connectDB();
+
+    let agentId: string | undefined;
+    const referralCode = data.referralCode?.trim() || undefined;
+    if (referralCode) {
+      const agent = await User.findOne({
+        referralCode,
+        role: "sales",
+        active: { $ne: false },
+      }).lean();
+      if (agent) agentId = String(agent._id);
+    }
+
     const lead = await Lead.create({
       ...data,
       email: data.email || undefined,
       source: data.source || "website",
+      referralCode,
+      agentId,
     });
 
     return NextResponse.json({

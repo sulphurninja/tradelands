@@ -20,6 +20,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SmartMedia } from "@/components/media/smart-media";
 import { LandSearchSection } from "@/components/home/land-search-section";
+import { SiteVisitDialog } from "@/components/forms/site-visit-dialog";
+import { WishlistButton } from "@/components/projects/wishlist-button";
+import { ProjectEngagement } from "@/components/projects/project-engagement";
 
 export function ProjectDetail({ project }: { project: Project }) {
   const available = project.plots.filter((p) => p.status === "available").length;
@@ -30,7 +33,6 @@ export function ProjectDetail({ project }: { project: Project }) {
   return (
     <article className="overflow-x-clip pb-24 lg:pb-0">
       <section className="overflow-hidden bg-background pt-20 sm:pt-24">
-        {/* Intrinsic full-width media — no letterbox, no crop */}
         <div className="relative w-full bg-background">
           <SmartMedia
             src={heroSrc}
@@ -45,56 +47,62 @@ export function ProjectDetail({ project }: { project: Project }) {
             objectFit="contain"
             className="block h-auto w-full"
           />
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[48%] bg-gradient-to-t from-black/80 via-black/40 to-transparent sm:h-[42%]"
+          />
+
           {heroIsVideo ? (
             <button
               type="button"
               onClick={() => setMuted((m) => !m)}
               aria-label={muted ? "Unmute video" : "Mute video"}
-              className="absolute right-3 bottom-3 z-20 inline-flex h-10 items-center gap-2 rounded-full border border-white/20 bg-black/55 px-3.5 text-[13px] font-medium text-white backdrop-blur-md sm:right-5 sm:bottom-5"
+              className="absolute top-3 right-3 z-20 inline-flex h-9 items-center gap-1.5 rounded-full border border-white/20 bg-black/55 px-3 text-xs font-medium text-white backdrop-blur-md sm:top-5 sm:right-5 sm:h-10 sm:px-3.5 sm:text-[13px]"
             >
               {muted ? (
                 <>
-                  <VolumeX className="size-4" />
+                  <VolumeX className="size-3.5 sm:size-4" />
                   <span>Unmute</span>
                 </>
               ) : (
                 <>
-                  <Volume2 className="size-4" />
+                  <Volume2 className="size-3.5 sm:size-4" />
                   <span>Mute</span>
                 </>
               )}
             </button>
           ) : null}
-        </div>
 
-        <div className="bg-background px-5 pt-4 pb-6 sm:px-8 sm:pt-6 sm:pb-10 lg:px-12">
-          <div className="mx-auto w-full max-w-[980px] lg:max-w-[1060px] xl:max-w-[1120px]">
-            <div className="flex max-w-full flex-wrap gap-1.5 sm:gap-2">
-              <Badge variant="secondary">
-                {categoryLabel(project.category)}
-              </Badge>
-              {project.status.map((s) => (
-                <Badge
-                  key={s}
-                  className="bg-primary text-primary-foreground capitalize"
-                >
-                  {s.replace("-", " ")}
+          <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-12 sm:px-8 sm:pb-8 sm:pt-16 lg:px-12">
+            <div className="mx-auto w-full max-w-[980px] lg:max-w-[1060px] xl:max-w-[1120px]">
+              <div className="flex max-w-full flex-wrap gap-1 sm:gap-1.5">
+                <Badge className="border-0 bg-white/15 px-2 py-0.5 text-[10px] text-white backdrop-blur-sm sm:text-xs">
+                  {categoryLabel(project.category)}
                 </Badge>
-              ))}
+                {project.status.slice(0, 2).map((s) => (
+                  <Badge
+                    key={s}
+                    className="border-0 bg-primary/90 px-2 py-0.5 text-[10px] text-white capitalize sm:text-xs"
+                  >
+                    {s.replace("-", " ")}
+                  </Badge>
+                ))}
+              </div>
+              <h1 className="mt-1.5 max-w-3xl text-[1.2rem] leading-[1.15] font-semibold tracking-[-0.03em] text-balance break-words text-white sm:mt-3 sm:text-4xl lg:text-5xl xl:text-6xl">
+                {project.name}
+              </h1>
+              <p className="mt-1.5 flex items-start gap-1.5 text-[11px] text-white/80 sm:mt-2.5 sm:items-center sm:text-sm">
+                <MapPin className="mt-0.5 size-3 shrink-0 sm:mt-0 sm:size-3.5" />
+                <span className="min-w-0 break-words">
+                  {project.location.village}, {project.location.taluka},{" "}
+                  {project.location.district}, {project.location.state}
+                </span>
+              </p>
+              <p className="mt-1 max-w-xl text-[12px] leading-snug break-words text-white/75 sm:mt-2 sm:text-base">
+                {project.tagline}
+              </p>
             </div>
-            <h1 className="mt-2.5 max-w-4xl text-[1.45rem] leading-[1.15] font-semibold tracking-[-0.03em] text-balance break-words text-foreground sm:mt-4 sm:text-5xl lg:text-6xl xl:text-7xl">
-              {project.name}
-            </h1>
-            <p className="mt-2 flex items-start gap-2 text-[13px] text-muted-foreground sm:mt-3 sm:items-center sm:text-base">
-              <MapPin className="mt-0.5 size-3.5 shrink-0 sm:mt-0 sm:size-4" />
-              <span className="min-w-0 break-words">
-                {project.location.village}, {project.location.taluka},{" "}
-                {project.location.district}, {project.location.state}
-              </span>
-            </p>
-            <p className="mt-2 max-w-2xl text-[13px] break-words text-muted-foreground sm:mt-4 sm:text-lg">
-              {project.tagline}
-            </p>
           </div>
         </div>
       </section>
@@ -319,12 +327,24 @@ export function ProjectDetail({ project }: { project: Project }) {
                   </dd>
                 </div>
               </dl>
+              <div className="mt-4">
+                <ProjectEngagement
+                  slug={project.slug}
+                  initialInterest={project.interestCount || 0}
+                  initialAvg={project.ratingAvg || 0}
+                  initialCount={project.ratingCount || 0}
+                />
+              </div>
               <div className="mt-6 grid gap-2">
-                <Button asChild className="h-11 gradient-emerald text-white dark:text-white">
-                  <Link href={`/book-site-visit?project=${project.slug}`}>
-                    Book Site Visit
-                  </Link>
-                </Button>
+                <SiteVisitDialog
+                  projectSlug={project.slug}
+                  className="h-11 w-full gradient-emerald text-white dark:text-white"
+                />
+                <WishlistButton
+                  projectSlug={project.slug}
+                  variant="button"
+                  className="w-full"
+                />
                 <Button asChild variant="outline" className="h-11">
                   <Link href={`/booking?project=${project.slug}`}>
                     Online Plot Booking
@@ -405,11 +425,11 @@ export function ProjectDetail({ project }: { project: Project }) {
               {formatINR(project.pricing.minPrice)}
             </p>
           </div>
-          <Button asChild className="h-11 shrink-0 rounded-full px-5">
-            <Link href={`/book-site-visit?project=${project.slug}`}>
-              Book visit
-            </Link>
-          </Button>
+          <SiteVisitDialog
+            projectSlug={project.slug}
+            triggerLabel="Book visit"
+            className="h-11 shrink-0 rounded-full px-5"
+          />
         </div>
       </div>
     </article>
