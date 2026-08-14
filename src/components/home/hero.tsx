@@ -26,16 +26,21 @@ export type HeroSlide = {
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
     id: "fallback-1",
-    src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80",
+    src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80",
     title: "Agriculture land",
     kind: "image",
   },
   {
     id: "fallback-2",
-    src: "https://cdn.coverr.co/videos/coverr-aerial-view-of-a-lush-green-landscape-5725/1080p.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80",
-    kind: "drone",
+    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80",
+    title: "Hill corridor",
+    kind: "image",
+  },
+  {
+    id: "fallback-3",
+    src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80",
+    title: "Villa plots",
+    kind: "image",
   },
 ];
 
@@ -48,7 +53,25 @@ export function HomeHero({
   slides?: HeroSlide[];
   trending?: { slug: string; name: string; locationLabel?: string }[];
 }) {
-  const items = slides && slides.length > 0 ? slides : FALLBACK_SLIDES;
+  const itemsRaw =
+    slides && slides.length > 0 ? slides : FALLBACK_SLIDES;
+  const items = (
+    itemsRaw.filter(
+      (s) =>
+        !isVideoUrl(s.src) &&
+        s.kind !== "hero" &&
+        s.kind !== "drone" &&
+        s.kind !== "video"
+    ).length
+      ? itemsRaw.filter(
+          (s) =>
+            !isVideoUrl(s.src) &&
+            s.kind !== "hero" &&
+            s.kind !== "drone" &&
+            s.kind !== "video"
+        )
+      : FALLBACK_SLIDES
+  );
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(true);

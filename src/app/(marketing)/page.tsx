@@ -69,27 +69,7 @@ export default async function HomePage() {
   const pool = featured.length ? featured : all;
   const slides: HeroSlide[] = [];
 
-  for (const p of pool.slice(0, 6)) {
-    if (p.heroVideo) {
-      slides.push({
-        id: `${p.id}-hero`,
-        src: p.heroVideo,
-        poster: p.coverImage,
-        title: "",
-        href: `/projects/${p.slug}`,
-        kind: "hero",
-      });
-    }
-    if (p.droneVideo) {
-      slides.push({
-        id: `${p.id}-drone`,
-        src: p.droneVideo,
-        poster: p.coverImage,
-        title: "",
-        href: `/projects/${p.slug}`,
-        kind: "drone",
-      });
-    }
+  for (const p of pool.slice(0, 8)) {
     if (p.coverImage && !isVideoUrl(p.coverImage)) {
       slides.push({
         id: `${p.id}-cover`,
@@ -104,22 +84,20 @@ export default async function HomePage() {
 
   for (const m of media.filter((item) => item.featured).slice(0, 6)) {
     if (!m.url) continue;
-    const video = m.type === "video" || m.type === "drone" || isVideoUrl(m.url);
+    if (m.type === "video" || m.type === "drone" || isVideoUrl(m.url)) continue;
     slides.push({
       id: `media-${m.id}`,
       src: m.url,
-      title: video ? "" : m.title || "TradeLands",
-      subtitle: video ? undefined : "Featured from the gallery",
+      title: m.title || "TradeLands",
+      subtitle: "Featured from the gallery",
       href: "/media-gallery",
-      kind: m.type === "drone" ? "drone" : video ? "video" : "image",
+      kind: "image",
     });
   }
 
-  const prioritized = [
-    ...slides.filter((s) => s.kind === "hero" || s.kind === "drone"),
-    ...slides.filter((s) => s.kind === "video"),
-    ...slides.filter((s) => s.kind === "image"),
-  ].filter((s, i, arr) => arr.findIndex((x) => x.id === s.id) === i);
+  const prioritized = slides.filter(
+    (s, i, arr) => arr.findIndex((x) => x.id === s.id) === i
+  );
 
   const marketAssets = (featured.length ? featured : all).slice(0, 3);
   const trendingOptions = (trending.length ? trending : all.slice(0, 6)).map(
