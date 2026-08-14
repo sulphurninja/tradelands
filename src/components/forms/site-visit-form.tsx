@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FormSelect } from "@/components/ui/form-select";
@@ -17,10 +17,14 @@ export function SiteVisitForm({
   defaultProject?: string;
   onSuccess?: () => void;
 }) {
+  const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectSlug, setProjectSlug] = useState(defaultProject || "");
   const [time, setTime] = useState(times[0]);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     fetch("/api/projects")
@@ -37,24 +41,64 @@ export function SiteVisitForm({
       });
   }, [defaultProject]);
 
+  useEffect(() => {
+    if (defaultProject) setProjectSlug(defaultProject);
+  }, [defaultProject]);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(async (res) => {
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.user as { name?: string; email?: string } | null;
+      })
+      .then((user) => {
+        if (!user) return;
+        if (user.name) setName(user.name);
+        if (user.email) setEmail(user.email);
+      })
+      .catch(() => {});
+  }, []);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const formEl = formRef.current;
     if (!projectSlug) {
       toast.error("Please select a project");
       return;
     }
+    const cleanName = name.trim();
+    const cleanPhone = phone.replace(/\s+/g, "").trim();
+    const cleanEmail = email.trim();
+
+    if (cleanName.length < 2) {
+      toast.error("Please enter your full name");
+      return;
+    }
+    if (cleanPhone.length < 10) {
+      toast.error("Please enter a valid phone number");
+      return;
+    }
+
+    const date = String(new FormData(e.currentTarget).get("date") || "");
+    if (!date) {
+      toast.error("Please pick a preferred date");
+      return;
+    }
+
     setLoading(true);
-    const form = new FormData(e.currentTarget);
     const payload = {
-      name: String(form.get("name") || "").trim(),
-      phone: String(form.get("phone") || "").trim(),
-      email: String(form.get("email") || "").trim(),
+      name: cleanName,
+      phone: cleanPhone,
+      email: cleanEmail,
       projectSlug,
-      date: String(form.get("date") || ""),
+      date,
       time,
       pickupRequired: false,
       pickupAddress: "",
-      referralCode: String(form.get("referralCode") || "").trim() || undefined,
+      referralCode:
+        String(new FormData(formEl || e.currentTarget).get("referralCode") || "")
+          .trim() || undefined,
     };
 
     try {
@@ -63,21 +107,29 @@ export function SiteVisitForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       let data: { error?: string; ok?: boolean } = {};
       try {
         data = await res.json();
       } catch {
-        /* non-JSON body */
+        /* non-JSON */
       }
+
       if (!res.ok) {
-        toast.error(data.error || "Could not book visit");
+        toast.error(data.error || "Could not book visit. Please try again.");
         return;
       }
+
       toast.success("Site visit requested. We will confirm shortly.");
-      e.currentTarget.reset();
+      formEl?.reset();
+      setName(cleanName);
+      setPhone("");
+      setEmail(cleanEmail);
       setTime(times[0]);
+      if (defaultProject) setProjectSlug(defaultProject);
       onSuccess?.();
-    } catch {
+    } catch (err) {
+      console.error("site visit submit failed", err);
       toast.error("Unable to submit right now. Please try again.");
     } finally {
       setLoading(false);
@@ -85,20 +137,45 @@ export function SiteVisitForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">Full name</Label>
-          <Input id="name" name="name" required className="h-10" />
+          <Input
+            id="name"
+            name="name"
+            required
+            className="h-10"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoComplete="name"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
-          <Input id="phone" name="phone" type="tel" required className="h-10" />
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            required
+            className="h-10"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            autoComplete="tel"
+          />
         </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" className="h-10" />
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          className="h-10"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="referralCode">Agent / CP referral code (optional)</Label>

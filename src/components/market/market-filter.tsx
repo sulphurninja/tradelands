@@ -110,24 +110,44 @@ export function MarketFilter({
   );
 
   return (
-    <div className="mb-8 space-y-3">
+    <div className="space-y-3">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           apply();
         }}
-        className="rounded-2xl border border-border bg-card p-3 sm:p-4"
+        className="rounded-xl border border-border/80 bg-card p-3 shadow-sm sm:p-4"
       >
-        <div className="relative mb-3">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search assets…"
-            className="h-11 pl-10"
-          />
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search by name, village, or district…"
+              className="h-11 border-border/80 bg-background pl-10"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2 lg:shrink-0">
+            <Button
+              type="submit"
+              disabled={pending}
+              className="h-11 min-w-[7.5rem] rounded-lg"
+            >
+              {pending ? "Filtering…" : "Apply"}
+            </Button>
+            {hasFilters ? (
+              <Button asChild variant="outline" className="h-11 rounded-lg">
+                <Link href="/market">
+                  <X className="size-3.5" />
+                  Clear
+                </Link>
+              </Button>
+            ) : null}
+          </div>
         </div>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
           <FormSelect
             value={location}
             onValueChange={(v) => {
@@ -135,7 +155,7 @@ export function MarketFilter({
               apply({ location: v });
             }}
             options={[
-              { value: "all", label: "Location" },
+              { value: "all", label: "Corridor" },
               ...locations.map((l) => ({ value: l.slug, label: l.name })),
             ]}
           />
@@ -203,21 +223,7 @@ export function MarketFilter({
             ]}
           />
         </div>
-        <Button
-          type="submit"
-          disabled={pending}
-          className="mt-3 h-10 w-full rounded-full sm:w-auto"
-        >
-          Apply filters
-        </Button>
       </form>
-      {hasFilters ? (
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/market">
-            <X className="size-3.5" /> Clear filters
-          </Link>
-        </Button>
-      ) : null}
     </div>
   );
 }

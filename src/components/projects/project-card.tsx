@@ -1,12 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Eye, Heart, MapPin, ArrowUpRight, Star } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { categoryLabel, formatINR } from "@/lib/format";
+import { pickProjectCover } from "@/lib/project-images";
 import { cn } from "@/lib/utils";
 import { WishlistButton } from "@/components/projects/wishlist-button";
+import { SafeProjectImage } from "@/components/media/safe-project-image";
 
 interface ProjectCardProps {
   project: Project;
@@ -22,6 +23,9 @@ export function ProjectCard({
   const rating = project.ratingAvg || 0;
   const interests = project.interestCount || 0;
   const views = project.viewCount || 0;
+  const cover =
+    project.coverImage ||
+    pickProjectCover(project.slug || project.id, project.category);
 
   return (
     <Link
@@ -40,11 +44,10 @@ export function ProjectCard({
             : "aspect-[5/4]"
         )}
       >
-        <Image
-          src={project.coverImage}
+        <SafeProjectImage
+          src={cover}
           alt={project.name}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+          className="transition-transform duration-700 group-hover:scale-[1.04]"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/25 to-transparent" />

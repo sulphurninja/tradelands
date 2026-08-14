@@ -16,42 +16,52 @@ export function LocationPath({
   const ordered = [...locations].sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <nav aria-label="Location corridor" className="space-y-0">
-      <p className="mb-3 text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-        Corridor path
-      </p>
-      {ordered.map((loc, i) => {
-        const active = activeSlug === loc.slug;
-        return (
-          <div key={loc.id} className="relative flex gap-3">
-            <div className="flex w-4 flex-col items-center">
-              <span
+    <nav
+      aria-label="Location corridor"
+      className="rounded-xl border border-border/80 bg-card p-4 shadow-sm"
+    >
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
+          Corridors
+        </p>
+        {activeSlug ? (
+          <Link
+            href={baseHref}
+            className="text-[11px] font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+          >
+            All
+          </Link>
+        ) : null}
+      </div>
+      <ul className="space-y-0.5">
+        {ordered.map((loc) => {
+          const active = activeSlug === loc.slug;
+          return (
+            <li key={loc.id}>
+              <Link
+                href={`${baseHref}?location=${loc.slug}`}
                 className={cn(
-                  "mt-1.5 size-2.5 rounded-full border-2 border-foreground",
-                  active && "bg-foreground"
+                  "flex items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm transition",
+                  active
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
-              />
-              {i < ordered.length - 1 ? (
-                <span className="mt-1 w-px flex-1 bg-foreground/30" />
-              ) : null}
-            </div>
-            <Link
-              href={`${baseHref}?location=${loc.slug}`}
-              className={cn(
-                "mb-3 text-sm font-semibold tracking-[0.1em] uppercase transition-colors",
-                active
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {loc.name}
-            </Link>
-          </div>
-        );
-      })}
-      <p className="pt-2 text-xs text-muted-foreground">
-        Click a location → assets appear.
-      </p>
+              >
+                <span className="truncate font-medium">{loc.name}</span>
+                <span
+                  className={cn(
+                    "shrink-0 text-[11px] tabular-nums",
+                    active ? "text-background/70" : "text-muted-foreground"
+                  )}
+                >
+                  {loc.changePct >= 0 ? "+" : ""}
+                  {loc.changePct.toFixed(1)}%
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }

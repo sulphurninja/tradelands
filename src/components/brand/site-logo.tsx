@@ -6,11 +6,12 @@ export function SiteLogo({
   className,
   priority,
   href = "/",
+  onDark,
 }: {
   className?: string;
   priority?: boolean;
   href?: string;
-  /** @deprecated */
+  /** Light logo treatment when sitting on dark/hero media */
   onDark?: boolean;
 }) {
   return (
@@ -18,6 +19,7 @@ export function SiteLogo({
       href={href}
       className={cn(
         "relative z-10 inline-flex shrink-0 items-center gap-2",
+        onDark ? "text-white" : "text-current",
         className
       )}
     >
@@ -29,9 +31,17 @@ export function SiteLogo({
         priority={priority}
         className="h-8 w-auto object-contain sm:h-9"
       />
-      <span className="text-[0.95rem] font-semibold tracking-[-0.03em] text-current sm:text-[1.15rem]">
-        Trade<span className="text-primary">Lands</span>
-        <span className="ml-0.5 align-top text-[0.55em] font-medium opacity-60">
+      <span className="text-[0.95rem] font-semibold tracking-[-0.03em] sm:text-[1.15rem]">
+        Trade
+        <span className={onDark ? "text-[#9fe870]" : "text-primary"}>
+          Lands
+        </span>
+        <span
+          className={cn(
+            "ml-0.5 align-top text-[0.55em] font-medium",
+            onDark ? "text-white/70" : "opacity-60"
+          )}
+        >
           IND
         </span>
       </span>

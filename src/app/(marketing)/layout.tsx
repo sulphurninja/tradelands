@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { MaintenanceBanner } from "@/components/layout/maintenance-banner";
 import { SocialProofToasts } from "@/components/marketing/social-proof-toasts";
 import { getProjects } from "@/lib/queries";
+import { getTradelandAssets } from "@/lib/tradeland-listings";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export default async function MarketingLayout({
   children: React.ReactNode;
 }) {
   const projects = await getProjects().catch(() => []);
-  const proofProjects = projects.slice(0, 12).map((p) => ({
+  const catalog = projects.slice(0, 8).map((p) => ({
     name: p.name,
     slug: p.slug,
     location: [
@@ -23,6 +24,17 @@ export default async function MarketingLayout({
       .join(", "),
     coverImage: p.coverImage,
   }));
+
+  const inventory = getTradelandAssets()
+    .filter((a) => a.acres || a.pricePerAcreLabel)
+    .slice(0, 16)
+    .map((a) => ({
+      name: a.title,
+      slug: "market",
+      location: [a.district, a.pricePerAcreLabel].filter(Boolean).join(" · "),
+    }));
+
+  const proofProjects = [...inventory, ...catalog];
 
   return (
     <div className="flex min-h-full flex-col overflow-x-clip">

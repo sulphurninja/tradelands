@@ -46,12 +46,24 @@ export function PageHero({
         )}
       >
         {crumbs && (
-          <div className="mb-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-muted-foreground">
-            <Link href="/">Home</Link>
+          <div
+            className={cn(
+              "mb-5 flex flex-wrap items-center justify-center gap-2 text-[12px]",
+              image ? "text-white/65" : "text-muted-foreground"
+            )}
+          >
+            <Link href="/" className={image ? "hover:text-white" : undefined}>
+              Home
+            </Link>
             {crumbs.map((c) => (
               <span key={c.href} className="contents">
                 <span>/</span>
-                <Link href={c.href}>{c.label}</Link>
+                <Link
+                  href={c.href}
+                  className={image ? "hover:text-white" : undefined}
+                >
+                  {c.label}
+                </Link>
               </span>
             ))}
           </div>

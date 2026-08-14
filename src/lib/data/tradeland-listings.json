@@ -1,0 +1,697 @@
+{
+  "source": "Tradeland data.xlsx",
+  "bumpedByLakh": 10,
+  "index": {
+    "name": "Maharashtra Land Index",
+    "pricePerSqFt": 272,
+    "changePct": 12.7
+  },
+  "assets": [
+    {
+      "id": "tl-01",
+      "leadNo": "1",
+      "date": "6-Aug-26",
+      "location": "Daund",
+      "district": "Pune",
+      "acres": 55,
+      "pricePerAcreLakh": 60,
+      "pricePerAcreLabel": "₹60 L/acre",
+      "pricePerSqFt": 138,
+      "type": "agriculture",
+      "title": "55 Acres · Daund",
+      "summary": "55 Acres Agricultural Plot in Pedgao, Tal. Daund. Both Sides Coverd With Forest And Almost 1000Ft River Frontage. Opp To Dharmaveer Gadh... And A (ZP) Proposed "
+    },
+    {
+      "id": "tl-02",
+      "leadNo": "2",
+      "date": "6-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 105,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "105 Acres · Karjat",
+      "summary": "1)Karjat 105 Acers near Karjat Railway station R Zone 2)28 Acers kasara opp Dogra hotel"
+    },
+    {
+      "id": "tl-03",
+      "leadNo": "3",
+      "date": "6-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 16.2,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "16.2 Acres · Karjat",
+      "summary": "\"Village Taluka District Survey No. Owner Area (H-R) Bori Karjat Raigad 20/1 Siddheshwar Raghunath Patil 0.04.00 Bori Karjat Raigad 23/3 Siddheshwar Raghunath P"
+    },
+    {
+      "id": "tl-04",
+      "leadNo": "4",
+      "date": "6-Aug-26",
+      "location": "Chandrapur",
+      "district": "Chandrapur",
+      "acres": 50,
+      "pricePerAcreLakh": 105,
+      "pricePerAcreLabel": "₹1.05 Cr/acre",
+      "pricePerSqFt": 241,
+      "type": "agriculture",
+      "title": "50 Acres · Chandrapur",
+      "summary": "Chandrapur district Maharashtra 50+ acres land for sale 4 lane national highway touch 1200 ft front 2 side road Price : 95/-- lakhs per acer Note: 250 acers lan"
+    },
+    {
+      "id": "tl-05",
+      "leadNo": "5",
+      "date": "6-Aug-26",
+      "location": "Chandkhed",
+      "district": "Pune",
+      "acres": 61,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "61 Acres · Chandkhed",
+      "summary": "Land Information Land Location: Chandkhed (Pune) Total Area: 61 acres Names on the 7/12 Extract: 3 names are recorded Current Zoning of the Land: Residential La"
+    },
+    {
+      "id": "tl-06",
+      "leadNo": "6",
+      "date": "6-Aug-26",
+      "location": "Panvel",
+      "district": "Raigad",
+      "acres": 125,
+      "pricePerAcreLakh": 230,
+      "pricePerAcreLabel": "₹2.3 Cr/acre",
+      "pricePerSqFt": 528,
+      "type": "industrial",
+      "title": "125 Acres · Panvel",
+      "summary": "125 Acres Near JNPT–Baroda National Highway Warehouse, Logistics & Industrial ₹2.20 Cr/Acre"
+    },
+    {
+      "id": "tl-07",
+      "leadNo": "7",
+      "date": "6-Aug-26",
+      "location": "Nashik",
+      "district": "Nashik",
+      "acres": 70,
+      "pricePerAcreLakh": 210,
+      "pricePerAcreLabel": "₹2.1 Cr/acre",
+      "pricePerSqFt": 482,
+      "type": "industrial",
+      "title": "70 Acres · Nashik",
+      "summary": "70 Acres Land Parcel for Sale - Best for Industrial use 📍 Prime Location – Nashik - Total Area: 70 Acres - Suitable For: Industrial Park, Manufacturing Unit, W"
+    },
+    {
+      "id": "tl-08",
+      "leadNo": "8",
+      "date": "6-Aug-26",
+      "location": "Daund",
+      "district": "Pune",
+      "acres": 19,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "agriculture",
+      "title": "19 Acres · Daund",
+      "summary": "19 Acres Plot Nearing Daund City 500 Ft Railway Line Touch... Best For Investment and Pure Black Soil Best For Agriculture... 1Well And 2 Motors Plenty Of Water"
+    },
+    {
+      "id": "tl-09",
+      "leadNo": "9",
+      "date": "6-Aug-26",
+      "location": "Panvel",
+      "district": "Raigad",
+      "acres": 5.5,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "5.5 Acres · Panvel",
+      "summary": "Project 1 5.5 Acres Clear title (225 Gunthas) commercial land available for sale in Panvel (Barwani Village) opposite Hiranandani Fortune City. Diagonally Oppos"
+    },
+    {
+      "id": "tl-10",
+      "leadNo": "10",
+      "date": "6-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 50,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "50 Acres · Karjat",
+      "summary": "I have plots in karjat, khopoli and khalapur. In karjat I have agricultural plots at karjat murbad, karjat chowk, karjat khopoli road.(various land parcels avai"
+    },
+    {
+      "id": "tl-11",
+      "leadNo": "11",
+      "date": "7-Aug-26",
+      "location": "Bhor",
+      "district": "Pune",
+      "acres": 200,
+      "pricePerAcreLakh": 35,
+      "pricePerAcreLabel": "₹35 L/acre",
+      "pricePerSqFt": 80,
+      "type": "agriculture",
+      "title": "200 Acres · Bhor",
+      "summary": "Land for Sale – Bhor 📍Location : Bhor,Maharashtra Total Area : 200 acres Rate : 25 lakh per acre ✅ Clear title ✅ Suitable for serious investors / buyers"
+    },
+    {
+      "id": "tl-12",
+      "leadNo": "12",
+      "date": "7-Aug-26",
+      "location": "Lonavala",
+      "district": "Pune",
+      "acres": 1200,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "1200 Acres · Lonavala",
+      "summary": "Adv. Pranav Yeole (Lonavala) Land For sale/ outright Total Land - upto 1200 acre Zone- Agriculture Address- Bhira Dam, Patnus village, Mangaon, Raigad https://m"
+    },
+    {
+      "id": "tl-14",
+      "leadNo": "14",
+      "date": "7-Aug-26",
+      "location": "Lonavala",
+      "district": "Pune",
+      "acres": 250,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "agriculture",
+      "title": "250 Acres · Lonavala",
+      "summary": "Land for sale At.Bhaje & Devle Ta. Maval, Pune Zone - Agriculture Total Land - 250 Acer Near Lonavala From Lonavala - 6 km. Mumbai -Pune Express Highway Touch p"
+    },
+    {
+      "id": "tl-15",
+      "leadNo": "15",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 24,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "24 Acres · Karjat",
+      "summary": "Dhami Karjat NA Plot 24 acers / 400 per sqft negosiable (Site visit pending by Ram sir this monday"
+    },
+    {
+      "id": "tl-16",
+      "leadNo": "16",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": null,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "agriculture",
+      "title": "Karjat land parcel",
+      "summary": "Agri land borivali karjat 60 lakh sit visit pending by ram sir"
+    },
+    {
+      "id": "tl-20",
+      "leadNo": "20",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 50,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "agriculture",
+      "title": "50 Acres · Karjat",
+      "summary": "karjat back of kalpatru 50 acers 1.5 cr per acers"
+    },
+    {
+      "id": "tl-21",
+      "leadNo": "21",
+      "date": "7-Aug-26",
+      "location": "Panvel",
+      "district": "Raigad",
+      "acres": 23,
+      "pricePerAcreLakh": 170,
+      "pricePerAcreLabel": "₹1.7 Cr/acre",
+      "pricePerSqFt": 390,
+      "type": "agriculture",
+      "title": "23 Acres · Panvel",
+      "summary": "Panvel Maldunge - 23 Acres - 1.6 Cr per Acre - Owner Shah and Malu Awad - Mountain and Dam View - Agriculture Land"
+    },
+    {
+      "id": "tl-22",
+      "leadNo": "22",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 10,
+      "pricePerAcreLakh": 260,
+      "pricePerAcreLabel": "₹2.6 Cr/acre",
+      "pricePerSqFt": 597,
+      "type": "agriculture",
+      "title": "10 Acres · Karjat",
+      "summary": "Karjat Mukpe - Back side of Radisson Hotel - 10 Acres - Mountain View - 2.5 Cr per Acre - Agriculture Land"
+    },
+    {
+      "id": "tl-23",
+      "leadNo": "23",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 71,
+      "pricePerAcreLakh": 170,
+      "pricePerAcreLabel": "₹1.7 Cr/acre",
+      "pricePerSqFt": 390,
+      "type": "agriculture",
+      "title": "71 Acres · Karjat",
+      "summary": "Opposite Raddison Karjat - 71 Acres - 1.6 Cr per Acre"
+    },
+    {
+      "id": "tl-24",
+      "leadNo": "24",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 16,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "16 Acres · Karjat",
+      "summary": "Karjat Gilawle - Commercial R Zone - 16 Acres - 20 Lacs per Guntha"
+    },
+    {
+      "id": "tl-25",
+      "leadNo": "25",
+      "date": "7-Aug-26",
+      "location": "Panvel",
+      "district": "Raigad",
+      "acres": 15,
+      "pricePerAcreLakh": 170,
+      "pricePerAcreLabel": "₹1.7 Cr/acre",
+      "pricePerSqFt": 390,
+      "type": "agriculture",
+      "title": "15 Acres · Panvel",
+      "summary": "Panvel - Behind Arpita Farms - 15 Acres - 1.6 Cr per Acre - Waje - Agriculture Land"
+    },
+    {
+      "id": "tl-27",
+      "leadNo": "27",
+      "date": "7-Aug-26",
+      "location": "Karjat",
+      "district": "Raigad",
+      "acres": 117,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "agriculture",
+      "title": "117 Acres · Karjat",
+      "summary": "Ware - 117 Acres - Agriculture Land - Single Owner - 50 Lacs per Acre - Drone Vdo Ready 500 Mtr from Chowk Murbad Highway 24 Mtr Road Samruddhi Highway 25 Km Ma"
+    },
+    {
+      "id": "tl-28",
+      "leadNo": "28",
+      "date": "8-Aug",
+      "location": "Khalapur",
+      "district": "Raigad",
+      "acres": 125,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "125 Acres · Khalapur",
+      "summary": "PREMIUM LAND INVESTMENT OPPORTUNITY 🌿 📍 Vashiwali Village, Taluka Pen, District Raigad, Maharashtra 🏞️ Property Highlights ✅ Total Land Area: 125 Acres ✅ Sin"
+    },
+    {
+      "id": "tl-34",
+      "leadNo": "34",
+      "date": "8-Aug",
+      "location": "Roha",
+      "district": "Raigad",
+      "acres": null,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "agriculture",
+      "title": "Roha land parcel",
+      "summary": "kolad roha agent"
+    },
+    {
+      "id": "tl-36",
+      "leadNo": "36",
+      "date": "9-Aug",
+      "location": "Khalapur",
+      "district": "Raigad",
+      "acres": null,
+      "pricePerAcreLakh": 130,
+      "pricePerAcreLabel": "₹1.3 Cr/acre",
+      "pricePerSqFt": 298,
+      "type": "residential",
+      "title": "Khalapur land parcel",
+      "summary": "265 gunta NA plot in khopoli.1km from old Mumbai pune express Highway and 3 km from new Mumbai pune express Highway and 500m to Khopoli pen road .3km from Imagi"
+    },
+    {
+      "id": "tl-39",
+      "leadNo": "39",
+      "date": "12-Aug",
+      "location": "Panvel",
+      "district": "Raigad",
+      "acres": 54,
+      "pricePerAcreLakh": 160,
+      "pricePerAcreLabel": "₹1.6 Cr/acre",
+      "pricePerSqFt": 367,
+      "type": "industrial",
+      "title": "54 Acres · Panvel",
+      "summary": "Investment Opportunities – Maharashtra 1️⃣ Turbhe MIDC, Navi Mumbai 📍 54 Acres | Highway Touch * 30 Acres – IT Park / Data Centre * 24 Acres – Residential 💰 ₹"
+    },
+    {
+      "id": "tl-40",
+      "leadNo": "40",
+      "date": "12-Aug",
+      "location": "Navi Mumbai",
+      "district": "Mumbai",
+      "acres": 58,
+      "pricePerAcreLakh": 210,
+      "pricePerAcreLabel": "₹2.1 Cr/acre",
+      "pricePerSqFt": 482,
+      "type": "industrial",
+      "title": "58 Acres · Navi Mumbai",
+      "summary": "[9:57 pm, 12/8/2026] +91 70210 18303: 58 acre land 4 lane VIP road touch 600 ft highway front 6 km from nagpur amravati highway Excellent road connectivity towa"
+    },
+    {
+      "id": "tl-41",
+      "leadNo": "41",
+      "date": "12-Aug",
+      "location": "Panvel",
+      "district": "Raigad",
+      "acres": 250,
+      "pricePerAcreLakh": 55,
+      "pricePerAcreLabel": "₹55 L/acre",
+      "pricePerSqFt": 126,
+      "type": "farm-house",
+      "title": "250 Acres · Panvel",
+      "summary": "250 acers Aurangabadh sambhaji nagar 250 Acres of Land available for sale Location: Jogwada, near Jatwada, Chhatrapati Sambhajinagar Clear Title – Class 1 Cemen"
+    }
+  ],
+  "corridors": [
+    {
+      "name": "Karjat",
+      "district": "Raigad",
+      "slug": "karjat",
+      "count": 10,
+      "avgPricePerSqFt": 287,
+      "avgPricePerAcreLakh": 125,
+      "totalAcres": 459.2,
+      "changePct": 20,
+      "listings": [
+        {
+          "id": "tl-02",
+          "title": "105 Acres · Karjat",
+          "acres": 105,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        },
+        {
+          "id": "tl-03",
+          "title": "16.2 Acres · Karjat",
+          "acres": 16.2,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        },
+        {
+          "id": "tl-10",
+          "title": "50 Acres · Karjat",
+          "acres": 50,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        },
+        {
+          "id": "tl-15",
+          "title": "24 Acres · Karjat",
+          "acres": 24,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        }
+      ]
+    },
+    {
+      "name": "Panvel",
+      "district": "Raigad",
+      "slug": "panvel",
+      "count": 6,
+      "avgPricePerSqFt": 351,
+      "avgPricePerAcreLakh": 153,
+      "totalAcres": 472.5,
+      "changePct": 15.9,
+      "listings": [
+        {
+          "id": "tl-06",
+          "title": "125 Acres · Panvel",
+          "acres": 125,
+          "pricePerAcreLabel": "₹2.3 Cr/acre",
+          "pricePerSqFt": 528,
+          "type": "industrial"
+        },
+        {
+          "id": "tl-09",
+          "title": "5.5 Acres · Panvel",
+          "acres": 5.5,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        },
+        {
+          "id": "tl-21",
+          "title": "23 Acres · Panvel",
+          "acres": 23,
+          "pricePerAcreLabel": "₹1.7 Cr/acre",
+          "pricePerSqFt": 390,
+          "type": "agriculture"
+        },
+        {
+          "id": "tl-25",
+          "title": "15 Acres · Panvel",
+          "acres": 15,
+          "pricePerAcreLabel": "₹1.7 Cr/acre",
+          "pricePerSqFt": 390,
+          "type": "agriculture"
+        }
+      ]
+    },
+    {
+      "name": "Daund",
+      "district": "Pune",
+      "slug": "daund",
+      "count": 2,
+      "avgPricePerSqFt": 133,
+      "avgPricePerAcreLakh": 58,
+      "totalAcres": 74,
+      "changePct": 9.1,
+      "listings": [
+        {
+          "id": "tl-01",
+          "title": "55 Acres · Daund",
+          "acres": 55,
+          "pricePerAcreLabel": "₹60 L/acre",
+          "pricePerSqFt": 138,
+          "type": "agriculture"
+        },
+        {
+          "id": "tl-08",
+          "title": "19 Acres · Daund",
+          "acres": 19,
+          "pricePerAcreLabel": "₹55 L/acre",
+          "pricePerSqFt": 126,
+          "type": "agriculture"
+        }
+      ]
+    },
+    {
+      "name": "Lonavala",
+      "district": "Pune",
+      "slug": "lonavala",
+      "count": 2,
+      "avgPricePerSqFt": 213,
+      "avgPricePerAcreLakh": 93,
+      "totalAcres": 1450,
+      "changePct": 7.8,
+      "listings": [
+        {
+          "id": "tl-12",
+          "title": "1200 Acres · Lonavala",
+          "acres": 1200,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        },
+        {
+          "id": "tl-14",
+          "title": "250 Acres · Lonavala",
+          "acres": 250,
+          "pricePerAcreLabel": "₹55 L/acre",
+          "pricePerSqFt": 126,
+          "type": "agriculture"
+        }
+      ]
+    },
+    {
+      "name": "Khalapur",
+      "district": "Raigad",
+      "slug": "khalapur",
+      "count": 2,
+      "avgPricePerSqFt": 298,
+      "avgPricePerAcreLakh": 130,
+      "totalAcres": 125,
+      "changePct": 7.8,
+      "listings": [
+        {
+          "id": "tl-28",
+          "title": "125 Acres · Khalapur",
+          "acres": 125,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        },
+        {
+          "id": "tl-36",
+          "title": "Khalapur land parcel",
+          "acres": null,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        }
+      ]
+    },
+    {
+      "name": "Chandrapur",
+      "district": "Chandrapur",
+      "slug": "chandrapur",
+      "count": 1,
+      "avgPricePerSqFt": 241,
+      "avgPricePerAcreLakh": 105,
+      "totalAcres": 50,
+      "changePct": 6.9,
+      "listings": [
+        {
+          "id": "tl-04",
+          "title": "50 Acres · Chandrapur",
+          "acres": 50,
+          "pricePerAcreLabel": "₹1.05 Cr/acre",
+          "pricePerSqFt": 241,
+          "type": "agriculture"
+        }
+      ]
+    },
+    {
+      "name": "Chandkhed",
+      "district": "Pune",
+      "slug": "chandkhed",
+      "count": 1,
+      "avgPricePerSqFt": 298,
+      "avgPricePerAcreLakh": 130,
+      "totalAcres": 61,
+      "changePct": 6.9,
+      "listings": [
+        {
+          "id": "tl-05",
+          "title": "61 Acres · Chandkhed",
+          "acres": 61,
+          "pricePerAcreLabel": "₹1.3 Cr/acre",
+          "pricePerSqFt": 298,
+          "type": "residential"
+        }
+      ]
+    },
+    {
+      "name": "Nashik",
+      "district": "Nashik",
+      "slug": "nashik",
+      "count": 1,
+      "avgPricePerSqFt": 482,
+      "avgPricePerAcreLakh": 210,
+      "totalAcres": 70,
+      "changePct": 11.9,
+      "listings": [
+        {
+          "id": "tl-07",
+          "title": "70 Acres · Nashik",
+          "acres": 70,
+          "pricePerAcreLabel": "₹2.1 Cr/acre",
+          "pricePerSqFt": 482,
+          "type": "industrial"
+        }
+      ]
+    },
+    {
+      "name": "Bhor",
+      "district": "Pune",
+      "slug": "bhor",
+      "count": 1,
+      "avgPricePerSqFt": 80,
+      "avgPricePerAcreLakh": 35,
+      "totalAcres": 200,
+      "changePct": 7.5,
+      "listings": [
+        {
+          "id": "tl-11",
+          "title": "200 Acres · Bhor",
+          "acres": 200,
+          "pricePerAcreLabel": "₹35 L/acre",
+          "pricePerSqFt": 80,
+          "type": "agriculture"
+        }
+      ]
+    },
+    {
+      "name": "Roha",
+      "district": "Raigad",
+      "slug": "roha",
+      "count": 1,
+      "avgPricePerSqFt": 126,
+      "avgPricePerAcreLakh": 55,
+      "totalAcres": 0,
+      "changePct": 6.9,
+      "listings": [
+        {
+          "id": "tl-34",
+          "title": "Roha land parcel",
+          "acres": null,
+          "pricePerAcreLabel": "₹55 L/acre",
+          "pricePerSqFt": 126,
+          "type": "agriculture"
+        }
+      ]
+    },
+    {
+      "name": "Navi Mumbai",
+      "district": "Mumbai",
+      "slug": "navi-mumbai",
+      "count": 1,
+      "avgPricePerSqFt": 482,
+      "avgPricePerAcreLakh": 210,
+      "totalAcres": 58,
+      "changePct": 11.9,
+      "listings": [
+        {
+          "id": "tl-40",
+          "title": "58 Acres · Navi Mumbai",
+          "acres": 58,
+          "pricePerAcreLabel": "₹2.1 Cr/acre",
+          "pricePerSqFt": 482,
+          "type": "industrial"
+        }
+      ]
+    }
+  ]
+}

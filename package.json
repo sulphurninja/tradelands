@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "node scripts/seed.mjs"
+    "seed": "node scripts/seed.mjs",
+    "seed:tradeland": "node scripts/seed-tradeland-projects.mjs",
+    "fix:images": "node scripts/fix-project-images.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -45,6 +47,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
   }
 }

@@ -20,8 +20,6 @@ import {
   getBlogs,
   getConcepts,
   getFeaturedProjects,
-  getMarketIndices,
-  getMarketLocations,
   getMedia,
   getOffers,
   getProjects,
@@ -29,6 +27,10 @@ import {
   getReviews,
 } from "@/lib/queries";
 import { isVideoUrl } from "@/lib/media";
+import {
+  getDeskIndexItems,
+  getDeskLocations,
+} from "@/lib/tradeland-listings";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -44,8 +46,6 @@ export default async function HomePage() {
     offers,
     all,
     media,
-    indices,
-    locations,
   ] = await Promise.all([
     getFeaturedProjects(),
     getProjectsByStatus("trending"),
@@ -56,9 +56,10 @@ export default async function HomePage() {
     getOffers({ activeOnly: true }),
     getProjects(),
     getMedia(),
-    getMarketIndices({ activeOnly: true }),
-    getMarketLocations({ activeOnly: true }),
   ]);
+
+  const deskIndices = getDeskIndexItems();
+  const deskLocations = getDeskLocations();
 
   const newLaunches = await getProjectsByStatus("new-launch");
   const trending = [...trendingRaw, ...newLaunches]
@@ -74,8 +75,7 @@ export default async function HomePage() {
         id: `${p.id}-hero`,
         src: p.heroVideo,
         poster: p.coverImage,
-        title: p.name,
-        subtitle: p.tagline,
+        title: "",
         href: `/projects/${p.slug}`,
         kind: "hero",
       });
@@ -85,8 +85,7 @@ export default async function HomePage() {
         id: `${p.id}-drone`,
         src: p.droneVideo,
         poster: p.coverImage,
-        title: p.name,
-        subtitle: p.tagline,
+        title: "",
         href: `/projects/${p.slug}`,
         kind: "drone",
       });
@@ -109,8 +108,8 @@ export default async function HomePage() {
     slides.push({
       id: `media-${m.id}`,
       src: m.url,
-      title: m.title || "TradeLands",
-      subtitle: "Featured from the gallery",
+      title: video ? "" : m.title || "TradeLands",
+      subtitle: video ? undefined : "Featured from the gallery",
       href: "/media-gallery",
       kind: m.type === "drone" ? "drone" : video ? "video" : "image",
     });
@@ -137,7 +136,7 @@ export default async function HomePage() {
         slides={prioritized.slice(0, 8)}
         trending={trendingOptions}
       />
-      <MarketSnapshotStrip items={indices} locations={locations} />
+      <MarketSnapshotStrip items={deskIndices} locations={deskLocations} />
 
       <section className="container-premium section-pad py-16 sm:py-22 lg:py-28">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -164,7 +163,7 @@ export default async function HomePage() {
         </div>
 
         <div className="mt-6 sm:mt-8">
-          <TradeLandsIndexPanel items={indices} layout="rail" />
+          <TradeLandsIndexPanel items={deskIndices} layout="rail" />
         </div>
       </section>
 
@@ -172,7 +171,7 @@ export default async function HomePage() {
         projects={trending.length ? trending : all.slice(0, 3)}
       />
       <UpcomingLandDrops projects={upcoming.length ? upcoming : all} />
-      <LandPerformanceChart locations={locations} />
+      <LandPerformanceChart locations={deskLocations} />
       <FeaturedProjects projects={featured.length ? featured : all.slice(0, 3)} />
       <InvestmentConcepts concepts={concepts} />
       <OffersSection offers={offers} />

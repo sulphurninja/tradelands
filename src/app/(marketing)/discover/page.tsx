@@ -4,21 +4,19 @@ import { LocationPath } from "@/components/market/location-path";
 import { TradeLandsIndexPanel } from "@/components/market/tradelands-index-panel";
 import { LandPerformanceChart } from "@/components/market/land-performance-chart";
 import { Button } from "@/components/ui/button";
+import { getConcepts } from "@/lib/queries";
 import {
-  getConcepts,
-  getMarketIndices,
-  getMarketLocations,
-} from "@/lib/queries";
+  getDeskIndexItems,
+  getDeskLocations,
+} from "@/lib/tradeland-listings";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Discover" };
 
 export default async function DiscoverPage() {
-  const [locations, indices, concepts] = await Promise.all([
-    getMarketLocations({ activeOnly: true }),
-    getMarketIndices({ activeOnly: true }),
-    getConcepts(),
-  ]);
+  const concepts = await getConcepts();
+  const locations = getDeskLocations();
+  const indices = getDeskIndexItems();
 
   return (
     <>

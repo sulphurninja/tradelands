@@ -30,6 +30,7 @@ export function SmartMedia({
   playsInline = true,
   poster,
   objectFit = "cover",
+  onEnded,
 }: {
   src: string;
   alt?: string;
@@ -43,6 +44,7 @@ export function SmartMedia({
   playsInline?: boolean;
   poster?: string;
   objectFit?: "cover" | "contain";
+  onEnded?: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const isMuted = Boolean(muted ?? autoPlay);
@@ -56,6 +58,17 @@ export function SmartMedia({
       void el.play().catch(() => {});
     }
   }, [isMuted, src]);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !isVideoUrl(src)) return;
+    if (autoPlay) {
+      el.currentTime = 0;
+      void el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  }, [autoPlay, src]);
 
   if (!src) return null;
   const fit = fitClassName(objectFit);
@@ -123,6 +136,7 @@ export function SmartMedia({
         muted={isMuted}
         loop={loop}
         playsInline={playsInline}
+        onEnded={onEnded}
         className={cn(
           fill
             ? "absolute inset-0 h-full w-full max-w-none"

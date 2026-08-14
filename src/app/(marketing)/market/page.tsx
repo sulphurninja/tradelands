@@ -4,9 +4,12 @@ import { AssetCard } from "@/components/market/asset-card";
 import { LocationPath } from "@/components/market/location-path";
 import { MarketFilter } from "@/components/market/market-filter";
 import { TradeLandsIndexPanel } from "@/components/market/tradelands-index-panel";
-import { getMarketIndices, getMarketLocations, getProjects } from "@/lib/queries";
+import { getProjects } from "@/lib/queries";
+import {
+  getDeskIndexItems,
+  getDeskLocations,
+} from "@/lib/tradeland-listings";
 import type { Project } from "@/lib/types";
-import { LISTING_BADGE_META } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Market" };
@@ -87,73 +90,109 @@ function filterProjects(
   });
 }
 
+function rankProjects(projects: Project[]) {
+  return [...projects].sort((a, b) => {
+    const aImg = a.coverImage ? 1 : 0;
+    const bImg = b.coverImage ? 1 : 0;
+    if (bImg !== aImg) return bImg - aImg;
+    const aTl = a.slug.startsWith("tl-") ? 1 : 0;
+    const bTl = b.slug.startsWith("tl-") ? 1 : 0;
+    if (bTl !== aTl) return bTl - aTl;
+    if (Number(b.featured) !== Number(a.featured)) {
+      return Number(b.featured) - Number(a.featured);
+    }
+    return 0;
+  });
+}
+
 export default async function MarketPage({ searchParams }: Props) {
   const params = await searchParams;
-  const [all, locations, indices] = await Promise.all([
-    getProjects(),
-    getMarketLocations({ activeOnly: true }),
-    getMarketIndices({ activeOnly: true }),
-  ]);
+  const all = await getProjects();
+  const locations = getDeskLocations();
+  const indices = getDeskIndexItems();
   const locationNames = new Map(locations.map((l) => [l.slug, l.name]));
-  const filtered = filterProjects(all, params, locationNames);
+  const filtered = rankProjects(filterProjects(all, params, locationNames));
+  const activeCorridor = params.location
+    ? locationNames.get(params.location)
+    : null;
 
   return (
     <>
       <PageHero
-        eyebrow="Market"
-        title="Market Opportunities"
-        description="Land assets framed as financial instruments — filter by corridor, budget, type, size, growth, and horizon."
+        eyebrow="Institutional land desk"
+        title="Market"
+        description="Curated Maharashtra parcels with corridor rates, growth signals, and clear sizing — built for serious land allocation."
         crumbs={[{ href: "/market", label: "Market" }]}
+        image="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80"
         compact
       />
-      <section className="container-premium section-pad pb-20">
-        <div className="mb-6 flex flex-wrap gap-3 text-xs">
-          {Object.entries(LISTING_BADGE_META).map(([key, meta]) => (
-            <span key={key} className="inline-flex items-center gap-1.5">
-              <span
-                className="size-2.5 rounded-full"
-                style={{ backgroundColor: meta.color }}
-              />
-              {meta.label}
-            </span>
-          ))}
-        </div>
 
-        <Suspense fallback={<div className="mb-8 h-40 animate-pulse rounded-2xl bg-muted" />}>
-          <MarketFilter
-            locations={locations.map((l) => ({
-              slug: l.slug,
-              name: l.name,
-            }))}
-          />
-        </Suspense>
-
-        <div className="grid gap-10 lg:grid-cols-[200px_minmax(0,1fr)] xl:gap-14">
-          <aside className="space-y-10 lg:sticky lg:top-24 lg:self-start">
-            <LocationPath
-              locations={locations}
-              activeSlug={params.location}
+      <section className="border-b border-border bg-background">
+        <div className="container-premium section-pad py-6 sm:py-8">
+          <Suspense
+            fallback={
+              <div className="h-28 animate-pulse rounded-xl bg-muted" />
+            }
+          >
+            <MarketFilter
+              locations={locations.map((l) => ({
+                slug: l.slug,
+                name: l.name,
+              }))}
             />
-            <div className="hidden lg:block">
-              <TradeLandsIndexPanel items={indices} />
-            </div>
-          </aside>
-          <div>
-            <p className="mb-6 text-sm text-muted-foreground">
-              {filtered.length} asset{filtered.length === 1 ? "" : "s"}
-            </p>
-            <div className="grid gap-6 sm:gap-8 md:grid-cols-2 xl:gap-10">
-              {filtered.map((project) => (
-                <AssetCard key={project.id} project={project} />
-              ))}
-            </div>
-            {filtered.length === 0 ? (
-              <p className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
-                No assets match these filters.
-              </p>
-            ) : null}
-            <div className="mt-10 max-w-md lg:hidden">
-              <TradeLandsIndexPanel items={indices} />
+          </Suspense>
+        </div>
+      </section>
+
+      <section className="bg-muted/25">
+        <div className="container-premium section-pad py-10 pb-20 sm:py-12 sm:pb-24">
+          <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)] xl:gap-12">
+            <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
+              <LocationPath
+                locations={locations}
+                activeSlug={params.location}
+              />
+              <div className="hidden lg:block">
+                <TradeLandsIndexPanel items={indices} />
+              </div>
+            </aside>
+
+            <div>
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
+                    {activeCorridor
+                      ? `${activeCorridor} corridor`
+                      : "All corridors"}
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
+                    {filtered.length} asset
+                    {filtered.length === 1 ? "" : "s"}
+                  </h2>
+                </div>
+                <p className="text-[12px] text-muted-foreground">
+                  Desk rates · indicative growth
+                </p>
+              </div>
+
+              {filtered.length ? (
+                <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
+                  {filtered.map((project) => (
+                    <AssetCard key={project.id} project={project} />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-border bg-card px-6 py-20 text-center">
+                  <p className="text-base font-medium">No matching assets</p>
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    Clear filters or pick another corridor to continue.
+                  </p>
+                </div>
+              )}
+
+              <div className="mt-10 max-w-md lg:hidden">
+                <TradeLandsIndexPanel items={indices} />
+              </div>
             </div>
           </div>
         </div>

@@ -1,69 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 import type { MarketIndexItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getDeskIndexItems } from "@/lib/tradeland-listings";
 
-const FALLBACK: MarketIndexItem[] = [
-  {
-    id: "fb-mh",
-    name: "Maharashtra Land Index",
-    slug: "maharashtra-land-index",
-    pricePerSqFt: 286,
-    changePct: 12.84,
-    sortOrder: 0,
-    featured: true,
-    active: true,
-  },
-  {
-    id: "fb-karjat",
-    name: "Karjat",
-    slug: "karjat",
-    pricePerSqFt: 320,
-    changePct: 18.2,
-    sortOrder: 1,
-    featured: true,
-    active: true,
-  },
-  {
-    id: "fb-roha",
-    name: "Roha",
-    slug: "roha",
-    pricePerSqFt: 200,
-    changePct: 14.6,
-    sortOrder: 2,
-    featured: true,
-    active: true,
-  },
-  {
-    id: "fb-alibaug",
-    name: "Alibaug",
-    slug: "alibaug",
-    pricePerSqFt: 410,
-    changePct: 11.8,
-    sortOrder: 3,
-    featured: true,
-    active: true,
-  },
-  {
-    id: "fb-khalapur",
-    name: "Khalapur",
-    slug: "khalapur",
-    pricePerSqFt: 245,
-    changePct: 9.4,
-    sortOrder: 4,
-    featured: true,
-    active: true,
-  },
-  {
-    id: "fb-panvel",
-    name: "Panvel",
-    slug: "panvel",
-    pricePerSqFt: 380,
-    changePct: 7.9,
-    sortOrder: 5,
-    featured: true,
-    active: true,
-  },
-];
+const FALLBACK = getDeskIndexItems();
 
 export function TradeLandsIndexPanel({
   items,
@@ -127,36 +67,36 @@ export function TradeLandsIndexPanel({
   return (
     <aside
       className={cn(
-        "rounded-2xl border border-border bg-card p-6 sm:p-7",
+        "rounded-xl border border-border/80 bg-card p-4 shadow-sm sm:p-5",
         className
       )}
     >
-      <p className="text-[11px] font-semibold tracking-[0.18em] text-foreground underline decoration-foreground/30 underline-offset-4 uppercase">
-        TradeLands Index
+      <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
+        Desk index
       </p>
-      <p className="mt-3 text-sm text-muted-foreground">
-        Maharashtra Land Index
+      <p className="mt-2 text-sm font-medium">{headline.name}</p>
+      <p className="mt-2 inline-flex items-center gap-1 text-2xl font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">
+        +{headline.changePct.toFixed(1)}%
+        <ArrowUpRight className="size-5" />
       </p>
-      <p className="mt-3 inline-flex items-center gap-1.5 text-3xl font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
-        +{headline.changePct.toFixed(2)}%
-        <ArrowUpRight className="size-6" />
+      <p className="mt-1 text-xs tabular-nums text-muted-foreground">
+        ₹{headline.pricePerSqFt}/sq.ft
       </p>
-      <ul className="mt-6 space-y-3 border-t border-border pt-5">
-        {corridors.map((row) => (
+      <ul className="mt-4 space-y-2 border-t border-border/80 pt-4">
+        {corridors.slice(0, 5).map((row) => (
           <li
             key={row.id}
-            className="flex items-center justify-between gap-3 text-sm"
+            className="flex items-center justify-between gap-2 text-[13px]"
           >
-            <span className="font-medium">{row.name}</span>
-            <span className="inline-flex items-center gap-0.5 font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
+            <span className="truncate text-muted-foreground">{row.name}</span>
+            <span className="shrink-0 font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">
               +{row.changePct.toFixed(1)}%
-              <ArrowUpRight className="size-3.5" />
             </span>
           </li>
         ))}
       </ul>
-      <p className="mt-6 text-[11px] tracking-[0.12em] text-muted-foreground uppercase">
-        Updated today · Indicative
+      <p className="mt-4 text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
+        Indicative · inventory-led
       </p>
     </aside>
   );

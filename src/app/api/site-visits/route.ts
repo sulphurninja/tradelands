@@ -14,12 +14,16 @@ import { SiteVisit } from "@/models/SiteVisit";
 import { User } from "@/models/User";
 
 const schema = z.object({
-  name: z.string().min(2),
-  phone: z.string().min(10),
-  email: z.string().email().optional().or(z.literal("")),
-  projectSlug: z.string().min(1),
-  date: z.string().min(1),
-  time: z.string().min(1),
+  name: z.string().trim().min(2, "Name is required"),
+  phone: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/\s+/g, ""))
+    .pipe(z.string().min(10, "Phone is required")),
+  email: z.union([z.literal(""), z.string().trim().email("Invalid email")]),
+  projectSlug: z.string().min(1, "Project is required"),
+  date: z.string().min(1, "Date is required"),
+  time: z.string().min(1, "Time is required"),
   pickupRequired: z.boolean().optional(),
   pickupAddress: z.string().optional(),
   referralCode: z.string().optional(),
@@ -135,10 +139,8 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Please complete the site visit form." },
-        { status: 400 }
-      );
+      const first = error.issues[0]?.message || "Please complete the site visit form.";
+      return NextResponse.json({ error: first }, { status: 400 });
     }
     console.error("Site visit error:", error);
     return NextResponse.json(

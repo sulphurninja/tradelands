@@ -8,6 +8,10 @@ import {
   closesToCandles,
   type Candle,
 } from "@/lib/market-series";
+import {
+  pulseSeries,
+  useLivePricePulse,
+} from "@/hooks/use-live-price-pulse";
 
 function buildCandles(
   project: Project,
@@ -152,10 +156,11 @@ export function ProjectCandlestickChart({
   location?: MarketLocationItem | null;
   className?: string;
 }) {
-  const candles = useMemo(
-    () => buildCandles(project, location),
-    [project, location]
-  );
+  const pulse = useLivePricePulse(true);
+  const candles = useMemo(() => {
+    const base = buildCandles(project, location);
+    return pulseSeries(base, pulse.factor, ["open", "high", "low", "close"]);
+  }, [project, location, pulse.factor]);
 
   const last = candles[candles.length - 1];
   const first = candles[0];
@@ -173,7 +178,7 @@ export function ProjectCandlestickChart({
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
         <div className="max-w-xl">
           <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-            Land rate chart
+            Land rate chart · live
           </p>
           <h2 className="mt-1 text-xl font-semibold tracking-[-0.02em]">
             {project.name} · ₹ / sq.ft
