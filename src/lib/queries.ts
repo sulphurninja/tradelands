@@ -6,6 +6,9 @@ import {
   serializeOffer,
   serializeProject,
   serializeReview,
+  serializeMarketIndex,
+  serializeMarketLocation,
+  serializeWaitlist,
 } from "@/lib/serialize";
 import { ProjectModel } from "@/models/Project";
 import { Concept } from "@/models/Concept";
@@ -16,6 +19,9 @@ import { Media } from "@/models/Media";
 import { Lead } from "@/models/Lead";
 import { SiteVisit } from "@/models/SiteVisit";
 import { User } from "@/models/User";
+import { MarketIndex } from "@/models/MarketIndex";
+import { MarketLocation } from "@/models/MarketLocation";
+import { WaitlistEntry } from "@/models/WaitlistEntry";
 import type { ProjectCategory } from "@/lib/types";
 
 export async function getProjects() {
@@ -103,6 +109,30 @@ export async function getOffers(options?: { activeOnly?: boolean }) {
     .sort({ sortOrder: 1, createdAt: -1 })
     .lean();
   return docs.map((d) => serializeOffer(d as never));
+}
+
+export async function getMarketIndices(options?: { activeOnly?: boolean }) {
+  await connectDB();
+  const query = options?.activeOnly ? { active: true } : {};
+  const docs = await MarketIndex.find(query)
+    .sort({ sortOrder: 1, createdAt: -1 })
+    .lean();
+  return docs.map((d) => serializeMarketIndex(d as never));
+}
+
+export async function getMarketLocations(options?: { activeOnly?: boolean }) {
+  await connectDB();
+  const query = options?.activeOnly ? { active: true } : {};
+  const docs = await MarketLocation.find(query)
+    .sort({ sortOrder: 1, createdAt: -1 })
+    .lean();
+  return docs.map((d) => serializeMarketLocation(d as never));
+}
+
+export async function getWaitlistEntries() {
+  await connectDB();
+  const docs = await WaitlistEntry.find().sort({ createdAt: -1 }).lean();
+  return docs.map((d) => serializeWaitlist(d as never));
 }
 
 export async function getMedia(filters?: { category?: string; type?: string }) {

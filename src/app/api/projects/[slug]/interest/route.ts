@@ -22,8 +22,9 @@ export async function POST(request: Request, { params }: Props) {
     const session = await getSession();
 
     await connectDB();
-    const project = await ProjectModel.findOne({ slug });
-    if (!project) {
+
+    const exists = await ProjectModel.exists({ slug });
+    if (!exists) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
@@ -31,30 +32,57 @@ export async function POST(request: Request, { params }: Props) {
       const existing = await ProjectInterest.findOne({
         userId: session.sub,
         projectSlug: slug,
-      });
+      })
+        .select("_id")
+        .lean();
       if (existing) {
+        const project = await ProjectModel.findOne({ slug })
+          .select("interestCount")
+          .lean();
         return NextResponse.json({
           ok: true,
-          interestCount: project.interestCount || 0,
+          interestCount: project?.interestCount || 0,
           already: true,
         });
       }
     }
 
-    await ProjectInterest.create({
-      userId: session?.sub,
-      projectSlug: slug,
-      name: body.name || session?.name,
-      email: body.email || session?.email,
-      phone: body.phone,
-    });
+    try {
+      await ProjectInterest.create({
+        userId: session?.sub,
+        projectSlug: slug,
+        name: body.name || session?.name,
+        email: body.email || session?.email,
+        phone: body.phone,
+      });
+    } catch (err) {
+      // Duplicate key for logged-in user
+      const code = (err as { code?: number })?.code;
+      if (code === 11000 && session?.sub) {
+        const project = await ProjectModel.findOne({ slug })
+          .select("interestCount")
+          .lean();
+        return NextResponse.json({
+          ok: true,
+          interestCount: project?.interestCount || 0,
+          already: true,
+        });
+      }
+      throw err;
+    }
 
-    project.interestCount = (project.interestCount || 0) + 1;
-    await project.save();
+    // Atomic update — avoid full document save (corrupt nested fields)
+    const updated = await ProjectModel.findOneAndUpdate(
+      { slug },
+      { $inc: { interestCount: 1 } },
+      { returnDocument: "after" }
+    )
+      .select("interestCount")
+      .lean();
 
     return NextResponse.json({
       ok: true,
-      interestCount: project.interestCount,
+      interestCount: updated?.interestCount || 1,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

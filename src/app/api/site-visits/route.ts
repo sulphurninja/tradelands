@@ -57,10 +57,15 @@ export async function POST(request: Request) {
     }
 
     const visit = await SiteVisit.create({
-      ...data,
+      name: data.name,
+      phone: data.phone,
       email: data.email || undefined,
+      projectSlug: data.projectSlug,
+      date: data.date,
+      time: data.time,
       userId: session?.sub,
-      pickupRequired: data.pickupRequired ?? false,
+      pickupRequired: false,
+      pickupAddress: undefined,
       agentId,
       referralCode,
       status: "requested",
@@ -71,51 +76,57 @@ export async function POST(request: Request) {
       .lean();
     const projectName = project?.name || data.projectSlug;
 
-    if (data.email) {
-      await sendEmail({
-        to: data.email,
-        subject: `Site visit request — ${projectName}`,
-        html: siteVisitRequestedHtml({
-          name: data.name,
-          project: projectName,
-          date: data.date,
-          time: data.time,
-        }),
-        text: `Hi ${data.name}, we received your site visit request for ${projectName} on ${data.date} at ${data.time}.`,
-      });
-    }
+    // Notifications / email must not fail the booking
+    try {
+      if (data.email) {
+        await sendEmail({
+          to: data.email,
+          subject: `Site visit request — ${projectName}`,
+          html: siteVisitRequestedHtml({
+            name: data.name,
+            project: projectName,
+            date: data.date,
+            time: data.time,
+          }),
+          text: `Hi ${data.name}, we received your site visit request for ${projectName} on ${data.date} at ${data.time}.`,
+        });
+      }
 
-    if (session?.sub) {
-      await createNotification({
-        userId: session.sub,
-        title: "Site visit requested",
-        body: `${projectName} · ${data.date} ${data.time}`,
-        href: "/dashboard/site-visits",
+      if (session?.sub) {
+        await createNotification({
+          userId: session.sub,
+          title: "Site visit requested",
+          body: `${projectName} · ${data.date} ${data.time} · ${data.phone}`,
+          href: "/dashboard/site-visits",
+          type: "site-visit",
+        });
+      }
+
+      const staff = await notifyStaff({
+        title: "New site visit request",
+        body: `${data.name} · ${data.phone} · ${projectName} · ${data.date} ${data.time}`,
+        href:
+          session?.role === "sales" ? "/crm/site-visits" : "/admin/site-visits",
         type: "site-visit",
       });
-    }
 
-    const staff = await notifyStaff({
-      title: "New site visit request",
-      body: `${data.name} · ${projectName} · ${data.date} ${data.time}`,
-      href: session?.role === "sales" ? "/crm/site-visits" : "/admin/site-visits",
-      type: "site-visit",
-    });
-
-    const staffEmails = staff.map((s) => s.email).filter(Boolean);
-    if (staffEmails.length) {
-      await sendEmail({
-        to: staffEmails,
-        subject: `New site visit — ${projectName}`,
-        html: staffVisitAlertHtml({
-          name: data.name,
-          phone: data.phone,
-          email: data.email,
-          project: projectName,
-          date: data.date,
-          time: data.time,
-        }),
-      });
+      const staffEmails = staff.map((s) => s.email).filter(Boolean);
+      if (staffEmails.length) {
+        await sendEmail({
+          to: staffEmails,
+          subject: `New site visit — ${projectName}`,
+          html: staffVisitAlertHtml({
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            project: projectName,
+            date: data.date,
+            time: data.time,
+          }),
+        });
+      }
+    } catch (notifyError) {
+      console.error("Site visit notify error:", notifyError);
     }
 
     return NextResponse.json({

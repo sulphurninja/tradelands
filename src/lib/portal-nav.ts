@@ -9,6 +9,9 @@ import {
   FileText,
   Headphones,
   LayoutDashboard,
+  LineChart,
+  ListOrdered,
+  MapPinned,
   MessageSquareQuote,
   PhoneCall,
   Settings,
@@ -37,6 +40,13 @@ export type PortalConfig = {
 const adminCmsNav: PortalNavItem[] = [
   { href: "/admin", label: "CMS Overview", icon: LayoutDashboard, exact: true },
   { href: "/admin/projects", label: "Projects", icon: Building2 },
+  { href: "/admin/market-index", label: "Market Index", icon: LineChart },
+  {
+    href: "/admin/market-locations",
+    label: "Market Locations",
+    icon: MapPinned,
+  },
+  { href: "/admin/waitlist", label: "Waitlist", icon: ListOrdered },
   { href: "/admin/concepts", label: "Concepts", icon: Sparkles },
   { href: "/admin/blogs", label: "Blogs", icon: BookOpen },
   { href: "/admin/media", label: "Media & Docs", icon: Camera },

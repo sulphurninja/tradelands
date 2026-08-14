@@ -1,9 +1,12 @@
 import type {
   BlogPost,
   InvestmentConcept,
+  MarketIndexItem,
+  MarketLocationItem,
   Offer,
   Project,
   Review,
+  WaitlistItem,
 } from "@/lib/types";
 
 export type MediaItem = {
@@ -59,6 +62,26 @@ export function serializeProject(doc: Doc): Project {
     interestCount: Number(doc.interestCount ?? 0),
     ratingAvg: Number(doc.ratingAvg ?? 0),
     ratingCount: Number(doc.ratingCount ?? 0),
+    listingBadge:
+      (doc.listingBadge as Project["listingBadge"]) || "available",
+    pricePerSqFt:
+      doc.pricePerSqFt != null ? Number(doc.pricePerSqFt) : undefined,
+    growthPotentialPct:
+      doc.growthPotentialPct != null
+        ? Number(doc.growthPotentialPct)
+        : undefined,
+    investmentHorizon: doc.investmentHorizon
+      ? String(doc.investmentHorizon)
+      : undefined,
+    growth3yPct:
+      doc.growth3yPct != null ? Number(doc.growth3yPct) : undefined,
+    growth5yPct:
+      doc.growth5yPct != null ? Number(doc.growth5yPct) : undefined,
+    demandLevel: doc.demandLevel
+      ? (doc.demandLevel as Project["demandLevel"])
+      : undefined,
+    earlyAccess: Boolean(doc.earlyAccess),
+    waitlistEnabled: Boolean(doc.waitlistEnabled),
     createdAt:
       typeof doc.createdAt === "string"
         ? doc.createdAt
@@ -152,5 +175,54 @@ export function serializeMedia(doc: Doc): MediaItem {
         : doc.createdAt instanceof Date
           ? doc.createdAt.toISOString()
           : undefined,
+  };
+}
+
+export function serializeMarketIndex(doc: Doc): MarketIndexItem {
+  return {
+    id: doc._id?.toString() ?? "",
+    name: String(doc.name),
+    slug: String(doc.slug),
+    pricePerSqFt: Number(doc.pricePerSqFt ?? 0),
+    changePct: Number(doc.changePct ?? 0),
+    sortOrder: Number(doc.sortOrder ?? 0),
+    featured: Boolean(doc.featured),
+    active: doc.active !== false,
+  };
+}
+
+export function serializeMarketLocation(doc: Doc): MarketLocationItem {
+  const series = Array.isArray(doc.series)
+    ? (doc.series as { year?: number; pricePerSqFt?: number }[]).map((p) => ({
+        year: Number(p.year ?? 0),
+        pricePerSqFt: Number(p.pricePerSqFt ?? 0),
+      }))
+    : [];
+  return {
+    id: doc._id?.toString() ?? "",
+    name: String(doc.name),
+    slug: String(doc.slug),
+    lat: Number(doc.lat ?? 0),
+    lng: Number(doc.lng ?? 0),
+    changePct: Number(doc.changePct ?? 0),
+    series,
+    sortOrder: Number(doc.sortOrder ?? 0),
+    active: doc.active !== false,
+  };
+}
+
+export function serializeWaitlist(doc: Doc): WaitlistItem {
+  return {
+    id: doc._id?.toString() ?? "",
+    projectSlug: String(doc.projectSlug),
+    name: String(doc.name),
+    email: String(doc.email),
+    phone: doc.phone ? String(doc.phone) : undefined,
+    createdAt:
+      typeof doc.createdAt === "string"
+        ? doc.createdAt
+        : doc.createdAt instanceof Date
+          ? doc.createdAt.toISOString()
+          : new Date().toISOString(),
   };
 }

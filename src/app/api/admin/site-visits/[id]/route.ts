@@ -53,7 +53,7 @@ export async function PUT(request: Request, { params }: Props) {
       await createNotification({
         userId: doc.userId,
         title: "Site visit confirmed",
-        body: `${projectName} · ${doc.date} ${doc.time}`,
+        body: `${projectName} · ${doc.date} ${doc.time} · ${doc.phone}`,
         href: "/dashboard/site-visits",
         type: "site-visit",
       });

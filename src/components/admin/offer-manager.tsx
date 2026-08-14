@@ -20,7 +20,7 @@ const emptyForm = {
   badge: "",
   highlights: "",
   ctaLabel: "Explore offer",
-  ctaHref: "/projects",
+  ctaHref: "/market",
   active: true,
   sortOrder: 0,
   validUntil: "",

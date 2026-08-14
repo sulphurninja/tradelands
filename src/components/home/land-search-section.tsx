@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export function LandSearchSection({
   className,
   initial,
+  trending = [],
 }: {
   className?: string;
   initial?: {
@@ -14,6 +15,7 @@ export function LandSearchSection({
     budget?: string;
     attribute?: string;
   };
+  trending?: { slug: string; name: string; locationLabel?: string }[];
 }) {
   return (
     <section className={cn("container-premium section-pad py-10 sm:py-12", className)}>
@@ -26,14 +28,14 @@ export function LandSearchSection({
         </p>
       </div>
       <div className="mx-auto mt-6 max-w-4xl">
-        <PropertySearch initial={initial} />
+        <PropertySearch initial={initial} trending={trending} />
       </div>
       <div className="mt-6 flex justify-center">
         <Button
           asChild
           className="h-11 rounded-full bg-primary px-7 text-primary-foreground hover:bg-primary/90"
         >
-          <Link href="/projects">Browse all projects</Link>
+          <Link href="/market">Browse all projects</Link>
         </Button>
       </div>
     </section>

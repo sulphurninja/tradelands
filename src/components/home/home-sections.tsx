@@ -28,13 +28,13 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
   return (
     <section className="container-premium section-pad py-20 lg:py-28">
       <SectionHeading
-        eyebrow="Featured"
-        title="Featured projects"
-        description="Selected projects with clear titles, live plots, and full details online."
+        eyebrow="Market"
+        title="Market Opportunities"
+        description="Assets framed like financial instruments — growth, pricing, and clear next steps."
         action={
           <Button asChild variant="outline" className="rounded-full">
-            <Link href="/projects">
-              <span>View all projects</span>
+            <Link href="/market">
+              <span>Open market</span>
               <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -65,7 +65,7 @@ export function TrendingStrip({ projects }: { projects: Project[] }) {
         <SectionHeading
           eyebrow="Trending now"
           title="What buyers are watching"
-          description="Admin-flagged trending and new-launch projects — ratings and interest show on each card."
+          description="Corridors and launches investors are watching right now."
           action={
             <Button asChild variant="outline" className="rounded-full">
               <Link href="/projects">
@@ -153,14 +153,14 @@ export function InvestmentConcepts({
 export function WhyChoose() {
   return (
     <section className="relative overflow-hidden py-20 lg:py-28">
-      <div className="absolute inset-0 gradient-emerald" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.72_0.11_85/0.25),transparent_50%)]" />
-      <div className="container-premium section-pad relative text-white">
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,#0f3d24_0%,#0b4f45_55%,#0a3f3a_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(251,191,36,0.2),transparent_55%)]" />
+      <div className="container-premium section-pad relative">
         <SectionHeading
           eyebrow="Why TradeLands"
           title="Built for clear land decisions"
           description="We publish what most sellers keep behind a sales call."
-          className="[&_h2]:text-white [&_p]:text-white/70 [&_.mb-3]:text-gold"
+          className="[&_h2]:!text-white [&_p]:!text-white/80 [&>div>p:first-child]:!text-[#f5d78e]"
         />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {whyInvest.map((item, i) => (
@@ -168,13 +168,15 @@ export function WhyChoose() {
               key={item.title}
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: i * 0.07 }}
-              className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-sm"
+              className="rounded-2xl border border-white/25 bg-black/25 p-6 shadow-sm backdrop-blur-sm"
             >
-              <span className="font-display text-3xl text-gold">0{i + 1}</span>
-              <h3 className="mt-4 text-lg font-medium leading-snug">
+              <span className="font-display text-3xl text-[#f5d78e]">
+                0{i + 1}
+              </span>
+              <h3 className="mt-4 text-lg font-medium leading-snug text-white">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/65">
+              <p className="mt-2 text-sm leading-relaxed text-white/80">
                 {item.body}
               </p>
             </motion.div>

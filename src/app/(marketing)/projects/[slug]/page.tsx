@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
 import { ProjectDetail } from "@/components/projects/project-detail";
-import { getProjectBySlug, getProjectSlugs } from "@/lib/queries";
+import {
+  getMarketLocations,
+  getProjectBySlug,
+  getProjectSlugs,
+} from "@/lib/queries";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -29,7 +33,20 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const [project, locations] = await Promise.all([
+    getProjectBySlug(slug),
+    getMarketLocations({ activeOnly: true }),
+  ]);
   if (!project) notFound();
-  return <ProjectDetail project={project} />;
+
+  const hay =
+    `${project.location.village} ${project.location.taluka} ${project.location.district} ${project.name}`.toLowerCase();
+  const marketLocation =
+    locations.find((l) => hay.includes(l.name.toLowerCase())) ||
+    locations.find((l) => hay.includes(l.slug)) ||
+    null;
+
+  return (
+    <ProjectDetail project={project} marketLocation={marketLocation} />
+  );
 }

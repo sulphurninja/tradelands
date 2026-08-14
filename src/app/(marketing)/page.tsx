@@ -11,10 +11,17 @@ import {
   TrendingStrip,
   WhyChoose,
 } from "@/components/home/home-sections";
+import { MarketSnapshotStrip } from "@/components/market/market-snapshot";
+import { TradeLandsIndexPanel } from "@/components/market/tradelands-index-panel";
+import { LandPerformanceChart } from "@/components/market/land-performance-chart";
+import { UpcomingLandDrops } from "@/components/market/upcoming-land-drops";
+import { AssetCard } from "@/components/market/asset-card";
 import {
   getBlogs,
   getConcepts,
   getFeaturedProjects,
+  getMarketIndices,
+  getMarketLocations,
   getMedia,
   getOffers,
   getProjects,
@@ -22,6 +29,7 @@ import {
   getReviews,
 } from "@/lib/queries";
 import { isVideoUrl } from "@/lib/media";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +44,8 @@ export default async function HomePage() {
     offers,
     all,
     media,
+    indices,
+    locations,
   ] = await Promise.all([
     getFeaturedProjects(),
     getProjectsByStatus("trending"),
@@ -46,6 +56,8 @@ export default async function HomePage() {
     getOffers({ activeOnly: true }),
     getProjects(),
     getMedia(),
+    getMarketIndices({ activeOnly: true }),
+    getMarketLocations({ activeOnly: true }),
   ]);
 
   const newLaunches = await getProjectsByStatus("new-launch");
@@ -104,47 +116,64 @@ export default async function HomePage() {
     });
   }
 
-  // Prefer a mixed set: hero/drone first, then images — cap for UX
   const prioritized = [
     ...slides.filter((s) => s.kind === "hero" || s.kind === "drone"),
     ...slides.filter((s) => s.kind === "video"),
     ...slides.filter((s) => s.kind === "image"),
-  ].filter(
-    (s, i, arr) => arr.findIndex((x) => x.id === s.id) === i
+  ].filter((s, i, arr) => arr.findIndex((x) => x.id === s.id) === i);
+
+  const marketAssets = (featured.length ? featured : all).slice(0, 3);
+  const trendingOptions = (trending.length ? trending : all.slice(0, 6)).map(
+    (p) => ({
+      slug: p.slug,
+      name: p.name,
+      locationLabel: p.location.district,
+    })
   );
 
   return (
     <>
-      <HomeHero slides={prioritized.slice(0, 8)} />
-      <FeaturedProjects projects={featured.length ? featured : all.slice(0, 3)} />
+      <HomeHero
+        slides={prioritized.slice(0, 8)}
+        trending={trendingOptions}
+      />
+      <MarketSnapshotStrip items={indices} locations={locations} />
+
+      <section className="container-premium section-pad py-16 sm:py-22 lg:py-28">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-xl">
+            <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+              Market Opportunities
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl lg:text-4xl">
+              Assets on the desk
+            </h2>
+          </div>
+          <Link
+            href="/market"
+            className="inline-flex text-sm font-semibold tracking-[0.1em] text-primary uppercase"
+          >
+            Open full market →
+          </Link>
+        </div>
+
+        <div className="mt-10 grid gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3 xl:gap-10">
+          {marketAssets.map((p) => (
+            <AssetCard key={p.id} project={p} />
+          ))}
+        </div>
+
+        <div className="mt-6 sm:mt-8">
+          <TradeLandsIndexPanel items={indices} layout="rail" />
+        </div>
+      </section>
+
       <TrendingStrip
         projects={trending.length ? trending : all.slice(0, 3)}
       />
-      {upcoming.length > 0 && (
-        <section className="container-premium section-pad py-16">
-          <div className="rounded-2xl bg-muted px-6 py-8 sm:px-10">
-            <p className="text-[12px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
-              Upcoming launch
-            </p>
-            <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-[28px] font-semibold tracking-[-0.02em] sm:text-[36px]">
-                  {upcoming[0].name}
-                </h2>
-                <p className="mt-2 text-[17px] text-muted-foreground">
-                  {upcoming[0].tagline} · {upcoming[0].location.district}
-                </p>
-              </div>
-              <a
-                href={`/projects/${upcoming[0].slug}`}
-                className="inline-flex h-10 items-center text-[17px] text-primary hover:opacity-80"
-              >
-                Learn more ›
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
+      <UpcomingLandDrops projects={upcoming.length ? upcoming : all} />
+      <LandPerformanceChart locations={locations} />
+      <FeaturedProjects projects={featured.length ? featured : all.slice(0, 3)} />
       <InvestmentConcepts concepts={concepts} />
       <OffersSection offers={offers} />
       <WhyChoose />

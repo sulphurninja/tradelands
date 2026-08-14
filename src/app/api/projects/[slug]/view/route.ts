@@ -13,7 +13,7 @@ export async function POST(_request: Request, { params }: Props) {
     const doc = await ProjectModel.findOneAndUpdate(
       { slug },
       { $inc: { viewCount: 1 } },
-      { new: true }
+      { returnDocument: "after" }
     )
       .select("viewCount")
       .lean();

@@ -14,12 +14,25 @@ export type ProjectStatus =
 
 export type DevelopmentStage = "developed" | "under-development";
 
+export type ListingBadge =
+  | "available"
+  | "coming-soon"
+  | "premium"
+  | "high-demand";
+
+export type DemandLevel = "low" | "medium" | "high";
+
 export type LocationAttribute =
   | "road-touch"
   | "river-touch"
   | "lake-view"
   | "hill-view"
-  | "forest";
+  | "forest"
+  | "mountain-view"
+  | "valley-view"
+  | "waterfall"
+  | "corner-plot"
+  | "gated-project";
 
 export type InvestmentPurpose =
   | "plantation"
@@ -114,6 +127,52 @@ export interface Project {
   interestCount: number;
   ratingAvg: number;
   ratingCount: number;
+  listingBadge: ListingBadge;
+  pricePerSqFt?: number;
+  growthPotentialPct?: number;
+  investmentHorizon?: string;
+  growth3yPct?: number;
+  growth5yPct?: number;
+  demandLevel?: DemandLevel;
+  earlyAccess?: boolean;
+  waitlistEnabled?: boolean;
+  createdAt: string;
+}
+
+export interface MarketIndexItem {
+  id: string;
+  name: string;
+  slug: string;
+  pricePerSqFt: number;
+  changePct: number;
+  sortOrder: number;
+  featured: boolean;
+  active: boolean;
+}
+
+export interface MarketLocationSeriesPoint {
+  year: number;
+  pricePerSqFt: number;
+}
+
+export interface MarketLocationItem {
+  id: string;
+  name: string;
+  slug: string;
+  lat: number;
+  lng: number;
+  changePct: number;
+  series: MarketLocationSeriesPoint[];
+  sortOrder: number;
+  active: boolean;
+}
+
+export interface WaitlistItem {
+  id: string;
+  projectSlug: string;
+  name: string;
+  email: string;
+  phone?: string;
   createdAt: string;
 }
 

@@ -22,21 +22,23 @@ export function ProjectEngagement({
   const [interestCount, setInterestCount] = useState(initialInterest);
   const [ratingAvg, setRatingAvg] = useState(initialAvg);
   const [ratingCount, setRatingCount] = useState(initialCount);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"interest" | "rate" | null>(null);
+  const [myRating, setMyRating] = useState(0);
 
   useEffect(() => {
     void fetch(`/api/projects/${slug}/view`, { method: "POST" });
   }, [slug]);
 
   async function interest() {
-    setBusy(true);
+    if (busy) return;
+    setBusy("interest");
     try {
       const res = await fetch(`/api/projects/${slug}/interest`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         toast.error(data.error || "Could not save interest");
         return;
@@ -45,15 +47,19 @@ export function ProjectEngagement({
         toast.message("You're already marked as interested");
       } else {
         toast.success("Thanks — we've noted your interest");
-        setInterestCount(data.interestCount ?? interestCount + 1);
+        setInterestCount(Number(data.interestCount) || interestCount + 1);
       }
+    } catch {
+      toast.error("Could not save interest. Try again.");
     } finally {
-      setBusy(false);
+      setBusy(null);
     }
   }
 
   async function rate(value: number) {
-    setBusy(true);
+    if (busy) return;
+    setBusy("rate");
+    setMyRating(value);
     try {
       const res = await fetch(`/api/projects/${slug}/rate`, {
         method: "POST",
@@ -65,22 +71,24 @@ export function ProjectEngagement({
         router.push(`/login?next=/projects/${slug}`);
         return;
       }
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         toast.error(data.error || "Could not save rating");
         return;
       }
-      setRatingAvg(data.ratingAvg);
-      setRatingCount(data.ratingCount);
+      setRatingAvg(Number(data.ratingAvg) || value);
+      setRatingCount(Number(data.ratingCount) || ratingCount);
       toast.success("Rating saved");
+    } catch {
+      toast.error("Could not save rating. Try again.");
     } finally {
-      setBusy(false);
+      setBusy(null);
     }
   }
 
   return (
-    <div className="space-y-3 rounded-xl border border-border/70 bg-muted/40 p-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <div className="space-y-4 rounded-xl border border-border/70 bg-muted/40 p-4">
+      <div className="space-y-3">
         <div>
           <p className="text-[0.65rem] tracking-[0.14em] text-muted-foreground uppercase">
             Community
@@ -106,32 +114,38 @@ export function ProjectEngagement({
         <Button
           type="button"
           size="sm"
-          disabled={busy}
+          disabled={busy === "interest"}
           onClick={() => void interest()}
-          className="rounded-full"
+          className="h-11 w-full touch-manipulation rounded-full sm:h-9 sm:w-auto"
         >
           <Heart className="size-3.5" />
           I&apos;m interested
         </Button>
       </div>
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <button
-            key={n}
-            type="button"
-            disabled={busy}
-            aria-label={`Rate ${n}`}
-            onClick={() => void rate(n)}
-            className="rounded p-1 text-muted-foreground transition hover:text-gold"
-          >
-            <Star
-              className={cn(
-                "size-5",
-                ratingAvg >= n - 0.25 && "fill-gold text-gold"
-              )}
-            />
-          </button>
-        ))}
+      <div>
+        <p className="mb-2 text-[0.65rem] tracking-[0.14em] text-muted-foreground uppercase">
+          Rate this land
+        </p>
+        <div className="flex items-center justify-between gap-1 sm:justify-start sm:gap-1.5">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <button
+              key={n}
+              type="button"
+              disabled={busy === "rate"}
+              aria-label={`Rate ${n} stars`}
+              onClick={() => void rate(n)}
+              className="inline-flex size-11 touch-manipulation items-center justify-center rounded-lg text-muted-foreground transition hover:bg-background hover:text-gold active:scale-95 disabled:opacity-50 sm:size-10"
+            >
+              <Star
+                className={cn(
+                  "size-6 sm:size-5",
+                  (myRating >= n || (!myRating && ratingAvg >= n - 0.25)) &&
+                    "fill-gold text-gold"
+                )}
+              />
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

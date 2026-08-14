@@ -13,56 +13,54 @@ export type GalleryItem = {
 };
 
 export function DualRowGallery({ items }: { items: GalleryItem[] }) {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const mid = Math.ceil(items.length / 2) || 1;
   const top = items.slice(0, mid);
   const bottom = items.slice(mid);
-  const topLoop = [...top, ...top];
+  const topLoop = [...top, ...top, ...top];
   const bottomLoop = bottom.length
-    ? [...bottom, ...bottom]
-    : [...top, ...top];
+    ? [...bottom, ...bottom, ...bottom]
+    : [...top, ...top, ...top];
 
   useEffect(() => {
-    const section = sectionRef.current;
     const topEl = topRef.current;
     const bottomEl = bottomRef.current;
-    if (!section || !topEl || !bottomEl) return;
+    if (!topEl || !bottomEl) return;
 
+    let offset = 0;
     let raf = 0;
-    function onScroll() {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const rect = section!.getBoundingClientRect();
-        const view = window.innerHeight || 1;
-        const progress = 1 - Math.min(1, Math.max(0, rect.top / view));
-        const x = progress * 180;
-        topEl!.style.transform = `translate3d(${-x}px,0,0)`;
-        bottomEl!.style.transform = `translate3d(${x - 120}px,0,0)`;
-      });
+    let last = performance.now();
+    const speed = 28; // px per second
+
+    function tick(now: number) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      offset += speed * dt;
+
+      const topWidth = topEl!.scrollWidth / 3;
+      const bottomWidth = bottomEl!.scrollWidth / 3;
+      const topX = -(offset % Math.max(topWidth, 1));
+      const bottomX = (offset % Math.max(bottomWidth, 1)) - bottomWidth * 0.35;
+
+      topEl!.style.transform = `translate3d(${topX}px,0,0)`;
+      bottomEl!.style.transform = `translate3d(${bottomX}px,0,0)`;
+      raf = requestAnimationFrame(tick);
     }
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [items.length]);
 
   if (!items.length) return null;
 
   return (
-    <div ref={sectionRef} className="space-y-4 overflow-hidden py-2">
+    <div className="space-y-4 overflow-hidden py-2">
       <div className="overflow-hidden">
         <div
           ref={topRef}
           className="flex w-max gap-3 will-change-transform"
-          style={{ transition: "transform 80ms linear" }}
         >
           {topLoop.map((item, i) => (
             <GalleryTile key={`t-${item.id}-${i}`} item={item} />
@@ -73,7 +71,6 @@ export function DualRowGallery({ items }: { items: GalleryItem[] }) {
         <div
           ref={bottomRef}
           className="flex w-max gap-3 will-change-transform"
-          style={{ transition: "transform 80ms linear" }}
         >
           {bottomLoop.map((item, i) => (
             <GalleryTile key={`b-${item.id}-${i}`} item={item} />

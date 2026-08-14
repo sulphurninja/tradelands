@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import { LandSearchSection } from "@/components/home/land-search-section";
 import { SmartMedia } from "@/components/media/smart-media";
 import { isVideoUrl } from "@/lib/media";
@@ -24,8 +30,6 @@ const FALLBACK_SLIDES: HeroSlide[] = [
     id: "fallback-1",
     src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80",
     title: "Agriculture land",
-    subtitle: "Clear titles. Clear pricing.",
-    href: "/agriculture-land",
     kind: "image",
   },
   {
@@ -34,21 +38,17 @@ const FALLBACK_SLIDES: HeroSlide[] = [
     poster:
       "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80",
     title: "Aerial view",
-    subtitle: "See the land from above.",
-    href: "/projects",
     kind: "drone",
-  },
-  {
-    id: "fallback-3",
-    src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80",
-    title: "NA villa plots",
-    subtitle: "Ready for your next chapter.",
-    href: "/na-villa-plot",
-    kind: "image",
   },
 ];
 
-export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
+export function HomeHero({
+  slides,
+  trending = [],
+}: {
+  slides?: HeroSlide[];
+  trending?: { slug: string; name: string; locationLabel?: string }[];
+}) {
   const items = slides && slides.length > 0 ? slides : FALLBACK_SLIDES;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -108,10 +108,9 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
             </motion.div>
           </AnimatePresence>
 
-          {/* Readable base for overlaid copy */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[42%] bg-gradient-to-t from-black/75 via-black/35 to-transparent sm:h-[38%]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[55%] bg-gradient-to-t from-black/80 via-black/40 to-transparent sm:h-[48%]"
           />
 
           {isVideo ? (
@@ -140,54 +139,57 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
               <button
                 type="button"
                 aria-label="Previous slide"
-                onClick={() => go(-1)}
-                className="absolute top-1/2 left-2 z-20 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/55 text-white backdrop-blur-md hover:bg-black/70 sm:left-4 sm:size-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  go(-1);
+                }}
+                className="absolute top-1/2 left-2 z-40 flex size-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full border border-white/25 bg-black/55 text-white backdrop-blur-md hover:bg-black/70 sm:left-4 sm:size-11"
               >
-                <ChevronLeft className="size-4 sm:size-5" />
+                <ChevronLeft className="size-5" />
               </button>
               <button
                 type="button"
                 aria-label="Next slide"
-                onClick={() => go(1)}
-                className="absolute top-1/2 right-2 z-20 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/55 text-white backdrop-blur-md hover:bg-black/70 sm:right-4 sm:size-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  go(1);
+                }}
+                className="absolute top-1/2 right-2 z-40 flex size-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full border border-white/25 bg-black/55 text-white backdrop-blur-md hover:bg-black/70 sm:right-4 sm:size-11"
               >
-                <ChevronRight className="size-4 sm:size-5" />
+                <ChevronRight className="size-5" />
               </button>
             </>
           ) : null}
 
-          <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-10 text-center sm:px-8 sm:pb-7 sm:pt-16">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-5 pt-12 text-center sm:px-8 sm:pb-8 sm:pt-16">
             <div className="mx-auto max-w-3xl">
-              <p className="mb-1 text-[10px] font-medium tracking-[0.14em] text-white/70 uppercase sm:mb-1.5 sm:text-xs">
-                TradeLands.IND
-              </p>
-              <h1 className="px-1 text-[1.125rem] leading-[1.2] font-semibold tracking-[-0.03em] text-balance break-words text-white sm:text-3xl lg:text-4xl xl:text-[2.75rem]">
-                {current.title}
+              <h1 className="text-[1.15rem] leading-[1.15] font-bold tracking-[0.04em] text-balance text-white uppercase sm:text-3xl lg:text-4xl xl:text-[2.65rem]">
+                Land is the new asset class.
               </h1>
-              {current.subtitle ? (
-                <p className="mx-auto mt-1 max-w-xl px-1 text-[12px] leading-snug text-white/80 sm:mt-2 sm:text-base lg:text-lg">
-                  {current.subtitle}
-                </p>
-              ) : null}
-              <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] sm:mt-4 sm:gap-5 sm:text-[15px]">
-                {current.href ? (
-                  <Link
-                    href={current.href}
-                    className="font-medium text-white transition-opacity hover:opacity-80"
-                  >
-                    Learn more ›
-                  </Link>
-                ) : null}
+              <p className="mt-1.5 text-[13px] font-semibold text-white sm:mt-2.5 sm:text-lg lg:text-xl">
+                Discover. Compare. Invest. Track.
+              </p>
+              <p className="mx-auto mt-1.5 max-w-xl text-[11px] leading-snug text-white/80 sm:mt-2 sm:text-sm lg:text-[15px]">
+                Premium land opportunities across Maharashtra, curated for
+                investors, land buyers and future-focused wealth builders.
+              </p>
+              <div className="pointer-events-auto mt-3 flex flex-wrap items-center justify-center gap-2 sm:mt-5 sm:gap-3">
                 <Link
-                  href="/book-site-visit"
-                  className="font-medium text-white/90 transition-opacity hover:opacity-80"
+                  href="/market"
+                  className="btn-on-dark inline-flex h-9 items-center rounded-full px-4 text-[11px] font-semibold tracking-[0.12em] uppercase sm:h-10 sm:px-5 sm:text-xs"
                 >
-                  Book a visit ›
+                  Explore Land
+                </Link>
+                <Link
+                  href="#market-snapshot"
+                  className="inline-flex h-9 items-center rounded-full border border-white/40 bg-white/10 px-4 text-[11px] font-semibold tracking-[0.12em] text-white uppercase backdrop-blur-sm sm:h-10 sm:px-5 sm:text-xs"
+                >
+                  View Market
                 </Link>
               </div>
 
               {items.length > 1 ? (
-                <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-5 sm:gap-2">
+                <div className="pointer-events-auto mt-3 flex items-center justify-center gap-1.5 sm:mt-5 sm:gap-2">
                   {items.map((slide, i) => (
                     <button
                       key={slide.id}
@@ -204,12 +206,20 @@ export function HomeHero({ slides }: { slides?: HeroSlide[] }) {
                   ))}
                 </div>
               ) : null}
+
+              <a
+                href="#market-snapshot"
+                aria-label="Scroll to market snapshot"
+                className="pointer-events-auto mt-3 inline-flex size-9 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-sm sm:mt-4 sm:size-10"
+              >
+                <ChevronDown className="size-4" />
+              </a>
             </div>
           </div>
         </div>
       </div>
 
-      <LandSearchSection className="mt-2 pb-8 sm:mt-4" />
+      <LandSearchSection className="mt-2 pb-8 sm:mt-4" trending={trending} />
     </section>
   );
 }

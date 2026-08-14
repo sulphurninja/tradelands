@@ -17,7 +17,7 @@ export default async function BookSiteVisitPage({ searchParams }: Props) {
       <PageHero
         eyebrow="Online Site Visit"
         title="Schedule a private site visit"
-        description="Pick a project, date, and pickup. We confirm and meet you on site."
+        description="Pick a project and preferred slot. We confirm and meet you on site."
         crumbs={[{ href: "/book-site-visit", label: "Book Visit" }]}
         compact
       />
@@ -27,7 +27,6 @@ export default async function BookSiteVisitPage({ searchParams }: Props) {
             {[
               "Project selection with live inventory context",
               "Preferred date & time slots",
-              "Optional city pickup",
               "SMS / WhatsApp confirmation",
               "Post-visit feedback loop",
             ].map((item, i) => (

@@ -12,7 +12,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import type { Project } from "@/lib/types";
+import type { MarketLocationItem, Project } from "@/lib/types";
 import { categoryLabel, formatINR } from "@/lib/format";
 import { SITE } from "@/lib/constants";
 import { isVideoUrl } from "@/lib/media";
@@ -23,8 +23,18 @@ import { LandSearchSection } from "@/components/home/land-search-section";
 import { SiteVisitDialog } from "@/components/forms/site-visit-dialog";
 import { WishlistButton } from "@/components/projects/wishlist-button";
 import { ProjectEngagement } from "@/components/projects/project-engagement";
+import { WaitlistDialog } from "@/components/market/upcoming-land-drops";
+import { ProjectCandlestickChart } from "@/components/market/project-candlestick-chart";
+import { AssetGrowthMetrics } from "@/components/market/asset-growth-metrics";
+import { LISTING_BADGE_META } from "@/lib/constants";
 
-export function ProjectDetail({ project }: { project: Project }) {
+export function ProjectDetail({
+  project,
+  marketLocation,
+}: {
+  project: Project;
+  marketLocation?: MarketLocationItem | null;
+}) {
   const available = project.plots.filter((p) => p.status === "available").length;
   const heroSrc = project.heroVideo || project.coverImage;
   const heroIsVideo = Boolean(project.heroVideo) || isVideoUrl(heroSrc);
@@ -121,6 +131,11 @@ export function ProjectDetail({ project }: { project: Project }) {
                 {project.story}
               </p>
             </div>
+
+            <ProjectCandlestickChart
+              project={project}
+              location={marketLocation}
+            />
 
             <div className="min-w-0">
               <h2 className="font-display text-2xl sm:text-3xl">
@@ -304,11 +319,34 @@ export function ProjectDetail({ project }: { project: Project }) {
                     {project.area.minGuntha}–{project.area.maxGuntha} Guntha
                   </dd>
                 </div>
+                {project.pricePerSqFt != null ? (
+                  <div className="flex justify-between gap-4">
+                    <dt className="shrink-0 text-muted-foreground">₹ / sq.ft</dt>
+                    <dd className="tabular-nums">{project.pricePerSqFt}</dd>
+                  </div>
+                ) : null}
                 <div className="flex justify-between gap-4">
                   <dt className="shrink-0 text-muted-foreground">
                     Available plots
                   </dt>
                   <dd>{available}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="shrink-0 text-muted-foreground">Status</dt>
+                  <dd className="inline-flex items-center gap-1.5">
+                    <span
+                      className="size-2 rounded-full"
+                      style={{
+                        backgroundColor:
+                          LISTING_BADGE_META[project.listingBadge || "available"]
+                            .color,
+                      }}
+                    />
+                    {
+                      LISTING_BADGE_META[project.listingBadge || "available"]
+                        .label
+                    }
+                  </dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="shrink-0 text-muted-foreground">
@@ -327,6 +365,11 @@ export function ProjectDetail({ project }: { project: Project }) {
                   </dd>
                 </div>
               </dl>
+
+              <div className="mt-4">
+                <AssetGrowthMetrics project={project} />
+              </div>
+
               <div className="mt-4">
                 <ProjectEngagement
                   slug={project.slug}
@@ -338,8 +381,17 @@ export function ProjectDetail({ project }: { project: Project }) {
               <div className="mt-6 grid gap-2">
                 <SiteVisitDialog
                   projectSlug={project.slug}
-                  className="h-11 w-full gradient-emerald text-white dark:text-white"
+                  className="h-11 w-full gradient-emerald"
                 />
+                {project.waitlistEnabled ||
+                project.listingBadge === "coming-soon" ||
+                project.status.includes("upcoming") ? (
+                  <WaitlistDialog
+                    projectSlug={project.slug}
+                    projectName={project.name}
+                    triggerClassName="inline-flex h-11 w-full items-center justify-center rounded-lg border border-border text-sm font-semibold tracking-[0.1em] uppercase"
+                  />
+                ) : null}
                 <WishlistButton
                   projectSlug={project.slug}
                   variant="button"

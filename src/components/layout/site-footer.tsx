@@ -13,13 +13,13 @@ const columns = [
     ],
   },
   {
-    title: "Explore",
+    title: "Platform",
     links: [
-      { href: "/projects", label: "Projects" },
-      { href: "/upcoming-projects", label: "Upcoming" },
-      { href: "/compare", label: "Compare" },
+      { href: "/market", label: "Market" },
+      { href: "/discover", label: "Discover" },
+      { href: "/map", label: "Map" },
+      { href: "/upcoming-projects", label: "Coming Soon" },
       { href: "/media-gallery", label: "Media Gallery" },
-      { href: "/tools", label: "Investment Tools" },
     ],
   },
   {
@@ -27,7 +27,7 @@ const columns = [
     links: [
       { href: "/knowledge-centre", label: "Knowledge Centre" },
       { href: "/legal-documents", label: "Legal Documents" },
-      { href: "/blogs", label: "Blogs" },
+      { href: "/blogs", label: "Insights" },
       { href: "/why-invest", label: "Why Invest" },
     ],
   },

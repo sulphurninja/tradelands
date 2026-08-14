@@ -81,6 +81,22 @@ const ProjectSchema = new Schema(
     appreciation: String,
     legalStatus: String,
     featured: { type: Boolean, default: false },
+    listingBadge: {
+      type: String,
+      enum: ["available", "coming-soon", "premium", "high-demand"],
+      default: "available",
+    },
+    pricePerSqFt: Number,
+    growthPotentialPct: Number,
+    investmentHorizon: String,
+    growth3yPct: Number,
+    growth5yPct: Number,
+    demandLevel: {
+      type: String,
+      enum: ["low", "medium", "high"],
+    },
+    earlyAccess: { type: Boolean, default: false },
+    waitlistEnabled: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

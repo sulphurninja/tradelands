@@ -24,26 +24,23 @@ export async function POST(request: Request, { params }: Props) {
     const body = schema.parse(await request.json());
 
     await connectDB();
-    const project = await ProjectModel.findOne({ slug });
-    if (!project) {
+
+    const exists = await ProjectModel.exists({ slug });
+    if (!exists) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
-    const existing = await ProjectRating.findOne({
-      userId: session.sub,
-      projectSlug: slug,
-    });
-
-    if (existing) {
-      existing.rating = body.rating;
-      await existing.save();
-    } else {
-      await ProjectRating.create({
-        userId: session.sub,
-        projectSlug: slug,
-        rating: body.rating,
-      });
-    }
+    await ProjectRating.findOneAndUpdate(
+      { userId: session.sub, projectSlug: slug },
+      {
+        $set: {
+          userId: session.sub,
+          projectSlug: slug,
+          rating: body.rating,
+        },
+      },
+      { upsert: true, returnDocument: "after" }
+    );
 
     const stats = await ProjectRating.aggregate([
       { $match: { projectSlug: slug } },
@@ -56,14 +53,18 @@ export async function POST(request: Request, { params }: Props) {
       },
     ]);
 
-    project.ratingAvg = Number((stats[0]?.avg || body.rating).toFixed(2));
-    project.ratingCount = stats[0]?.count || 1;
-    await project.save();
+    const ratingAvg = Number((stats[0]?.avg || body.rating).toFixed(2));
+    const ratingCount = stats[0]?.count || 1;
+
+    await ProjectModel.updateOne(
+      { slug },
+      { $set: { ratingAvg, ratingCount } }
+    );
 
     return NextResponse.json({
       ok: true,
-      ratingAvg: project.ratingAvg,
-      ratingCount: project.ratingCount,
+      ratingAvg,
+      ratingCount,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

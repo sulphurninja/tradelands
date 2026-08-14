@@ -293,18 +293,18 @@ const projects = [
     featured: true,
   },
   {
-    slug: "sahyadri-ridge-satara",
-    name: "Sahyadri Ridge",
-    tagline: "Hill-view plots near Panchgani",
+    slug: "konkan-coast-drop",
+    name: "Konkan",
+    tagline: "500+ acres · early access coastal corridor",
     category: "agriculture-land",
     status: ["upcoming"],
     location: {
       state: "Maharashtra",
-      district: "Satara",
-      taluka: "Mahabaleshwar",
-      village: "Panchgani Road",
-      lat: 17.923,
-      lng: 73.657,
+      district: "Raigad",
+      taluka: "Mangaon",
+      village: "Konkan Belt",
+      lat: 18.2355,
+      lng: 73.2625,
     },
     pricing: {
       currency: "INR",
@@ -742,6 +742,186 @@ const PlatformSettings =
     )
   );
 
+const marketIndices = [
+  {
+    name: "Maharashtra Land Index",
+    slug: "maharashtra-land-index",
+    pricePerSqFt: 286,
+    changePct: 12.84,
+    sortOrder: 0,
+    featured: true,
+    active: true,
+  },
+  {
+    name: "Karjat",
+    slug: "karjat",
+    pricePerSqFt: 320,
+    changePct: 18.2,
+    sortOrder: 1,
+    featured: true,
+    active: true,
+  },
+  {
+    name: "Roha",
+    slug: "roha",
+    pricePerSqFt: 200,
+    changePct: 14.6,
+    sortOrder: 2,
+    featured: true,
+    active: true,
+  },
+  {
+    name: "Alibaug",
+    slug: "alibaug",
+    pricePerSqFt: 410,
+    changePct: 11.8,
+    sortOrder: 3,
+    featured: true,
+    active: true,
+  },
+  {
+    name: "Khalapur",
+    slug: "khalapur",
+    pricePerSqFt: 245,
+    changePct: 9.4,
+    sortOrder: 4,
+    featured: true,
+    active: true,
+  },
+  {
+    name: "Panvel",
+    slug: "panvel",
+    pricePerSqFt: 380,
+    changePct: 7.9,
+    sortOrder: 5,
+    featured: true,
+    active: true,
+  },
+];
+
+const marketLocations = [
+  {
+    name: "Mumbai",
+    slug: "mumbai",
+    lat: 19.076,
+    lng: 72.8777,
+    changePct: 6.2,
+    sortOrder: 0,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 420 },
+      { year: 2024, pricePerSqFt: 455 },
+      { year: 2025, pricePerSqFt: 490 },
+      { year: 2026, pricePerSqFt: 530 },
+    ],
+  },
+  {
+    name: "Panvel",
+    slug: "panvel",
+    lat: 18.9894,
+    lng: 73.1175,
+    changePct: 7.9,
+    sortOrder: 1,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 300 },
+      { year: 2024, pricePerSqFt: 330 },
+      { year: 2025, pricePerSqFt: 355 },
+      { year: 2026, pricePerSqFt: 380 },
+    ],
+  },
+  {
+    name: "Karjat",
+    slug: "karjat",
+    lat: 18.9102,
+    lng: 73.3235,
+    changePct: 18.2,
+    sortOrder: 2,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 200 },
+      { year: 2024, pricePerSqFt: 250 },
+      { year: 2025, pricePerSqFt: 300 },
+      { year: 2026, pricePerSqFt: 350 },
+    ],
+  },
+  {
+    name: "Khopoli",
+    slug: "khopoli",
+    lat: 18.7857,
+    lng: 73.3452,
+    changePct: 10.1,
+    sortOrder: 3,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 180 },
+      { year: 2024, pricePerSqFt: 210 },
+      { year: 2025, pricePerSqFt: 240 },
+      { year: 2026, pricePerSqFt: 270 },
+    ],
+  },
+  {
+    name: "Roha",
+    slug: "roha",
+    lat: 18.4411,
+    lng: 73.1195,
+    changePct: 14.6,
+    sortOrder: 4,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 140 },
+      { year: 2024, pricePerSqFt: 165 },
+      { year: 2025, pricePerSqFt: 185 },
+      { year: 2026, pricePerSqFt: 200 },
+    ],
+  },
+  {
+    name: "Mangaon",
+    slug: "mangaon",
+    lat: 18.2355,
+    lng: 73.2625,
+    changePct: 8.5,
+    sortOrder: 5,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 120 },
+      { year: 2024, pricePerSqFt: 140 },
+      { year: 2025, pricePerSqFt: 155 },
+      { year: 2026, pricePerSqFt: 170 },
+    ],
+  },
+  {
+    name: "Alibaug",
+    slug: "alibaug",
+    lat: 18.6411,
+    lng: 72.8722,
+    changePct: 11.8,
+    sortOrder: 6,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 320 },
+      { year: 2024, pricePerSqFt: 355 },
+      { year: 2025, pricePerSqFt: 385 },
+      { year: 2026, pricePerSqFt: 410 },
+    ],
+  },
+  {
+    name: "Khalapur",
+    slug: "khalapur",
+    lat: 18.8292,
+    lng: 73.2747,
+    changePct: 9.4,
+    sortOrder: 7,
+    active: true,
+    series: [
+      { year: 2023, pricePerSqFt: 180 },
+      { year: 2024, pricePerSqFt: 205 },
+      { year: 2025, pricePerSqFt: 225 },
+      { year: 2026, pricePerSqFt: 245 },
+    ],
+  },
+];
+
 const seedUsers = [
   {
     name: "TradeLands Super Admin",
@@ -786,27 +966,63 @@ async function seed() {
     Review.deleteMany({}),
     Offer.deleteMany({}),
     Media.deleteMany({}),
+    mongoose.connection.collection("marketindices").deleteMany({}),
+    mongoose.connection.collection("marketlocations").deleteMany({}),
+    mongoose.connection.collection("waitlistentries").deleteMany({}),
     User.deleteMany({
       email: { $in: seedUsers.map((u) => u.email) },
     }),
     PlatformSettings.deleteMany({ key: "default" }),
   ]);
 
+  const MarketIndex =
+    mongoose.models.MarketIndex ||
+    mongoose.model(
+      "MarketIndex",
+      new mongoose.Schema({}, { strict: false, timestamps: true })
+    );
+  const MarketLocation =
+    mongoose.models.MarketLocation ||
+    mongoose.model(
+      "MarketLocation",
+      new mongoose.Schema({}, { strict: false, timestamps: true })
+    );
+
   await Project.insertMany(
-    projects.map((p, i) => ({
-      developmentStage: i % 2 === 0 ? "developed" : "under-development",
-      viewCount: 40 + i * 17,
-      interestCount: 5 + i * 3,
-      ratingAvg: 4 + (i % 10) / 10,
-      ratingCount: 4 + i * 2,
-      ...p,
-    }))
+    projects.map((p, i) => {
+      const badges = ["available", "premium", "high-demand", "coming-soon"];
+      const isUpcoming = Array.isArray(p.status) && p.status.includes("upcoming");
+      return {
+        developmentStage: i % 2 === 0 ? "developed" : "under-development",
+        viewCount: 40 + i * 17,
+        interestCount: 5 + i * 3,
+        ratingAvg: 4 + (i % 10) / 10,
+        ratingCount: 4 + i * 2,
+        listingBadge: isUpcoming ? "coming-soon" : badges[i % 3],
+        pricePerSqFt: 180 + i * 35,
+        growthPotentialPct: 8 + (i % 7) * 1.2,
+        investmentHorizon: i % 2 === 0 ? "3-5 years" : "5-8 years",
+        growth3yPct: 28 + i * 3.2,
+        growth5yPct: 48 + i * 4.1,
+        demandLevel: i % 3 === 0 ? "high" : i % 3 === 1 ? "medium" : "low",
+        earlyAccess: isUpcoming,
+        waitlistEnabled: isUpcoming,
+        ...p,
+        location: {
+          ...p.location,
+          lat: p.location?.lat ?? 18.5 + i * 0.08,
+          lng: p.location?.lng ?? 73.2 + i * 0.05,
+        },
+      };
+    })
   );
   await Concept.insertMany(concepts);
   await Blog.insertMany(blogs);
   await Review.insertMany(reviews);
   await Offer.insertMany(offers);
   await Media.insertMany(mediaItems);
+  await MarketIndex.insertMany(marketIndices);
+  await MarketLocation.insertMany(marketLocations);
   await PlatformSettings.create({
     key: "default",
     siteName: "TradeLands",
@@ -846,6 +1062,8 @@ async function seed() {
   await User.insertMany(users);
 
   console.log(`Seeded ${projects.length} projects`);
+  console.log(`Seeded ${marketIndices.length} market indices`);
+  console.log(`Seeded ${marketLocations.length} market locations`);
   console.log(`Seeded ${concepts.length} concepts`);
   console.log(`Seeded ${blogs.length} blogs`);
   console.log(`Seeded ${reviews.length} reviews`);

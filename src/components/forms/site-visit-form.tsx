@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import type { Project } from "@/lib/types";
 
 const times = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
@@ -20,7 +18,6 @@ export function SiteVisitForm({
   onSuccess?: () => void;
 }) {
   const [loading, setLoading] = useState(false);
-  const [pickup, setPickup] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectSlug, setProjectSlug] = useState(defaultProject || "");
   const [time, setTime] = useState(times[0]);
@@ -34,6 +31,9 @@ export function SiteVisitForm({
         if (!defaultProject && list[0]) {
           setProjectSlug(list[0].slug);
         }
+      })
+      .catch(() => {
+        toast.error("Could not load projects. Refresh and try again.");
       });
   }, [defaultProject]);
 
@@ -46,14 +46,14 @@ export function SiteVisitForm({
     setLoading(true);
     const form = new FormData(e.currentTarget);
     const payload = {
-      name: String(form.get("name")),
-      phone: String(form.get("phone")),
-      email: String(form.get("email") || ""),
+      name: String(form.get("name") || "").trim(),
+      phone: String(form.get("phone") || "").trim(),
+      email: String(form.get("email") || "").trim(),
       projectSlug,
-      date: String(form.get("date")),
+      date: String(form.get("date") || ""),
       time,
-      pickupRequired: pickup,
-      pickupAddress: String(form.get("pickupAddress") || ""),
+      pickupRequired: false,
+      pickupAddress: "",
       referralCode: String(form.get("referralCode") || "").trim() || undefined,
     };
 
@@ -63,14 +63,18 @@ export function SiteVisitForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
+      let data: { error?: string; ok?: boolean } = {};
+      try {
+        data = await res.json();
+      } catch {
+        /* non-JSON body */
+      }
       if (!res.ok) {
         toast.error(data.error || "Could not book visit");
         return;
       }
       toast.success("Site visit requested. We will confirm shortly.");
       e.currentTarget.reset();
-      setPickup(false);
       setTime(times[0]);
       onSuccess?.();
     } catch {
@@ -138,23 +142,10 @@ export function SiteVisitForm({
           />
         </div>
       </div>
-      <label className="flex h-10 items-center gap-2.5 text-sm">
-        <Checkbox
-          checked={pickup}
-          onCheckedChange={(checked) => setPickup(checked)}
-        />
-        Request pickup
-      </label>
-      {pickup && (
-        <div className="space-y-2">
-          <Label htmlFor="pickupAddress">Pickup address</Label>
-          <Textarea id="pickupAddress" name="pickupAddress" rows={3} />
-        </div>
-      )}
       <Button
         type="submit"
-        disabled={loading}
-        className="h-11 w-full gradient-emerald text-white dark:text-white sm:w-auto sm:px-10"
+        disabled={loading || !projectSlug}
+        className="h-11 w-full gradient-emerald sm:w-auto sm:px-10"
       >
         {loading ? "Submitting…" : "Confirm Site Visit Request"}
       </Button>

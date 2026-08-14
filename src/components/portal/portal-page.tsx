@@ -30,16 +30,37 @@ export function PortalStatCard({
   label,
   value,
   hint,
+  href,
 }: {
   label: string;
   value: string | number;
   hint?: string;
+  href?: string;
 }) {
+  const inner = (
+    <>
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="mt-2 font-display text-3xl tracking-[-0.02em]">{value}</p>
+      {hint ? (
+        <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+      ) : null}
+    </>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        className="block rounded-2xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/5"
+      >
+        {inner}
+      </a>
+    );
+  }
+
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-      <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="font-display mt-2 text-3xl tracking-[-0.02em]">{value}</p>
-      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+      {inner}
     </div>
   );
 }

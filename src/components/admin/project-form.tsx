@@ -60,6 +60,15 @@ const emptyProject = (): Omit<Project, "id" | "createdAt"> => ({
   interestCount: 0,
   ratingAvg: 0,
   ratingCount: 0,
+  listingBadge: "available",
+  pricePerSqFt: undefined,
+  growthPotentialPct: undefined,
+  investmentHorizon: "",
+  growth3yPct: undefined,
+  growth5yPct: undefined,
+  demandLevel: undefined,
+  earlyAccess: false,
+  waitlistEnabled: false,
 });
 
 export function ProjectForm({ project }: { project?: Project }) {
@@ -210,6 +219,114 @@ export function ProjectForm({ project }: { project?: Project }) {
             ]}
           />
         </div>
+        <div className="space-y-2 md:col-span-2">
+          <Label>Listing badge (map / legend)</Label>
+          <FormSelect
+            value={form.listingBadge || "available"}
+            onValueChange={(v) =>
+              patch("listingBadge", v as Project["listingBadge"])
+            }
+            options={[
+              { value: "available", label: "Available (green)" },
+              { value: "coming-soon", label: "Coming Soon (yellow)" },
+              { value: "premium", label: "Premium (blue)" },
+              { value: "high-demand", label: "High Demand (red)" },
+            ]}
+          />
+        </div>
+        <div className="grid gap-3 md:col-span-2 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label>₹ / sq.ft</Label>
+            <Input
+              type="number"
+              value={form.pricePerSqFt ?? ""}
+              onChange={(e) =>
+                patch(
+                  "pricePerSqFt",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Growth potential %</Label>
+            <Input
+              type="number"
+              step="0.1"
+              value={form.growthPotentialPct ?? ""}
+              onChange={(e) =>
+                patch(
+                  "growthPotentialPct",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Investment horizon</Label>
+            <Input
+              value={form.investmentHorizon || ""}
+              onChange={(e) => patch("investmentHorizon", e.target.value)}
+              placeholder="3-5 years"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Demand level</Label>
+            <FormSelect
+              value={form.demandLevel || "medium"}
+              onValueChange={(v) =>
+                patch("demandLevel", v as Project["demandLevel"])
+              }
+              options={[
+                { value: "low", label: "Low" },
+                { value: "medium", label: "Medium" },
+                { value: "high", label: "High" },
+              ]}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Indicative 3Y growth %</Label>
+            <Input
+              type="number"
+              step="0.1"
+              value={form.growth3yPct ?? ""}
+              onChange={(e) =>
+                patch(
+                  "growth3yPct",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Indicative 5Y growth %</Label>
+            <Input
+              type="number"
+              step="0.1"
+              value={form.growth5yPct ?? ""}
+              onChange={(e) =>
+                patch(
+                  "growth5yPct",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+            />
+          </div>
+        </div>
+        <label className="flex items-center gap-2 text-sm md:col-span-2">
+          <Checkbox
+            checked={Boolean(form.earlyAccess)}
+            onCheckedChange={(v) => patch("earlyAccess", Boolean(v))}
+          />
+          Early access
+        </label>
+        <label className="flex items-center gap-2 text-sm md:col-span-2">
+          <Checkbox
+            checked={Boolean(form.waitlistEnabled)}
+            onCheckedChange={(v) => patch("waitlistEnabled", Boolean(v))}
+          />
+          Enable waitlist (Coming Soon)
+        </label>
       </section>
 
       <section className="grid gap-4 rounded-2xl border border-border p-5 md:grid-cols-2">

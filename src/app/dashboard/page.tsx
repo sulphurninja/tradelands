@@ -43,6 +43,11 @@ export default async function DashboardPage() {
       desc: "Explore agriculture land and NA plots",
     },
     {
+      href: "/dashboard/wishlist",
+      label: "My wishlist",
+      desc: "See all projects you saved",
+    },
+    {
       href: "/book-site-visit",
       label: "Book a site visit",
       desc: "Pick a date and project",
@@ -73,14 +78,30 @@ export default async function DashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <PortalStatCard label="Site visits" value={visits} hint="Requested / booked" />
-        <PortalStatCard label="Bookings" value={bookings} hint="Plot reservations" />
+        <PortalStatCard
+          label="Site visits"
+          value={visits}
+          hint="Requested / booked"
+          href="/dashboard/site-visits"
+        />
+        <PortalStatCard
+          label="Bookings"
+          value={bookings}
+          hint="Plot reservations"
+          href="/dashboard/bookings"
+        />
         <PortalStatCard
           label="Wishlist"
           value={wishlistCount}
           hint="Saved projects"
+          href="/dashboard/wishlist"
         />
-        <PortalStatCard label="Open tickets" value={0} hint="Support" />
+        <PortalStatCard
+          label="Open tickets"
+          value={0}
+          hint="Support"
+          href="/dashboard/support"
+        />
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
