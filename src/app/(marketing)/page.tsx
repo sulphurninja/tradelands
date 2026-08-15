@@ -71,15 +71,35 @@ export default async function HomePage() {
     pool.find((p) => p.coverImage && !isVideoUrl(p.coverImage))?.coverImage ||
     undefined;
 
-  const slides: HeroSlide[] = [
-    {
-      id: "site-hero-video",
-      src: "/hero.mp4",
-      poster,
-      title: "",
-      kind: "hero",
-    },
-  ];
+  const heroFromAdmin = media
+    .filter((m) => m.category === "hero" && m.url)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
+  const slides: HeroSlide[] = heroFromAdmin.length
+    ? heroFromAdmin.map((m) => {
+        const video =
+          m.type === "video" || m.type === "drone" || isVideoUrl(m.url);
+        return {
+          id: `hero-${m.id}`,
+          src: m.url,
+          poster: video ? poster : undefined,
+          title: video ? "" : m.title || m.alt || "",
+          kind: video
+            ? m.type === "drone"
+              ? "drone"
+              : "hero"
+            : "image",
+        };
+      })
+    : [
+        {
+          id: "site-hero-video",
+          src: "/hero.mp4",
+          poster,
+          title: "",
+          kind: "hero" as const,
+        },
+      ];
 
   const marketAssets = (featured.length ? featured : all).slice(0, 3);
   const trendingOptions = (trending.length ? trending : all.slice(0, 6)).map(

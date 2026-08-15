@@ -92,19 +92,33 @@ export function MediaManager({ initial }: { initial: MediaItem[] }) {
               value={form.category}
               onValueChange={(category) => setForm((f) => ({ ...f, category }))}
               options={[
-                "gallery",
-                "project",
-                "blog",
-                "concept",
-                "legal",
-                "brochure",
-                "press",
-                "event",
-                "construction",
-                "other",
-              ].map((t) => ({ value: t, label: t }))}
+                { value: "hero", label: "Home hero carousel" },
+                { value: "gallery", label: "gallery" },
+                { value: "project", label: "project" },
+                { value: "blog", label: "blog" },
+                { value: "concept", label: "concept" },
+                { value: "legal", label: "legal" },
+                { value: "brochure", label: "brochure" },
+                { value: "press", label: "press" },
+                { value: "event", label: "event" },
+                { value: "construction", label: "construction" },
+                { value: "other", label: "other" },
+              ]}
             />
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Sort order (hero: lower first)</Label>
+          <Input
+            type="number"
+            value={form.sortOrder}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                sortOrder: Number(e.target.value) || 0,
+              }))
+            }
+          />
         </div>
         <div className="space-y-2">
           <Label>Alt / caption</Label>
@@ -129,8 +143,14 @@ export function MediaManager({ initial }: { initial: MediaItem[] }) {
               setForm((f) => ({ ...f, featured: Boolean(v) }))
             }
           />
-          Show in media gallery
+          Featured in home media strip / gallery
         </label>
+        {form.category === "hero" ? (
+          <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+            This item will appear in the home hero carousel (images or videos).
+            Upload order uses sort order — 0 shows first.
+          </p>
+        ) : null}
         <FileUpload
           value={form.url}
           folder="tradelands/media"
@@ -180,8 +200,10 @@ export function MediaManager({ initial }: { initial: MediaItem[] }) {
             <div className="min-w-0 flex-1">
               <p className="truncate font-medium">{item.title}</p>
               <p className="text-xs text-muted-foreground">
-                {item.category} · {item.type}
-                {item.featured ? " · gallery" : ""}
+                {item.category === "hero" ? "Home hero" : item.category} ·{" "}
+                {item.type}
+                {item.featured ? " · gallery strip" : ""}
+                {item.category === "hero" ? ` · #${item.sortOrder}` : ""}
               </p>
               <a
                 href={item.url}

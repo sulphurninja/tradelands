@@ -13,6 +13,7 @@ const MediaSchema = new Schema(
     category: {
       type: String,
       enum: [
+        "hero",
         "gallery",
         "project",
         "blog",

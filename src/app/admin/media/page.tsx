@@ -11,7 +11,7 @@ export default async function AdminMediaPage() {
     <div>
       <PortalPageHeader
         title="Media & documents"
-        description="Upload images, drone clips, brochures, and legal files via Cloudinary."
+        description="Upload images, drone clips, and docs. Set category to “Home hero carousel” to control the homepage hero slides (sort order = play order)."
       />
       <MediaManager initial={media} />
     </div>
