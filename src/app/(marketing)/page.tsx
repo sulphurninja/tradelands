@@ -67,37 +67,19 @@ export default async function HomePage() {
     .slice(0, 3);
 
   const pool = featured.length ? featured : all;
-  const slides: HeroSlide[] = [];
+  const poster =
+    pool.find((p) => p.coverImage && !isVideoUrl(p.coverImage))?.coverImage ||
+    undefined;
 
-  for (const p of pool.slice(0, 8)) {
-    if (p.coverImage && !isVideoUrl(p.coverImage)) {
-      slides.push({
-        id: `${p.id}-cover`,
-        src: p.coverImage,
-        title: p.name,
-        subtitle: p.tagline,
-        href: `/projects/${p.slug}`,
-        kind: "image",
-      });
-    }
-  }
-
-  for (const m of media.filter((item) => item.featured).slice(0, 6)) {
-    if (!m.url) continue;
-    if (m.type === "video" || m.type === "drone" || isVideoUrl(m.url)) continue;
-    slides.push({
-      id: `media-${m.id}`,
-      src: m.url,
-      title: m.title || "TradeLands",
-      subtitle: "Featured from the gallery",
-      href: "/media-gallery",
-      kind: "image",
-    });
-  }
-
-  const prioritized = slides.filter(
-    (s, i, arr) => arr.findIndex((x) => x.id === s.id) === i
-  );
+  const slides: HeroSlide[] = [
+    {
+      id: "site-hero-video",
+      src: "/hero.mp4",
+      poster,
+      title: "",
+      kind: "hero",
+    },
+  ];
 
   const marketAssets = (featured.length ? featured : all).slice(0, 3);
   const trendingOptions = (trending.length ? trending : all.slice(0, 6)).map(
@@ -110,10 +92,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HomeHero
-        slides={prioritized.slice(0, 8)}
-        trending={trendingOptions}
-      />
+      <HomeHero slides={slides} trending={trendingOptions} />
       <MarketSnapshotStrip items={deskIndices} locations={deskLocations} />
 
       <section className="container-premium section-pad py-16 sm:py-22 lg:py-28">
