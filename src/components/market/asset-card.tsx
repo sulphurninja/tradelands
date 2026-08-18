@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "@/lib/types";
-import { categoryLabel, formatINR } from "@/lib/format";
+import { categoryLabel, formatINR, getProjectUnitRate } from "@/lib/format";
 import { LISTING_BADGE_META } from "@/lib/constants";
 import { pickProjectCover } from "@/lib/project-images";
 import { cn } from "@/lib/utils";
@@ -36,6 +36,7 @@ export function AssetCard({
   ]
     .filter(Boolean)
     .join(", ");
+  const unitRate = getProjectUnitRate(project);
 
   return (
     <article
@@ -102,12 +103,12 @@ export function AssetCard({
                 Rate
               </p>
               <p className="mt-1 text-[15px] font-semibold tabular-nums">
-                {project.pricePerSqFt != null
-                  ? `₹${project.pricePerSqFt}`
+                {unitRate
+                  ? unitRate.display
                   : formatINR(project.pricing.minPrice)}
-                {project.pricePerSqFt != null ? (
+                {unitRate ? (
                   <span className="ml-1 text-[11px] font-medium text-muted-foreground">
-                    /sq.ft
+                    {unitRate.label === "₹ / acre" ? "/acre" : "/sq.ft"}
                   </span>
                 ) : null}
               </p>

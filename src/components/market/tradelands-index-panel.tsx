@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import type { MarketIndexItem } from "@/lib/types";
+import { formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { getDeskIndexItems } from "@/lib/tradeland-listings";
 
@@ -54,7 +55,17 @@ export function TradeLandsIndexPanel({
                   <ArrowUpRight className="size-3.5" />
                 </p>
                 <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
-                  ₹{row.pricePerSqFt}/sq.ft
+                  {row.slug === "karjat-khalapur"
+                    ? "₹50L – ₹2 Cr / acre"
+                    : row.slug === "pali-khopoli"
+                      ? "₹40L – ₹1.50 Cr / acre"
+                      : row.slug === "kolad-roha"
+                        ? "₹30L – ₹80L / acre"
+                        : row.slug === "lonavala-khandala"
+                          ? "₹1 Cr – ₹5 Cr / acre"
+                          : row.pricePerAcre
+                            ? `${formatINR(row.pricePerAcre)}/acre`
+                            : `₹${row.pricePerSqFt}/sq.ft`}
                 </p>
               </li>
             ))}
@@ -80,7 +91,7 @@ export function TradeLandsIndexPanel({
         <ArrowUpRight className="size-5" />
       </p>
       <p className="mt-1 text-xs tabular-nums text-muted-foreground">
-        ₹{headline.pricePerSqFt}/sq.ft
+        ₹25 L – ₹2 Cr / acre
       </p>
       <ul className="mt-4 space-y-2 border-t border-border/80 pt-4">
         {corridors.slice(0, 5).map((row) => (

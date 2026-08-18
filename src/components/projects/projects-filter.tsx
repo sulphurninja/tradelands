@@ -7,7 +7,7 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSelect } from "@/components/ui/form-select";
-import { CATEGORIES, LOCATION_ATTRIBUTES } from "@/lib/constants";
+import { CATEGORIES } from "@/lib/constants";
 
 const states = ["Maharashtra", "Karnataka", "Telangana", "Gujarat"];
 const budgets = [
@@ -28,9 +28,6 @@ export function ProjectsFilter() {
     searchParams.get("category") || "all"
   );
   const [budget, setBudget] = useState(searchParams.get("budget") || "all");
-  const [attribute, setAttribute] = useState(
-    searchParams.get("attribute") || "all"
-  );
   const [stage, setStage] = useState(searchParams.get("stage") || "all");
 
   useEffect(() => {
@@ -38,7 +35,6 @@ export function ProjectsFilter() {
     setState(searchParams.get("state") || "all");
     setCategory(searchParams.get("category") || "all");
     setBudget(searchParams.get("budget") || "all");
-    setAttribute(searchParams.get("attribute") || "all");
     setStage(searchParams.get("stage") || "all");
   }, [searchParams]);
 
@@ -47,7 +43,6 @@ export function ProjectsFilter() {
     Boolean(searchParams.get("state")) ||
     Boolean(searchParams.get("category")) ||
     Boolean(searchParams.get("budget")) ||
-    Boolean(searchParams.get("attribute")) ||
     Boolean(searchParams.get("stage"));
 
   function apply(next?: {
@@ -55,7 +50,6 @@ export function ProjectsFilter() {
     state?: string;
     category?: string;
     budget?: string;
-    attribute?: string;
     stage?: string;
   }) {
     const params = new URLSearchParams();
@@ -64,7 +58,6 @@ export function ProjectsFilter() {
       state: next?.state ?? state,
       category: next?.category ?? category,
       budget: next?.budget ?? budget,
-      attribute: next?.attribute ?? attribute,
       stage: next?.stage ?? stage,
     };
 
@@ -72,7 +65,6 @@ export function ProjectsFilter() {
     if (values.state !== "all") params.set("state", values.state);
     if (values.category !== "all") params.set("category", values.category);
     if (values.budget !== "all") params.set("budget", values.budget);
-    if (values.attribute !== "all") params.set("attribute", values.attribute);
     if (values.stage !== "all") params.set("stage", values.stage);
 
     const qs = params.toString();
@@ -82,13 +74,12 @@ export function ProjectsFilter() {
   }
 
   function onSelect(
-    key: "state" | "category" | "budget" | "attribute" | "stage",
+    key: "state" | "category" | "budget" | "stage",
     value: string
   ) {
     if (key === "state") setState(value);
     if (key === "category") setCategory(value);
     if (key === "budget") setBudget(value);
-    if (key === "attribute") setAttribute(value);
     if (key === "stage") setStage(value);
     apply({ [key]: value });
   }
@@ -118,7 +109,7 @@ export function ProjectsFilter() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+        <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
           <FilterField label="State">
             <FormSelect
               value={state}
@@ -165,21 +156,6 @@ export function ProjectsFilter() {
             />
           </FilterField>
 
-          <FilterField label="Attribute">
-            <FormSelect
-              value={attribute}
-              onValueChange={(v) => onSelect("attribute", v)}
-              options={[
-                { value: "all", label: "Any Attribute" },
-                ...LOCATION_ATTRIBUTES.map((a) => ({
-                  value: a.value,
-                  label: a.label,
-                })),
-              ]}
-              triggerClassName="h-10 w-full min-w-0 border-0 bg-transparent shadow-none"
-            />
-          </FilterField>
-
           <Button
             type="submit"
             disabled={pending}
@@ -201,7 +177,6 @@ export function ProjectsFilter() {
               ["category", searchParams.get("category")],
               ["budget", searchParams.get("budget")],
               ["stage", searchParams.get("stage")],
-              ["attribute", searchParams.get("attribute")],
             ] as const
           )
             .filter(([, value]) => value)
@@ -214,14 +189,11 @@ export function ProjectsFilter() {
                   ? CATEGORIES.find((c) => c.value === value)?.label || value
                   : key === "budget"
                     ? budgets.find((b) => b.value === value)?.label || value
-                    : key === "attribute"
-                      ? LOCATION_ATTRIBUTES.find((a) => a.value === value)
-                          ?.label || value
-                      : key === "stage"
-                        ? value === "developed"
-                          ? "Developed"
-                          : "Under development"
-                        : value}
+                    : key === "stage"
+                      ? value === "developed"
+                        ? "Developed"
+                        : "Under development"
+                      : value}
               </span>
             ))}
           <Button asChild variant="ghost" size="sm" className="h-8 px-2">

@@ -46,7 +46,7 @@ export async function SiteFooter() {
     {
       title: "Platform",
       links: [
-        { href: "/market", label: "Market" },
+        { href: "/market", label: "Projects" },
         { href: "/discover", label: "Discover" },
         { href: "/map", label: "Map" },
         { href: "/upcoming-projects", label: "Coming Soon" },

@@ -5,17 +5,19 @@ import { TradeLandsIndexPanel } from "@/components/market/tradelands-index-panel
 import { LandPerformanceChart } from "@/components/market/land-performance-chart";
 import { Button } from "@/components/ui/button";
 import { getConcepts } from "@/lib/queries";
+import { getDeskIndexItems } from "@/lib/tradeland-listings";
 import {
-  getDeskIndexItems,
-  getDeskLocations,
-} from "@/lib/tradeland-listings";
+  getMarketCorridorOptions,
+  getMarketLocations,
+} from "@/lib/market-corridors";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Discover" };
 
 export default async function DiscoverPage() {
   const concepts = await getConcepts();
-  const locations = getDeskLocations();
+  const corridors = getMarketCorridorOptions();
+  const locations = getMarketLocations();
   const indices = getDeskIndexItems();
 
   return (
@@ -29,7 +31,7 @@ export default async function DiscoverPage() {
       />
       <section className="container-premium section-pad pb-10">
         <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)_280px]">
-          <LocationPath locations={locations} />
+          <LocationPath corridors={corridors} />
           <div>
             <h2 className="text-xl font-semibold">Investment concepts</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">

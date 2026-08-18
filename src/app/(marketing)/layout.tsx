@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MaintenanceBanner } from "@/components/layout/maintenance-banner";
 import { SocialProofToasts } from "@/components/marketing/social-proof-toasts";
+import { BuySellIntentGate } from "@/components/marketing/buy-sell-intent-gate";
 import { getProjects } from "@/lib/queries";
 import { getTradelandAssets } from "@/lib/tradeland-listings";
 
@@ -43,6 +44,7 @@ export default async function MarketingLayout({
       <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
       <SiteFooter />
       <SocialProofToasts projects={proofProjects} />
+      <BuySellIntentGate />
     </div>
   );
 }

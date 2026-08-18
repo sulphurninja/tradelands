@@ -13,7 +13,6 @@ export function LandSearchSection({
     state?: string;
     category?: string;
     budget?: string;
-    attribute?: string;
   };
   trending?: { slug: string; name: string; locationLabel?: string }[];
 }) {

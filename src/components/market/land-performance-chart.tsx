@@ -1,24 +1,47 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Activity } from "lucide-react";
 import type { MarketLocationItem } from "@/lib/types";
 import { FormSelect } from "@/components/ui/form-select";
-import {
-  buildIndicativePath,
-  closesToCandles,
-  type Candle,
-} from "@/lib/market-series";
-import {
-  pulseSeries,
-  useLivePricePulse,
-} from "@/hooks/use-live-price-pulse";
+import { generateUpwardBandCandles, type Candle } from "@/lib/market-series";
+import { LIVE_MARKET_CORRIDORS } from "@/lib/market-corridors";
+import { formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+function formatAxis(v: number) {
+  if (v >= 10_000_000) return `${(v / 10_000_000).toFixed(1)}Cr`;
+  if (v >= 100_000) return `${Math.round(v / 100_000)}L`;
+  return String(Math.round(v));
+}
+
+function corridorBand(slug: string, location?: MarketLocationItem) {
+  const c = LIVE_MARKET_CORRIDORS.find((x) => x.slug === slug);
+  if (c) {
+    return {
+      min: c.rateMinLakh * 100000,
+      max: c.rateMaxLakh * 100000,
+      label: c.rateLabel.replace(" / acre", ""),
+      changePct: c.changePct,
+      live: true as const,
+    };
+  }
+  const series = location?.series || [];
+  const end = series.at(-1)?.pricePerSqFt || 5_000_000;
+  const start = series[0]?.pricePerSqFt || Math.round(end / 1.15);
+  return {
+    min: Math.min(start, end),
+    max: Math.max(start, end),
+    label: `${formatINR(Math.min(start, end))} – ${formatINR(Math.max(start, end))}`,
+    changePct: location?.changePct ?? 10,
+    live: false as const,
+  };
+}
 
 function PerformanceCandles({ candles }: { candles: Candle[] }) {
   if (!candles.length) return null;
 
-  const pad = { top: 16, right: 16, bottom: 28, left: 48 };
+  const pad = { top: 16, right: 16, bottom: 28, left: 52 };
   const width = 720;
   const height = 300;
   const innerW = width - pad.left - pad.right;
@@ -35,16 +58,14 @@ function PerformanceCandles({ candles }: { candles: Candle[] }) {
   const slot = innerW / candles.length;
   const bodyW = Math.min(14, Math.max(4, slot * 0.55));
   const labelEvery = Math.max(1, Math.ceil(candles.length / 6));
-  const ticks = [0, 0.25, 0.5, 0.75, 1].map((t) =>
-    Math.round(yMin + ySpan * (1 - t))
-  );
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map((t) => yMin + ySpan * (1 - t));
 
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
       className="h-full min-h-[240px] w-full sm:min-h-[280px]"
       role="img"
-      aria-label="Live corridor land rate candlestick chart"
+      aria-label="Corridor land rate candlestick chart per acre"
     >
       {ticks.map((val) => {
         const yy = y(val);
@@ -65,7 +86,7 @@ function PerformanceCandles({ candles }: { candles: Candle[] }) {
               className="fill-muted-foreground"
               fontSize={10}
             >
-              {val}
+              {formatAxis(val)}
             </text>
           </g>
         );
@@ -79,7 +100,7 @@ function PerformanceCandles({ candles }: { candles: Candle[] }) {
         className="fill-muted-foreground"
         fontSize={9}
       >
-        ₹ / sq.ft
+        ₹ / acre
       </text>
 
       {candles.map((c, i) => {
@@ -109,15 +130,6 @@ function PerformanceCandles({ candles }: { candles: Candle[] }) {
               fill={color}
               rx={0.75}
             />
-            {isLast ? (
-              <circle
-                cx={cx}
-                cy={y(c.close)}
-                r={4}
-                fill={color}
-                className="animate-pulse"
-              />
-            ) : null}
             {i % labelEvery === 0 || isLast ? (
               <text
                 x={cx}
@@ -136,73 +148,50 @@ function PerformanceCandles({ candles }: { candles: Candle[] }) {
   );
 }
 
-function LiveRate({
-  value,
-  delta,
-  tick,
-}: {
-  value: number;
-  delta: number;
-  tick: number;
-}) {
-  const [flash, setFlash] = useState<"up" | "down" | null>(null);
-
-  useEffect(() => {
-    if (!tick || delta === 0) return;
-    setFlash(delta > 0 ? "up" : "down");
-    const id = window.setTimeout(() => setFlash(null), 900);
-    return () => window.clearTimeout(id);
-  }, [tick, delta]);
-
-  return (
-    <span
-      className={cn(
-        "font-semibold tabular-nums transition-colors duration-500",
-        flash === "up" && "text-emerald-600 dark:text-emerald-400",
-        flash === "down" && "text-red-600 dark:text-red-400",
-        !flash && "text-foreground"
-      )}
-    >
-      ₹{value}
-    </span>
-  );
-}
-
 export function LandPerformanceChart({
   locations,
 }: {
   locations: MarketLocationItem[];
 }) {
-  const [slug, setSlug] = useState(locations[0]?.slug || "");
-  const pulse = useLivePricePulse(true);
+  const [slug, setSlug] = useState<string>(
+    LIVE_MARKET_CORRIDORS[0]?.slug || locations[0]?.slug || ""
+  );
+
+  const ordered = useMemo(() => {
+    const bySlug = new Map(locations.map((l) => [l.slug, l]));
+    const liveFirst = LIVE_MARKET_CORRIDORS.map((c) => bySlug.get(c.slug)).filter(
+      (l): l is MarketLocationItem => Boolean(l)
+    );
+    const liveSlugs = new Set<string>(LIVE_MARKET_CORRIDORS.map((c) => c.slug));
+    const rest = locations.filter((l) => !liveSlugs.has(l.slug));
+    return [...liveFirst, ...rest];
+  }, [locations]);
+
   const selected = useMemo(
-    () => locations.find((l) => l.slug === slug) || locations[0],
-    [locations, slug]
+    () => ordered.find((l) => l.slug === slug) || ordered[0],
+    [ordered, slug]
+  );
+
+  const band = useMemo(
+    () => corridorBand(selected?.slug || "", selected),
+    [selected]
   );
 
   const candles = useMemo(() => {
     if (!selected) return [];
-    const end =
-      selected.series?.[selected.series.length - 1]?.pricePerSqFt || 250;
-    const path = buildIndicativePath({
-      seed: `perf-candle-${selected.slug}`,
-      end,
-      changePct: selected.changePct || 12,
-      series: selected.series,
-      points: 32,
-    });
-    const base = closesToCandles(path, `perf-candle-${selected.slug}`);
-    return pulseSeries(base, pulse.factor, ["open", "high", "low", "close"]);
-  }, [selected, pulse.factor]);
+    return generateUpwardBandCandles(
+      `perf-acre-up-${selected.slug}-v4`,
+      band.min,
+      band.max,
+      32
+    );
+  }, [selected, band.min, band.max]);
 
-  if (!locations.length || !selected) return null;
+  if (!ordered.length || !selected) return null;
 
   const last = candles[candles.length - 1];
   const first = candles[0];
-  const sessionPct =
-    first && last
-      ? ((last.close - first.open) / first.open) * 100
-      : selected.changePct;
+  const sessionPct = band.changePct;
   const up = sessionPct >= 0;
 
   return (
@@ -211,24 +200,16 @@ export function LandPerformanceChart({
         <div>
           <p className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
             <Activity className="size-3.5" />
-            Land performance · live
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-normal text-emerald-700 normal-case dark:text-emerald-400">
-              <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
-              ticking
-            </span>
+            Land performance
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
             {selected.name} Land Index
           </h2>
           <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-            <span>Corridor land rate · ₹ / sq.ft</span>
-            {last ? (
-              <LiveRate
-                value={last.close}
-                delta={pulse.delta}
-                tick={pulse.tick}
-              />
-            ) : null}
+            <span>Corridor land rate · ₹ / acre</span>
+            <span className="font-semibold tabular-nums text-foreground">
+              {band.label}
+            </span>
             <span
               className={cn(
                 "inline-flex items-center gap-0.5 text-sm font-semibold tabular-nums",
@@ -247,14 +228,17 @@ export function LandPerformanceChart({
             </span>
           </p>
         </div>
-        <div className="w-full sm:w-56">
+        <div className="w-full sm:w-64">
           <FormSelect
             value={selected.slug}
             onValueChange={setSlug}
-            options={locations.map((l) => ({
-              value: l.slug,
-              label: l.name,
-            }))}
+            options={ordered.map((l) => {
+              const isLive = LIVE_MARKET_CORRIDORS.some((c) => c.slug === l.slug);
+              return {
+                value: l.slug,
+                label: isLive ? l.name : `${l.name} · soon`,
+              };
+            })}
           />
         </div>
       </div>
@@ -262,21 +246,18 @@ export function LandPerformanceChart({
       <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card">
         <div className="grid grid-cols-2 gap-3 border-b border-border px-4 py-3 sm:grid-cols-4 sm:px-6">
           {[
-            ["Open", last?.open],
-            ["High", last?.high],
-            ["Low", last?.low],
-            ["Close", last?.close],
+            ["Open", first?.open ?? band.min],
+            ["High", band.max],
+            ["Low", band.min],
+            ["Close", last?.close ?? band.max],
           ].map(([k, v]) => (
             <div key={String(k)}>
               <p className="text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
                 {k}
               </p>
               <p className="mt-0.5 text-sm font-semibold tabular-nums">
-                ₹{v ?? "—"}
-                <span className="font-normal text-muted-foreground">
-                  {" "}
-                  /sq.ft
-                </span>
+                {typeof v === "number" ? formatINR(v) : "—"}
+                <span className="font-normal text-muted-foreground"> /acre</span>
               </p>
             </div>
           ))}
@@ -287,8 +268,8 @@ export function LandPerformanceChart({
         </div>
 
         <p className="border-t border-border px-4 py-2.5 text-[11px] text-muted-foreground sm:px-6">
-          Monthly OHLC for {selected.name}. Green closed higher than open; red
-          closed lower. Live tip moves every few seconds.
+          Monthly OHLC for {selected.name} · rates per acre. Green closed higher
+          than open; red closed lower. Approx corridor band {band.label} / acre.
         </p>
       </div>
     </section>

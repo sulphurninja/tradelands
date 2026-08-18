@@ -23,10 +23,62 @@ export function formatArea(guntha: number) {
 export function categoryLabel(category: string) {
   const map: Record<string, string> = {
     "agriculture-land": "Agriculture Land",
-    "na-villa-plot": "NA Villa Plot",
+    "na-villa-plot": "NA Land",
     "farm-house": "Farm House",
   };
   return map[category] ?? category;
+}
+
+/** Unit rate for listing cards / detail — agri = /acre, NA = /sq.ft */
+export function getProjectUnitRate(project: {
+  category: string;
+  pricePerSqFt?: number;
+  pricing: {
+    pricePerAcre?: number;
+    minPrice: number;
+    maxPrice: number;
+  };
+  area: {
+    maxAcre?: number;
+    maxGuntha: number;
+  };
+}): { label: string; display: string } | null {
+  const isNa = project.category === "na-villa-plot";
+  const acres =
+    project.area.maxAcre ||
+    (project.area.maxGuntha > 0 ? project.area.maxGuntha / 40 : 0);
+
+  if (isNa) {
+    let perSqFt = project.pricePerSqFt;
+    if (perSqFt == null && project.pricing.pricePerAcre) {
+      perSqFt = Math.round(project.pricing.pricePerAcre / 43560);
+    }
+    if (perSqFt == null && acres > 0) {
+      perSqFt = Math.round(project.pricing.maxPrice / (acres * 43560));
+    }
+    if (perSqFt == null || !Number.isFinite(perSqFt) || perSqFt <= 0) {
+      return null;
+    }
+    return {
+      label: "₹ / sq.ft",
+      display: perSqFt.toLocaleString("en-IN"),
+    };
+  }
+
+  let perAcre = project.pricing.pricePerAcre;
+  if (perAcre == null && project.pricePerSqFt != null) {
+    perAcre = Math.round(project.pricePerSqFt * 43560);
+  }
+  if (perAcre == null && acres > 0) {
+    perAcre = Math.round(project.pricing.maxPrice / acres);
+  }
+  if (perAcre == null || !Number.isFinite(perAcre) || perAcre <= 0) {
+    return null;
+  }
+  return {
+    label: "₹ / acre",
+    display: formatINR(perAcre),
+  };
 }
 
 export function slugify(value: string) {

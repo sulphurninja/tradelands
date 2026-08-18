@@ -12,8 +12,8 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import type { MarketLocationItem, Project } from "@/lib/types";
-import { categoryLabel, formatINR } from "@/lib/format";
+import type { Project } from "@/lib/types";
+import { categoryLabel, formatINR, getProjectUnitRate } from "@/lib/format";
 import { SITE } from "@/lib/constants";
 import { isVideoUrl } from "@/lib/media";
 import { Button } from "@/components/ui/button";
@@ -24,21 +24,19 @@ import { SiteVisitDialog } from "@/components/forms/site-visit-dialog";
 import { WishlistButton } from "@/components/projects/wishlist-button";
 import { ProjectEngagement } from "@/components/projects/project-engagement";
 import { WaitlistDialog } from "@/components/market/upcoming-land-drops";
-import { ProjectCandlestickChart } from "@/components/market/project-candlestick-chart";
 import { AssetGrowthMetrics } from "@/components/market/asset-growth-metrics";
 import { LISTING_BADGE_META } from "@/lib/constants";
 
 export function ProjectDetail({
   project,
-  marketLocation,
 }: {
   project: Project;
-  marketLocation?: MarketLocationItem | null;
 }) {
   const available = project.plots.filter((p) => p.status === "available").length;
   const heroSrc = project.heroVideo || project.coverImage;
   const heroIsVideo = Boolean(project.heroVideo) || isVideoUrl(heroSrc);
   const [muted, setMuted] = useState(true);
+  const unitRate = getProjectUnitRate(project);
 
   return (
     <article className="overflow-x-clip pb-24 lg:pb-0">
@@ -131,11 +129,6 @@ export function ProjectDetail({
                 {project.story}
               </p>
             </div>
-
-            <ProjectCandlestickChart
-              project={project}
-              location={marketLocation}
-            />
 
             <div className="min-w-0">
               <h2 className="font-display text-2xl sm:text-3xl">
@@ -319,10 +312,12 @@ export function ProjectDetail({
                     {project.area.minGuntha}–{project.area.maxGuntha} Guntha
                   </dd>
                 </div>
-                {project.pricePerSqFt != null ? (
+                {unitRate ? (
                   <div className="flex justify-between gap-4">
-                    <dt className="shrink-0 text-muted-foreground">₹ / sq.ft</dt>
-                    <dd className="tabular-nums">{project.pricePerSqFt}</dd>
+                    <dt className="shrink-0 text-muted-foreground">
+                      {unitRate.label}
+                    </dt>
+                    <dd className="tabular-nums">{unitRate.display}</dd>
                   </div>
                 ) : null}
                 <div className="flex justify-between gap-4">

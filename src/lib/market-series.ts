@@ -55,10 +55,10 @@ export function generatePricePath(opts: {
   for (let i = 1; i < n; i++) {
     const target = start * Math.pow(1 + drift, i);
     // Slight bullish skew when change is positive; more red days when flat/down.
-    const skew = change >= 0 ? 0.46 : 0.52;
-    const shock = (rand() - skew) * vol * 2.4;
+    const skew = change >= 0 ? 0.48 : 0.52;
+    const shock = (rand() - skew) * vol * 2.6;
     // Occasional deeper pullback / spike
-    const event = rand() < 0.08 ? (rand() - 0.45) * vol * 3.5 : 0;
+    const event = rand() < 0.11 ? (rand() - 0.5) * vol * 4.2 : 0;
     const pull = ((target - price) / Math.max(price, 1)) * 0.42;
     price = Math.max(
       price * (1 + drift * 0.35 + shock + pull + event),
@@ -209,4 +209,102 @@ export function buildIndicativePath(opts: {
     changePct: opts.changePct,
     points: opts.points ?? 36,
   });
+}
+
+/**
+ * Net-up band walk (min → max) with real chop: pullbacks, flat stretches,
+ * and mixed green/red candles — not a static staircase.
+ */
+export function generateUpwardBandPath(opts: {
+  seed: string;
+  min: number;
+  max: number;
+  points: number;
+}): PricePoint[] {
+  const n = Math.max(opts.points, 8);
+  const lo = Math.max(opts.min, 1);
+  const hi = Math.max(opts.max, lo * 1.08);
+  const rand = mulberry32(hashSeed(`upband-${opts.seed}`));
+
+  const logLo = Math.log(lo);
+  const logHi = Math.log(hi);
+  const total = logHi - logLo;
+
+  // Personality
+  const vol = 0.045 + rand() * 0.04;
+  const dipAt = 0.22 + rand() * 0.38;
+  const dipLen = 0.12 + rand() * 0.2;
+  const flatAt = rand() > 0.4 ? 0.1 + rand() * 0.65 : -1;
+  const flatLen = 0.08 + rand() * 0.12;
+
+  const prices: number[] = new Array(n);
+  prices[0] = lo;
+  let logP = logLo;
+
+  for (let i = 1; i < n - 1; i++) {
+    const t = i / (n - 1);
+    const stepsLeft = n - 1 - i;
+    const needed = (logHi - logP) / Math.max(stepsLeft, 1);
+
+    let ret = needed * (0.55 + rand() * 0.7) + (rand() - 0.52) * vol;
+
+    // Pullback window — consecutive down / weak bars
+    if (t >= dipAt && t <= dipAt + dipLen) {
+      const u = (t - dipAt) / Math.max(dipLen, 0.01);
+      const strength = Math.sin(u * Math.PI);
+      ret = -Math.abs(needed) * (0.6 + rand() * 1.4) * strength - rand() * vol * 0.8;
+    }
+
+    // Consolidation — near-flat noise
+    if (flatAt >= 0 && t >= flatAt && t <= flatAt + flatLen) {
+      ret = (rand() - 0.5) * vol * 0.55;
+    }
+
+    // Random 1–2 bar red shocks outside regimes (~18% chance)
+    if (rand() < 0.18 && !(t >= dipAt && t <= dipAt + dipLen)) {
+      ret = -Math.abs(needed) * (0.4 + rand() * 1.1) - rand() * vol * 0.5;
+    }
+
+    logP += ret;
+
+    // Keep room to finish at hi; don't collapse below band floor
+    const maxEarly = logHi - total * 0.06 * (stepsLeft / (n - 1));
+    logP = Math.min(logP, maxEarly);
+    logP = Math.max(logP, logLo + total * t * 0.25);
+    logP = Math.max(logP, Math.log(lo * 0.94));
+
+    prices[i] = Math.exp(logP);
+  }
+  prices[n - 1] = hi;
+
+  // Light bar jitter (preserve ends)
+  for (let i = 1; i < n - 1; i++) {
+    const j = (rand() - 0.5) * prices[i]! * (0.01 + rand() * 0.02);
+    prices[i] = Math.min(hi * 1.03, Math.max(lo * 0.94, prices[i]! + j));
+  }
+
+  const now = new Date();
+  return prices.map((value, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (n - 1) + i, 1);
+    return {
+      label: `${MONTHS[d.getMonth()]} '${String(d.getFullYear()).slice(-2)}`,
+      value: Math.round(value),
+    };
+  });
+}
+
+/** OHLC candles for corridor / index boards — net up, organic path. */
+export function generateUpwardBandCandles(
+  seed: string,
+  min: number,
+  max: number,
+  points = 30
+): Candle[] {
+  const path = generateUpwardBandPath({
+    seed,
+    min,
+    max,
+    points: points + 1,
+  });
+  return closesToCandles(path, seed);
 }

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProjectDetail } from "@/components/projects/project-detail";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/queries";
-import { getDeskLocations } from "@/lib/tradeland-listings";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -33,16 +32,5 @@ export default async function ProjectPage({ params }: Props) {
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
-  const locations = getDeskLocations();
-  const hay =
-    `${project.location.village} ${project.location.taluka} ${project.location.district} ${project.name}`.toLowerCase();
-  const marketLocation =
-    locations.find((l) => hay.includes(l.name.toLowerCase())) ||
-    locations.find((l) => hay.includes(l.slug)) ||
-    locations[0] ||
-    null;
-
-  return (
-    <ProjectDetail project={project} marketLocation={marketLocation} />
-  );
+  return <ProjectDetail project={project} />;
 }

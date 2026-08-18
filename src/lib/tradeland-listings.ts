@@ -4,6 +4,38 @@ import type { MarketIndexItem, MarketLocationItem } from "@/lib/types";
 export type TradelandAsset = (typeof data.assets)[number];
 export type TradelandCorridor = (typeof data.corridors)[number];
 
+/** Live board corridors only — excludes Khalapur / Panvel / Daund desk leftovers. */
+const LIVE_BOARD_CORRIDORS = [
+  {
+    slug: "karjat-khalapur",
+    boardName: "Karjat–Khalapur Rd",
+    rateMinLakh: 50,
+    rateMaxLakh: 200,
+    changePct: 18.5,
+  },
+  {
+    slug: "pali-khopoli",
+    boardName: "Pali–Khopoli Rd",
+    rateMinLakh: 40,
+    rateMaxLakh: 150,
+    changePct: 15.2,
+  },
+  {
+    slug: "kolad-roha",
+    boardName: "Kolad–Roha Rd",
+    rateMinLakh: 30,
+    rateMaxLakh: 80,
+    changePct: 12.4,
+  },
+  {
+    slug: "lonavala-khandala",
+    boardName: "Lonavala–Khandala Rd",
+    rateMinLakh: 100,
+    rateMaxLakh: 500,
+    changePct: 16.8,
+  },
+] as const;
+
 export function getTradelandAssets(): TradelandAsset[] {
   return data.assets;
 }
@@ -12,7 +44,7 @@ export function getTradelandCorridors(): TradelandCorridor[] {
   return data.corridors;
 }
 
-/** Desk strip / index fallbacks built from real Excel inventory. */
+/** Desk strip / index — Maharashtra index + 4 live road corridors only. */
 export function getDeskIndexItems(): MarketIndexItem[] {
   const items: MarketIndexItem[] = [
     {
@@ -20,6 +52,7 @@ export function getDeskIndexItems(): MarketIndexItem[] {
       name: data.index.name,
       slug: "maharashtra-land-index",
       pricePerSqFt: data.index.pricePerSqFt,
+      pricePerAcre: 2_500_000,
       changePct: data.index.changePct,
       sortOrder: 0,
       featured: true,
@@ -27,15 +60,14 @@ export function getDeskIndexItems(): MarketIndexItem[] {
     },
   ];
 
-  data.corridors.forEach((c, i) => {
-    const pps =
-      c.avgPricePerSqFt ??
-      Math.max(80, Math.round(data.index.pricePerSqFt * (0.7 + (i % 5) * 0.08)));
+  LIVE_BOARD_CORRIDORS.forEach((c, i) => {
+    const midLakh = Math.round((c.rateMinLakh + c.rateMaxLakh) / 2);
     items.push({
       id: `tl-${c.slug}`,
-      name: c.name,
+      name: c.boardName,
       slug: c.slug,
-      pricePerSqFt: pps,
+      pricePerSqFt: Math.max(1, Math.round((midLakh * 100000) / 43560)),
+      pricePerAcre: midLakh * 100000,
       changePct: c.changePct,
       sortOrder: i + 1,
       featured: true,
@@ -46,18 +78,16 @@ export function getDeskIndexItems(): MarketIndexItem[] {
   return items;
 }
 
-/** Synthetic yearly series anchors from corridor averages (for charts). */
+/** Synthetic yearly series for the 4 live corridors — ₹ / acre. */
 export function getDeskLocations(): MarketLocationItem[] {
-  return data.corridors.map((c, i) => {
-    const end =
-      c.avgPricePerSqFt ??
-      Math.max(80, Math.round(data.index.pricePerSqFt * (0.7 + (i % 5) * 0.08)));
-    const start = Math.round(end / (1 + c.changePct / 100));
+  return LIVE_BOARD_CORRIDORS.map((c, i) => {
+    const end = c.rateMaxLakh * 100000;
+    const start = c.rateMinLakh * 100000;
     const mid1 = Math.round(start + (end - start) * 0.33);
     const mid2 = Math.round(start + (end - start) * 0.66);
     return {
       id: `tl-loc-${c.slug}`,
-      name: c.name,
+      name: c.boardName,
       slug: c.slug,
       lat: 18.5 + i * 0.05,
       lng: 73.2 + i * 0.04,
@@ -93,6 +123,93 @@ export function getDeskTickerLines(): string[] {
     );
   }
   return lines;
+}
+
+export type ActiveDeskParcel = {
+  id: string;
+  title: string;
+  acres: number;
+  location: string;
+  type: "agriculture" | "residential";
+  pricePerAcreLabel: string;
+  district: string;
+  corridorSlug: string;
+};
+
+/** Fixed desk board parcels (client-specified inventory highlights). */
+export function getActiveDeskParcels(): ActiveDeskParcel[] {
+  return [
+    {
+      id: "desk-pali-90",
+      title: "90 Acres · Pali",
+      acres: 90,
+      location: "Pali",
+      type: "agriculture",
+      pricePerAcreLabel: "₹40L – ₹1.50 Cr/acre",
+      district: "Raigad",
+      corridorSlug: "pali-khopoli",
+    },
+    {
+      id: "desk-karjat-res-50",
+      title: "50 Acres · Karjat",
+      acres: 50,
+      location: "Karjat",
+      type: "residential",
+      pricePerAcreLabel: "₹50L – ₹2 Cr/acre",
+      district: "Raigad",
+      corridorSlug: "karjat-khalapur",
+    },
+    {
+      id: "desk-karjat-agri-100",
+      title: "100 Acres · Karjat",
+      acres: 100,
+      location: "Karjat",
+      type: "agriculture",
+      pricePerAcreLabel: "₹50L – ₹2 Cr/acre",
+      district: "Raigad",
+      corridorSlug: "karjat-khalapur",
+    },
+    {
+      id: "desk-roha-160",
+      title: "160 Acres · Roha",
+      acres: 160,
+      location: "Roha",
+      type: "agriculture",
+      pricePerAcreLabel: "₹30L – ₹80L/acre",
+      district: "Raigad",
+      corridorSlug: "kolad-roha",
+    },
+    {
+      id: "desk-khopoli-80",
+      title: "80 Acres · Khopoli",
+      acres: 80,
+      location: "Khopoli",
+      type: "agriculture",
+      pricePerAcreLabel: "₹40L – ₹1.50 Cr/acre",
+      district: "Raigad",
+      corridorSlug: "pali-khopoli",
+    },
+    {
+      id: "desk-kolad-140",
+      title: "140 Acres · Kolad",
+      acres: 140,
+      location: "Kolad",
+      type: "agriculture",
+      pricePerAcreLabel: "₹30L – ₹80L/acre",
+      district: "Raigad",
+      corridorSlug: "kolad-roha",
+    },
+    {
+      id: "desk-khandala-60",
+      title: "60 Acres · Khandala",
+      acres: 60,
+      location: "Khandala",
+      type: "agriculture",
+      pricePerAcreLabel: "₹1 Cr – ₹5 Cr/acre",
+      district: "Pune",
+      corridorSlug: "lonavala-khandala",
+    },
+  ];
 }
 
 export function getFeaturedTradelandParcels(limit = 6): TradelandAsset[] {

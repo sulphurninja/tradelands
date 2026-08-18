@@ -5,10 +5,11 @@ import { LocationPath } from "@/components/market/location-path";
 import { MarketFilter } from "@/components/market/market-filter";
 import { TradeLandsIndexPanel } from "@/components/market/tradelands-index-panel";
 import { getProjects } from "@/lib/queries";
+import { getDeskIndexItems } from "@/lib/tradeland-listings";
 import {
-  getDeskIndexItems,
-  getDeskLocations,
-} from "@/lib/tradeland-listings";
+  getMarketCorridorOptions,
+  projectMatchesCorridor,
+} from "@/lib/market-corridors";
 import type { Project } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -30,8 +31,7 @@ interface Props {
 
 function filterProjects(
   all: Project[],
-  params: Awaited<Props["searchParams"]>,
-  locationNames: Map<string, string>
+  params: Awaited<Props["searchParams"]>
 ) {
   return all.filter((p) => {
     if (params.featured && !p.featured) return false;
@@ -73,12 +73,7 @@ function filterProjects(
       }
     }
     if (params.location) {
-      const name = locationNames.get(params.location)?.toLowerCase() || "";
-      const hay =
-        `${p.location.village} ${p.location.taluka} ${p.location.district} ${p.name}`.toLowerCase();
-      if (name && !hay.includes(name) && !hay.includes(params.location)) {
-        return false;
-      }
+      if (!projectMatchesCorridor(p, params.location)) return false;
     }
     if (params.q) {
       const q = params.q.toLowerCase();
@@ -108,12 +103,22 @@ function rankProjects(projects: Project[]) {
 export default async function MarketPage({ searchParams }: Props) {
   const params = await searchParams;
   const all = await getProjects();
-  const locations = getDeskLocations();
+  const corridors = getMarketCorridorOptions();
   const indices = getDeskIndexItems();
-  const locationNames = new Map(locations.map((l) => [l.slug, l.name]));
-  const filtered = rankProjects(filterProjects(all, params, locationNames));
-  const activeCorridor = params.location
-    ? locationNames.get(params.location)
+  const liveCorridors = corridors.filter((c) => !c.comingSoon);
+
+  // Ignore coming-soon location query
+  const locationSlug =
+    params.location &&
+    liveCorridors.some((c) => c.slug === params.location)
+      ? params.location
+      : undefined;
+
+  const filtered = rankProjects(
+    filterProjects(all, { ...params, location: locationSlug })
+  );
+  const activeCorridor = locationSlug
+    ? liveCorridors.find((c) => c.slug === locationSlug)?.name
     : null;
 
   return (
@@ -135,7 +140,7 @@ export default async function MarketPage({ searchParams }: Props) {
             }
           >
             <MarketFilter
-              locations={locations.map((l) => ({
+              locations={liveCorridors.map((l) => ({
                 slug: l.slug,
                 name: l.name,
               }))}
@@ -149,8 +154,8 @@ export default async function MarketPage({ searchParams }: Props) {
           <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)] xl:gap-12">
             <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
               <LocationPath
-                locations={locations}
-                activeSlug={params.location}
+                corridors={corridors}
+                activeSlug={locationSlug}
               />
               <div className="hidden lg:block">
                 <TradeLandsIndexPanel items={indices} />
@@ -163,7 +168,7 @@ export default async function MarketPage({ searchParams }: Props) {
                   <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
                     {activeCorridor
                       ? `${activeCorridor} corridor`
-                      : "All corridors"}
+                      : "All live corridors"}
                   </p>
                   <h2 className="mt-1 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
                     {filtered.length} asset

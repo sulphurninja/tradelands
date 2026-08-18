@@ -144,6 +144,8 @@ export interface MarketIndexItem {
   name: string;
   slug: string;
   pricePerSqFt: number;
+  /** Desk rate per acre in INR (preferred for land board). */
+  pricePerAcre?: number;
   changePct: number;
   sortOrder: number;
   featured: boolean;

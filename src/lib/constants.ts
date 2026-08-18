@@ -11,9 +11,8 @@ export const SITE = {
 
 /** Premium platform nav — flat links */
 export const NAV_LINKS = [
-  { href: "/market", label: "Market" },
   { href: "/discover", label: "Discover" },
-  { href: "/market?featured=1", label: "Opportunities" },
+  { href: "/market", label: "Projects" },
   { href: "/map", label: "Map" },
   { href: "/dashboard", label: "Portfolio" },
   { href: "/blogs", label: "Insights" },
@@ -34,8 +33,7 @@ export const LOCATION_ATTRIBUTES = [
 
 export const CATEGORIES = [
   { value: "agriculture-land", label: "Agriculture Land" },
-  { value: "na-villa-plot", label: "NA Villa Plot" },
-  { value: "farm-house", label: "Farm House" },
+  { value: "na-villa-plot", label: "NA Land" },
 ] as const;
 
 export const INVESTMENT_PURPOSES = [

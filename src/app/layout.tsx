@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist_Mono } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
+import { MetaPixel } from "@/components/analytics/meta-pixel";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -32,7 +34,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistMono.variable} h-full`}
     >
       <body className="min-h-full antialiased">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          {children}
+          <Suspense fallback={null}>
+            <MetaPixel />
+          </Suspense>
+        </AppProviders>
       </body>
     </html>
   );

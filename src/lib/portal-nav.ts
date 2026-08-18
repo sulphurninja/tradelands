@@ -14,6 +14,7 @@ import {
   MapPinned,
   MessageSquareQuote,
   PhoneCall,
+  Scale,
   Settings,
   Shield,
   Sparkles,
@@ -53,6 +54,7 @@ const adminCmsNav: PortalNavItem[] = [
   { href: "/admin/offers", label: "Offers", icon: Tag },
   { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
   { href: "/admin/leads", label: "Leads", icon: Users },
+  { href: "/admin/sale-land", label: "Sell Land", icon: Scale },
   { href: "/admin/site-visits", label: "Site Visits", icon: PhoneCall },
 ];
 

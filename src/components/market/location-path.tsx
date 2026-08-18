@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import type { MarketLocationItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import type { MarketCorridorOption } from "@/lib/market-corridors";
 
 export function LocationPath({
-  locations,
+  corridors,
   activeSlug,
   baseHref = "/market",
 }: {
-  locations: MarketLocationItem[];
+  corridors: MarketCorridorOption[];
   activeSlug?: string;
   baseHref?: string;
 }) {
-  const ordered = [...locations].sort((a, b) => a.sortOrder - b.sortOrder);
+  const live = corridors.filter((c) => !c.comingSoon);
+  const soon = corridors.filter((c) => c.comingSoon);
 
   return (
     <nav
@@ -33,35 +34,70 @@ export function LocationPath({
           </Link>
         ) : null}
       </div>
-      <ul className="space-y-0.5">
-        {ordered.map((loc) => {
+
+      <ul className="space-y-1">
+        {live.map((loc) => {
           const active = activeSlug === loc.slug;
           return (
-            <li key={loc.id}>
+            <li key={loc.slug}>
               <Link
                 href={`${baseHref}?location=${loc.slug}`}
                 className={cn(
-                  "flex items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm transition",
+                  "block rounded-lg px-2.5 py-2 text-sm transition",
                   active
                     ? "bg-foreground text-background"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                <span className="truncate font-medium">{loc.name}</span>
-                <span
-                  className={cn(
-                    "shrink-0 text-[11px] tabular-nums",
-                    active ? "text-background/70" : "text-muted-foreground"
-                  )}
-                >
-                  {loc.changePct >= 0 ? "+" : ""}
-                  {loc.changePct.toFixed(1)}%
+                <span className="flex items-center justify-between gap-2">
+                  <span className="truncate font-medium">{loc.name}</span>
+                  {loc.changePct != null ? (
+                    <span
+                      className={cn(
+                        "shrink-0 text-[11px] tabular-nums",
+                        active ? "text-background/70" : "text-muted-foreground"
+                      )}
+                    >
+                      {loc.changePct >= 0 ? "+" : ""}
+                      {loc.changePct.toFixed(1)}%
+                    </span>
+                  ) : null}
                 </span>
+                {loc.rateLabel ? (
+                  <span
+                    className={cn(
+                      "mt-0.5 block text-[10px] leading-snug",
+                      active ? "text-background/65" : "text-muted-foreground/80"
+                    )}
+                  >
+                    {loc.rateLabel}
+                  </span>
+                ) : null}
               </Link>
             </li>
           );
         })}
       </ul>
+
+      {soon.length ? (
+        <div className="mt-4 border-t border-border/70 pt-3">
+          <p className="mb-2 text-[10px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+            Coming soon
+          </p>
+          <ul className="space-y-0.5">
+            {soon.map((loc) => (
+              <li key={loc.slug}>
+                <div className="flex items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm text-muted-foreground/70">
+                  <span className="truncate font-medium">{loc.name}</span>
+                  <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.08em] uppercase">
+                    Soon
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </nav>
   );
 }

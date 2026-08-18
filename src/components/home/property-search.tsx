@@ -6,7 +6,7 @@ import { Search, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSelect } from "@/components/ui/form-select";
-import { CATEGORIES, LOCATION_ATTRIBUTES } from "@/lib/constants";
+import { CATEGORIES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const states = ["Maharashtra", "Karnataka", "Telangana", "Gujarat"];
@@ -26,7 +26,6 @@ export function PropertySearch({
     state?: string;
     category?: string;
     budget?: string;
-    attribute?: string;
     stage?: string;
   };
   trending?: { slug: string; name: string; locationLabel?: string }[];
@@ -39,7 +38,6 @@ export function PropertySearch({
   const [state, setState] = useState(initial?.state || "all");
   const [category, setCategory] = useState(initial?.category || "all");
   const [budget, setBudget] = useState(initial?.budget || "all");
-  const [attribute, setAttribute] = useState(initial?.attribute || "all");
   const [stage, setStage] = useState(initial?.stage || "all");
 
   const suggestions = useMemo(() => {
@@ -80,7 +78,6 @@ export function PropertySearch({
     if (state !== "all") params.set("state", state);
     if (category !== "all") params.set("category", category);
     if (budget !== "all") params.set("budget", budget);
-    if (attribute !== "all") params.set("attribute", attribute);
     if (stage !== "all") params.set("stage", stage);
     const qs = params.toString();
     router.push(qs ? `/market?${qs}` : "/market");
@@ -170,7 +167,7 @@ export function PropertySearch({
         ) : null}
       </div>
 
-      <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+      <div className="grid grid-cols-1 items-end gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         <SearchField label="State">
           <FormSelect
             value={state}
@@ -217,22 +214,6 @@ export function PropertySearch({
               { value: "all", label: "Any stage" },
               { value: "developed", label: "Developed" },
               { value: "under-development", label: "Under development" },
-            ]}
-          />
-        </SearchField>
-
-        <SearchField label="Attribute">
-          <FormSelect
-            value={attribute}
-            onValueChange={setAttribute}
-            triggerClassName={triggerClass}
-            placeholder="Any Attribute"
-            options={[
-              { value: "all", label: "Any Attribute" },
-              ...LOCATION_ATTRIBUTES.map((a) => ({
-                value: a.value,
-                label: a.label,
-              })),
             ]}
           />
         </SearchField>

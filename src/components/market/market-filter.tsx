@@ -10,7 +10,6 @@ import { FormSelect } from "@/components/ui/form-select";
 import {
   CATEGORIES,
   INVESTMENT_HORIZONS,
-  LOCATION_ATTRIBUTES,
 } from "@/lib/constants";
 
 const budgets = [
@@ -54,9 +53,6 @@ export function MarketFilter({
   const [size, setSize] = useState(searchParams.get("size") || "all");
   const [growth, setGrowth] = useState(searchParams.get("growth") || "all");
   const [horizon, setHorizon] = useState(searchParams.get("horizon") || "all");
-  const [attribute, setAttribute] = useState(
-    searchParams.get("attribute") || "all"
-  );
 
   useEffect(() => {
     setQ(searchParams.get("q") || "");
@@ -66,7 +62,6 @@ export function MarketFilter({
     setSize(searchParams.get("size") || "all");
     setGrowth(searchParams.get("growth") || "all");
     setHorizon(searchParams.get("horizon") || "all");
-    setAttribute(searchParams.get("attribute") || "all");
   }, [searchParams]);
 
   function apply(next?: Record<string, string>) {
@@ -78,7 +73,6 @@ export function MarketFilter({
       size: next?.size ?? size,
       growth: next?.growth ?? growth,
       horizon: next?.horizon ?? horizon,
-      attribute: next?.attribute ?? attribute,
       featured: searchParams.get("featured") || "",
     };
     const params = new URLSearchParams();
@@ -89,7 +83,6 @@ export function MarketFilter({
     if (values.size !== "all") params.set("size", values.size);
     if (values.growth !== "all") params.set("growth", values.growth);
     if (values.horizon !== "all") params.set("horizon", values.horizon);
-    if (values.attribute !== "all") params.set("attribute", values.attribute);
     if (values.featured) params.set("featured", values.featured);
     const qs = params.toString();
     startTransition(() => {
@@ -105,7 +98,6 @@ export function MarketFilter({
       searchParams.get("size") ||
       searchParams.get("growth") ||
       searchParams.get("horizon") ||
-      searchParams.get("attribute") ||
       searchParams.get("featured")
   );
 
@@ -147,7 +139,7 @@ export function MarketFilter({
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
           <FormSelect
             value={location}
             onValueChange={(v) => {
@@ -205,20 +197,6 @@ export function MarketFilter({
               ...INVESTMENT_HORIZONS.map((h) => ({
                 value: h.value,
                 label: h.label,
-              })),
-            ]}
-          />
-          <FormSelect
-            value={attribute}
-            onValueChange={(v) => {
-              setAttribute(v);
-              apply({ attribute: v });
-            }}
-            options={[
-              { value: "all", label: "Attribute" },
-              ...LOCATION_ATTRIBUTES.map((a) => ({
-                value: a.value,
-                label: a.label,
               })),
             ]}
           />
