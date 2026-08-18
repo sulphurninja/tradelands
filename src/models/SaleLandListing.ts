@@ -4,9 +4,10 @@ const SaleLandListingSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
+    email: { type: String, trim: true, lowercase: true },
     landSize: { type: String, trim: true },
     pinLocation: { type: String, required: true, trim: true },
-    rate: { type: String, trim: true },
+    rate: { type: String, required: true, trim: true },
     photos: { type: [String], default: [] },
     documents: { type: [String], default: [] },
     notes: { type: String, trim: true },

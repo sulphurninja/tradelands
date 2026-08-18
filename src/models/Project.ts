@@ -81,6 +81,7 @@ const ProjectSchema = new Schema(
     appreciation: String,
     legalStatus: String,
     featured: { type: Boolean, default: false },
+    bulkDeal: { type: Boolean, default: false, index: true },
     listingBadge: {
       type: String,
       enum: ["available", "coming-soon", "premium", "high-demand"],

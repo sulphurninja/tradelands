@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MaintenanceBanner } from "@/components/layout/maintenance-banner";
@@ -40,7 +41,9 @@ export default async function MarketingLayout({
   return (
     <div className="flex min-h-full flex-col overflow-x-clip">
       <MaintenanceBanner />
-      <SiteHeader />
+      <Suspense fallback={<div className="h-14 sm:h-16" />}>
+        <SiteHeader />
+      </Suspense>
       <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
       <SiteFooter />
       <SocialProofToasts projects={proofProjects} />

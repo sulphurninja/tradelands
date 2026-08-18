@@ -3,9 +3,9 @@ export const SITE = {
   domain: "TradeLands.IND",
   tagline:
     "Premium land opportunities across Maharashtra — discover, compare, invest, track.",
-  phone: "+91 98765 43210",
+  phone: "+917977076969",
   email: "invest@tradelands.ind",
-  whatsapp: "919876543210",
+  whatsapp: "917977076969",
   address: "Pune · Mumbai · Nashik · Hyderabad",
 };
 
@@ -13,6 +13,7 @@ export const SITE = {
 export const NAV_LINKS = [
   { href: "/discover", label: "Discover" },
   { href: "/market", label: "Projects" },
+  { href: "/market?bulk=1", label: "Bulk deals" },
   { href: "/map", label: "Map" },
   { href: "/dashboard", label: "Portfolio" },
   { href: "/blogs", label: "Insights" },

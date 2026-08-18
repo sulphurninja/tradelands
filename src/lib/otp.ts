@@ -3,13 +3,15 @@ import { connectDB } from "@/lib/db";
 import { otpEmailHtml, sendEmail } from "@/lib/email";
 import { OtpCode } from "@/models/OtpCode";
 
+export type OtpPurpose = "verify-email" | "login" | "sale-land";
+
 function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 export async function issueEmailOtp(
   email: string,
-  purpose: "verify-email" | "login" = "verify-email"
+  purpose: OtpPurpose = "verify-email"
 ) {
   await connectDB();
   const normalized = email.toLowerCase().trim();
@@ -33,7 +35,7 @@ export async function issueEmailOtp(
 export async function verifyEmailOtp(
   email: string,
   code: string,
-  purpose: "verify-email" | "login" = "verify-email"
+  purpose: OtpPurpose = "verify-email"
 ) {
   await connectDB();
   const normalized = email.toLowerCase().trim();

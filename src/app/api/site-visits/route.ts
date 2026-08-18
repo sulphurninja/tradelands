@@ -6,6 +6,7 @@ import {
   sendEmail,
   siteVisitRequestedHtml,
   staffVisitAlertHtml,
+  SALES_INBOX,
 } from "@/lib/email";
 import { createNotification, notifyStaff } from "@/lib/notifications";
 import { getSiteConfig } from "@/lib/platform-settings";
@@ -93,6 +94,21 @@ export async function POST(request: Request) {
             time: data.time,
           }),
           text: `Hi ${data.name}, we received your site visit request for ${projectName} on ${data.date} at ${data.time}.`,
+          copySales: true,
+        });
+      } else {
+        // No client email — still alert sales desk
+        await sendEmail({
+          to: SALES_INBOX,
+          subject: `New site visit — ${projectName}`,
+          html: staffVisitAlertHtml({
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            project: projectName,
+            date: data.date,
+            time: data.time,
+          }),
         });
       }
 
@@ -127,6 +143,7 @@ export async function POST(request: Request) {
             date: data.date,
             time: data.time,
           }),
+          copySales: true,
         });
       }
     } catch (notifyError) {

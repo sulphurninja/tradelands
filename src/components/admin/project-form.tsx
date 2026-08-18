@@ -55,6 +55,7 @@ const emptyProject = (): Omit<Project, "id" | "createdAt"> => ({
   plots: [],
   legalStatus: "",
   featured: true,
+  bulkDeal: false,
   developmentStage: "under-development",
   viewCount: 0,
   interestCount: 0,
@@ -199,6 +200,13 @@ export function ProjectForm({ project }: { project?: Project }) {
             onCheckedChange={(v) => patch("featured", Boolean(v))}
           />
           Featured on home
+        </label>
+        <label className="flex items-center gap-2 text-sm md:col-span-2">
+          <Checkbox
+            checked={Boolean(form.bulkDeal)}
+            onCheckedChange={(v) => patch("bulkDeal", Boolean(v))}
+          />
+          Bulk deal inventory
         </label>
         <div className="space-y-2 md:col-span-2">
           <Label>Development stage</Label>

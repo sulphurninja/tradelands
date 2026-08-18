@@ -1029,9 +1029,9 @@ async function seed() {
     domain: "TradeLands.IND",
     tagline:
       "Agriculture land, NA villa plots, and farm houses — clear papers, clear pricing.",
-    phone: "+91 98765 43210",
+    phone: "+917977076969",
     email: "invest@tradelands.ind",
-    whatsapp: "919876543210",
+    whatsapp: "917977076969",
     address: "Pune · Mumbai · Nashik · Hyderabad",
     supportEmail: "support@tradelands.ind",
     bookingDepositInr: 25000,

@@ -10,6 +10,10 @@ import {
   getMarketCorridorOptions,
   projectMatchesCorridor,
 } from "@/lib/market-corridors";
+import {
+  isBulkDealProject,
+  projectAcreBounds,
+} from "@/lib/bulk-deals";
 import type { Project } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -22,10 +26,9 @@ interface Props {
     budget?: string;
     category?: string;
     size?: string;
-    growth?: string;
-    horizon?: string;
     attribute?: string;
     featured?: string;
+    bulk?: string;
   }>;
 }
 
@@ -33,24 +36,16 @@ function filterProjects(
   all: Project[],
   params: Awaited<Props["searchParams"]>
 ) {
+  const bulk = params.bulk === "1";
   return all.filter((p) => {
+    if (bulk && !isBulkDealProject(p)) return false;
     if (params.featured && !p.featured) return false;
     if (params.category && p.category !== params.category) return false;
-    if (params.horizon && p.investmentHorizon !== params.horizon) return false;
     if (
       params.attribute &&
       !p.attributes?.includes(params.attribute as Project["attributes"][number])
     ) {
       return false;
-    }
-    if (params.growth) {
-      const min = Number(params.growth);
-      if (
-        Number.isFinite(min) &&
-        (p.growthPotentialPct == null || p.growthPotentialPct < min)
-      ) {
-        return false;
-      }
     }
     if (params.budget) {
       const [min, max] = params.budget.split("-").map(Number);
@@ -64,13 +59,18 @@ function filterProjects(
     }
     if (params.size) {
       const [min, max] = params.size.split("-").map(Number);
+      const { minAcre, maxAcre } = projectAcreBounds(p);
       if (
         Number.isFinite(min) &&
         Number.isFinite(max) &&
-        (p.area.maxGuntha < min || p.area.minGuntha > max)
+        (maxAcre < min || minAcre > max)
       ) {
         return false;
       }
+    } else if (bulk) {
+      // Default bulk band: parcels that touch 25–100 acres
+      const { minAcre, maxAcre } = projectAcreBounds(p);
+      if (maxAcre < 25 || minAcre > 100) return false;
     }
     if (params.location) {
       if (!projectMatchesCorridor(p, params.location)) return false;
@@ -102,6 +102,7 @@ function rankProjects(projects: Project[]) {
 
 export default async function MarketPage({ searchParams }: Props) {
   const params = await searchParams;
+  const bulk = params.bulk === "1";
   const all = await getProjects();
   const corridors = getMarketCorridorOptions();
   const indices = getDeskIndexItems();
@@ -124,10 +125,19 @@ export default async function MarketPage({ searchParams }: Props) {
   return (
     <>
       <PageHero
-        eyebrow="Institutional land desk"
-        title="Market"
-        description="Curated Maharashtra parcels with corridor rates, growth signals, and clear sizing — built for serious land allocation."
-        crumbs={[{ href: "/market", label: "Market" }]}
+        eyebrow={bulk ? "Bulk land desk" : "Institutional land desk"}
+        title={bulk ? "Bulk deals" : "Market"}
+        description={
+          bulk
+            ? "Large parcels from the TradeLands desk inventory — agriculture and NA land across live locations, sized 25–100 acres with budgets from ₹25L to ₹5 Cr."
+            : "Curated Maharashtra parcels with corridor rates, growth signals, and clear sizing — built for serious land allocation."
+        }
+        crumbs={[
+          { href: "/market", label: "Market" },
+          ...(bulk
+            ? [{ href: "/market?bulk=1", label: "Bulk deals" }]
+            : []),
+        ]}
         image="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80"
         compact
       />
@@ -156,6 +166,7 @@ export default async function MarketPage({ searchParams }: Props) {
               <LocationPath
                 corridors={corridors}
                 activeSlug={locationSlug}
+                preserveParams={bulk ? { bulk: "1" } : undefined}
               />
               <div className="hidden lg:block">
                 <TradeLandsIndexPanel items={indices} />
@@ -166,9 +177,13 @@ export default async function MarketPage({ searchParams }: Props) {
               <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-                    {activeCorridor
-                      ? `${activeCorridor} corridor`
-                      : "All live corridors"}
+                    {bulk
+                      ? activeCorridor
+                        ? `${activeCorridor} · bulk`
+                        : "Bulk desk inventory"
+                      : activeCorridor
+                        ? `${activeCorridor}`
+                        : "All live locations"}
                   </p>
                   <h2 className="mt-1 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
                     {filtered.length} asset
@@ -176,7 +191,9 @@ export default async function MarketPage({ searchParams }: Props) {
                   </h2>
                 </div>
                 <p className="text-[12px] text-muted-foreground">
-                  Desk rates · indicative growth
+                  {bulk
+                    ? "Desk inventory · no contact numbers shown"
+                    : "Desk rates · indicative growth"}
                 </p>
               </div>
 
@@ -190,7 +207,7 @@ export default async function MarketPage({ searchParams }: Props) {
                 <div className="rounded-xl border border-dashed border-border bg-card px-6 py-20 text-center">
                   <p className="text-base font-medium">No matching assets</p>
                   <p className="mt-1.5 text-sm text-muted-foreground">
-                    Clear filters or pick another corridor to continue.
+                    Clear filters or pick another location to continue.
                   </p>
                 </div>
               )}

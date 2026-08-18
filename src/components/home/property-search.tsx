@@ -225,6 +225,15 @@ export function PropertySearch({
           <Search className="size-4" />
           <span>Search</span>
         </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push("/market?bulk=1")}
+          className="h-11 w-full touch-manipulation rounded-full px-5 text-sm sm:col-span-2 lg:col-span-1 lg:mb-1 lg:h-10 lg:w-auto"
+        >
+          Bulk deals
+        </Button>
       </div>
     </form>
   );

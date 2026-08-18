@@ -5,6 +5,7 @@ import {
   Building2,
   CalendarDays,
   Camera,
+  ClipboardList,
   CreditCard,
   FileText,
   Headphones,
@@ -55,6 +56,7 @@ const adminCmsNav: PortalNavItem[] = [
   { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
   { href: "/admin/leads", label: "Leads", icon: Users },
   { href: "/admin/sale-land", label: "Sell Land", icon: Scale },
+  { href: "/admin/requirements", label: "Requirements", icon: ClipboardList },
   { href: "/admin/site-visits", label: "Site Visits", icon: PhoneCall },
 ];
 

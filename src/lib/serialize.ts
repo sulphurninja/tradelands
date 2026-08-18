@@ -55,6 +55,7 @@ export function serializeProject(doc: Doc): Project {
     appreciation: doc.appreciation ? String(doc.appreciation) : undefined,
     legalStatus: String(doc.legalStatus ?? ""),
     featured: Boolean(doc.featured),
+    bulkDeal: Boolean(doc.bulkDeal) || String(doc.slug || "").startsWith("tl-"),
     developmentStage:
       (doc.developmentStage as Project["developmentStage"]) ||
       "under-development",

@@ -56,6 +56,14 @@ export default async function AdminSaleLandPage() {
                       >
                         {row.phone}
                       </a>
+                      {row.email ? (
+                        <a
+                          href={`mailto:${row.email}`}
+                          className="mt-0.5 block text-xs text-muted-foreground hover:text-primary hover:underline"
+                        >
+                          {String(row.email)}
+                        </a>
+                      ) : null}
                       {row.notes ? (
                         <p className="mt-1 max-w-[220px] text-xs text-muted-foreground">
                           {String(row.notes)}

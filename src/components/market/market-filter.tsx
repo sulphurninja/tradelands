@@ -7,10 +7,12 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSelect } from "@/components/ui/form-select";
+import { CATEGORIES } from "@/lib/constants";
 import {
-  CATEGORIES,
-  INVESTMENT_HORIZONS,
-} from "@/lib/constants";
+  BULK_BUDGET_OPTIONS,
+  BULK_SIZE_OPTIONS,
+} from "@/lib/bulk-deals";
+import { cn } from "@/lib/utils";
 
 const budgets = [
   { label: "Under ₹50L", value: "0-5000000" },
@@ -20,17 +22,11 @@ const budgets = [
 ];
 
 const sizes = [
-  { label: "Under 10 Guntha", value: "0-10" },
-  { label: "10–25 Guntha", value: "10-25" },
-  { label: "25–50 Guntha", value: "25-50" },
-  { label: "50+ Guntha", value: "50-9999" },
-];
-
-const growthBands = [
-  { label: "Any growth", value: "all" },
-  { label: "8%+", value: "8" },
-  { label: "12%+", value: "12" },
-  { label: "15%+", value: "15" },
+  { label: "Under 1 Acre", value: "0-1" },
+  { label: "1–2 Acre", value: "1-2" },
+  { label: "2–5 Acre", value: "2-5" },
+  { label: "5–10 Acre", value: "5-10" },
+  { label: "10+ Acre", value: "10-9999" },
 ];
 
 export function MarketFilter({
@@ -41,6 +37,7 @@ export function MarketFilter({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [pending, startTransition] = useTransition();
+  const bulk = searchParams.get("bulk") === "1";
 
   const [q, setQ] = useState(searchParams.get("q") || "");
   const [location, setLocation] = useState(
@@ -51,8 +48,6 @@ export function MarketFilter({
     searchParams.get("category") || "all"
   );
   const [size, setSize] = useState(searchParams.get("size") || "all");
-  const [growth, setGrowth] = useState(searchParams.get("growth") || "all");
-  const [horizon, setHorizon] = useState(searchParams.get("horizon") || "all");
 
   useEffect(() => {
     setQ(searchParams.get("q") || "");
@@ -60,8 +55,6 @@ export function MarketFilter({
     setBudget(searchParams.get("budget") || "all");
     setCategory(searchParams.get("category") || "all");
     setSize(searchParams.get("size") || "all");
-    setGrowth(searchParams.get("growth") || "all");
-    setHorizon(searchParams.get("horizon") || "all");
   }, [searchParams]);
 
   function apply(next?: Record<string, string>) {
@@ -71,18 +64,16 @@ export function MarketFilter({
       budget: next?.budget ?? budget,
       category: next?.category ?? category,
       size: next?.size ?? size,
-      growth: next?.growth ?? growth,
-      horizon: next?.horizon ?? horizon,
       featured: searchParams.get("featured") || "",
+      bulk: next?.bulk ?? (bulk ? "1" : ""),
     };
     const params = new URLSearchParams();
+    if (values.bulk === "1") params.set("bulk", "1");
     if (values.q.trim()) params.set("q", values.q.trim());
     if (values.location !== "all") params.set("location", values.location);
     if (values.budget !== "all") params.set("budget", values.budget);
     if (values.category !== "all") params.set("category", values.category);
     if (values.size !== "all") params.set("size", values.size);
-    if (values.growth !== "all") params.set("growth", values.growth);
-    if (values.horizon !== "all") params.set("horizon", values.horizon);
     if (values.featured) params.set("featured", values.featured);
     const qs = params.toString();
     startTransition(() => {
@@ -96,10 +87,12 @@ export function MarketFilter({
       searchParams.get("budget") ||
       searchParams.get("category") ||
       searchParams.get("size") ||
-      searchParams.get("growth") ||
-      searchParams.get("horizon") ||
-      searchParams.get("featured")
+      searchParams.get("featured") ||
+      searchParams.get("bulk")
   );
+
+  const budgetOptions = bulk ? BULK_BUDGET_OPTIONS : budgets;
+  const sizeOptions = bulk ? BULK_SIZE_OPTIONS : sizes;
 
   return (
     <div className="space-y-3">
@@ -110,6 +103,34 @@ export function MarketFilter({
         }}
         className="rounded-xl border border-border/80 bg-card p-3 shadow-sm sm:p-4"
       >
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setBudget("all");
+              setSize("all");
+              apply({
+                bulk: bulk ? "" : "1",
+                budget: "all",
+                size: "all",
+              });
+            }}
+            className={cn(
+              "inline-flex h-9 items-center rounded-full border px-4 text-[11px] font-semibold tracking-[0.08em] uppercase transition",
+              bulk
+                ? "border-foreground bg-foreground text-background"
+                : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+            )}
+          >
+            Bulk deals
+          </button>
+          <p className="text-[11px] text-muted-foreground">
+            {bulk
+              ? "Bulk Deals · 25–100 acres · ₹25L – ₹5 Cr"
+              : "Toggle bulk deals for large parcels from the desk inventory"}
+          </p>
+        </div>
+
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -139,7 +160,7 @@ export function MarketFilter({
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
           <FormSelect
             value={location}
             onValueChange={(v) => {
@@ -147,7 +168,7 @@ export function MarketFilter({
               apply({ location: v });
             }}
             options={[
-              { value: "all", label: "Corridor" },
+              { value: "all", label: "Location" },
               ...locations.map((l) => ({ value: l.slug, label: l.name })),
             ]}
           />
@@ -157,7 +178,16 @@ export function MarketFilter({
               setBudget(v);
               apply({ budget: v });
             }}
-            options={[{ value: "all", label: "Budget" }, ...budgets]}
+            options={[
+              {
+                value: "all",
+                label: bulk ? "Budget (₹25L–₹5Cr)" : "Budget",
+              },
+              ...budgetOptions.map((b) => ({
+                value: b.value,
+                label: b.label,
+              })),
+            ]}
           />
           <FormSelect
             value={category}
@@ -176,27 +206,14 @@ export function MarketFilter({
               setSize(v);
               apply({ size: v });
             }}
-            options={[{ value: "all", label: "Size" }, ...sizes]}
-          />
-          <FormSelect
-            value={growth}
-            onValueChange={(v) => {
-              setGrowth(v);
-              apply({ growth: v });
-            }}
-            options={growthBands}
-          />
-          <FormSelect
-            value={horizon}
-            onValueChange={(v) => {
-              setHorizon(v);
-              apply({ horizon: v });
-            }}
             options={[
-              { value: "all", label: "Horizon" },
-              ...INVESTMENT_HORIZONS.map((h) => ({
-                value: h.value,
-                label: h.label,
+              {
+                value: "all",
+                label: bulk ? "Size (25–100 Ac)" : "Size",
+              },
+              ...sizeOptions.map((s) => ({
+                value: s.value,
+                label: s.label,
               })),
             ]}
           />

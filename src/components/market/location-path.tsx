@@ -8,26 +8,37 @@ export function LocationPath({
   corridors,
   activeSlug,
   baseHref = "/market",
+  preserveParams,
 }: {
   corridors: MarketCorridorOption[];
   activeSlug?: string;
   baseHref?: string;
+  /** Extra query params kept on location links (e.g. bulk=1). */
+  preserveParams?: Record<string, string>;
 }) {
   const live = corridors.filter((c) => !c.comingSoon);
   const soon = corridors.filter((c) => c.comingSoon);
 
+  function hrefFor(location?: string) {
+    const params = new URLSearchParams(preserveParams || {});
+    if (location) params.set("location", location);
+    else params.delete("location");
+    const qs = params.toString();
+    return qs ? `${baseHref}?${qs}` : baseHref;
+  }
+
   return (
     <nav
-      aria-label="Location corridor"
+      aria-label="Locations"
       className="rounded-xl border border-border/80 bg-card p-4 shadow-sm"
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-          Corridors
+          Locations
         </p>
         {activeSlug ? (
           <Link
-            href={baseHref}
+            href={hrefFor()}
             className="text-[11px] font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
           >
             All
@@ -41,7 +52,7 @@ export function LocationPath({
           return (
             <li key={loc.slug}>
               <Link
-                href={`${baseHref}?location=${loc.slug}`}
+                href={hrefFor(loc.slug)}
                 className={cn(
                   "block rounded-lg px-2.5 py-2 text-sm transition",
                   active

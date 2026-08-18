@@ -15,11 +15,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { trackMeta, trackMetaCustom } from "@/lib/meta-pixel";
 import { cn } from "@/lib/utils";
 
 const MAX_PHOTOS = 5;
 const MAX_DOCS = 5;
+
+type Step = "details" | "otp" | "done";
 
 export function SaleLandDialog({
   triggerClassName,
@@ -40,11 +47,14 @@ export function SaleLandDialog({
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = controlledOnOpenChange ?? setUncontrolledOpen;
 
-  const [done, setDone] = useState(false);
+  const [step, setStep] = useState<Step>("details");
   const [pending, setPending] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [docs, setDocs] = useState<File[]>([]);
+  const [pendingEmail, setPendingEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const draftRef = useRef<FormData | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
   const docRef = useRef<HTMLInputElement>(null);
 
@@ -55,10 +65,13 @@ export function SaleLandDialog({
   }, [open, source]);
 
   function reset() {
-    setDone(false);
+    setStep("details");
     setPending(false);
     setPhotos([]);
     setDocs([]);
+    setPendingEmail("");
+    setOtp("");
+    draftRef.current = null;
     setPreviews((prev) => {
       prev.forEach((u) => URL.revokeObjectURL(u));
       return [];
@@ -105,7 +118,19 @@ export function SaleLandDialog({
     setDocs((prev) => prev.filter((_, idx) => idx !== i));
   }
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function sendOtp(email: string) {
+    const res = await fetch("/api/sale-land/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(json.error || "Could not send verification code");
+    }
+  }
+
+  async function onDetailsSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (photos.length === 0 && docs.length === 0) {
       toast.error("Please upload at least one photo or document.");
@@ -120,12 +145,44 @@ export function SaleLandDialog({
     for (const file of photos) data.append("photos", file);
     for (const file of docs) data.append("documents", file);
 
+    const email = String(data.get("email") || "")
+      .trim()
+      .toLowerCase();
+    try {
+      await sendOtp(email);
+      draftRef.current = data;
+      setPendingEmail(email);
+      setOtp("");
+      setStep("otp");
+      toast.message("Enter the 6-digit code sent to your email");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Could not send verification code"
+      );
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function onOtpSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (otp.length !== 6) {
+      toast.error("Enter the 6-digit verification code");
+      return;
+    }
+    const data = draftRef.current;
+    if (!data) {
+      toast.error("Session expired — please fill the form again");
+      setStep("details");
+      return;
+    }
+    setPending(true);
+    data.set("otp", otp);
     try {
       const res = await fetch("/api/sale-land", { method: "POST", body: data });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         toast.error(json.error || "Submission failed");
-        setPending(false);
         return;
       }
       trackMeta("Lead", {
@@ -134,10 +191,25 @@ export function SaleLandDialog({
         source,
       });
       trackMetaCustom("SellLandSubmit", { source });
-      setDone(true);
+      setStep("done");
       toast.success("Submitted successfully");
     } catch {
       toast.error("Network error — please try again");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function resendCode() {
+    if (!pendingEmail) return;
+    setPending(true);
+    try {
+      await sendOtp(pendingEmail);
+      toast.success("Code resent");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Could not resend code"
+      );
     } finally {
       setPending(false);
     }
@@ -156,13 +228,14 @@ export function SaleLandDialog({
         </DialogTrigger>
       ) : null}
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        {done ? (
+        {step === "done" ? (
           <div className="flex flex-col items-center px-2 py-8 text-center">
             <CheckCircle2 className="size-12 text-primary" />
             <DialogHeader className="mt-4 items-center">
               <DialogTitle className="text-xl">Submission received</DialogTitle>
               <DialogDescription className="text-base text-muted-foreground">
-                A member of our team will contact you shortly.
+                A confirmation email is on its way. A member of our team will
+                contact you shortly.
               </DialogDescription>
             </DialogHeader>
             <Button
@@ -172,17 +245,85 @@ export function SaleLandDialog({
               Close
             </Button>
           </div>
+        ) : step === "otp" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Verify your email</DialogTitle>
+              <DialogDescription>
+                Enter the 6-digit code we sent to{" "}
+                <span className="font-medium text-foreground">
+                  {pendingEmail}
+                </span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={onOtpSubmit} className="mt-4 space-y-6">
+              <div className="flex justify-center">
+                <InputOTP
+                  maxLength={6}
+                  value={otp}
+                  onChange={setOtp}
+                  autoFocus
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={pending || otp.length !== 6}
+                className="h-11 w-full rounded-full"
+              >
+                {pending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Verifying…
+                  </>
+                ) : (
+                  "Verify & submit"
+                )}
+              </Button>
+
+              <div className="flex flex-col gap-2 text-center text-sm">
+                <button
+                  type="button"
+                  onClick={resendCode}
+                  disabled={pending}
+                  className="text-primary hover:underline disabled:opacity-50"
+                >
+                  Resend code
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep("details");
+                    setOtp("");
+                  }}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Back to form
+                </button>
+              </div>
+            </form>
+          </>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle>Sell your land</DialogTitle>
               <DialogDescription>
-                Share your name, phone number, land size, location, and
-                documents. Our team will follow up with you.
+                Share your details, expected rate, and documents. We will verify
+                your email, then our team will follow up.
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={onSubmit} className="mt-2 space-y-4">
+            <form onSubmit={onDetailsSubmit} className="mt-2 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="sale-name">Name</Label>
                 <Input
@@ -196,6 +337,18 @@ export function SaleLandDialog({
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="sale-email">Email</Label>
+                <Input
+                  id="sale-email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="you@email.com"
+                  autoComplete="email"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="sale-phone">Contact number</Label>
                 <Input
                   id="sale-phone"
@@ -203,7 +356,7 @@ export function SaleLandDialog({
                   type="tel"
                   required
                   minLength={10}
-                  placeholder="+91 98xxx xxxxx"
+                  placeholder="+917977076969"
                   autoComplete="tel"
                 />
               </div>
@@ -231,13 +384,11 @@ export function SaleLandDialog({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sale-rate">
-                  Expected rate{" "}
-                  <span className="text-muted-foreground">(optional)</span>
-                </Label>
+                <Label htmlFor="sale-rate">Expected rate</Label>
                 <Input
                   id="sale-rate"
                   name="rate"
+                  required
                   placeholder="e.g. ₹80,00,000 per acre"
                 />
               </div>
@@ -351,10 +502,10 @@ export function SaleLandDialog({
                 {pending ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Submitting…
+                    Sending code…
                   </>
                 ) : (
-                  "Submit"
+                  "Continue to email verification"
                 )}
               </Button>
             </form>

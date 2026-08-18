@@ -165,7 +165,7 @@ export function ExploreMap({ projects }: { projects: MapAsset[] }) {
           <FilterChip
             active={corridor === "all"}
             onClick={() => setCorridor("all")}
-            label="All corridors"
+            label="All locations"
           />
           {LIVE_MARKET_CORRIDORS.map((c) => (
             <FilterChip

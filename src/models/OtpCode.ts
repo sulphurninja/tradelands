@@ -6,7 +6,7 @@ const OtpCodeSchema = new Schema(
     codeHash: { type: String, required: true },
     purpose: {
       type: String,
-      enum: ["verify-email", "login"],
+      enum: ["verify-email", "login", "sale-land"],
       default: "verify-email",
     },
     expiresAt: { type: Date, required: true, index: true },

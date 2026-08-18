@@ -24,8 +24,8 @@ export default async function DiscoverPage() {
     <>
       <PageHero
         eyebrow="Discover"
-        title="Corridors & concepts"
-        description="Pick a Maharashtra corridor, read the index, and explore investment brands."
+        title="Locations & concepts"
+        description="Pick a Maharashtra location, read the index, and explore investment brands."
         crumbs={[{ href: "/discover", label: "Discover" }]}
         compact
       />

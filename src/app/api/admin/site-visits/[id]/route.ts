@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireStaff } from "@/lib/admin-auth";
 import { connectDB } from "@/lib/db";
-import { sendEmail, siteVisitConfirmedHtml } from "@/lib/email";
+import { sendEmail, siteVisitConfirmedHtml, SALES_INBOX } from "@/lib/email";
 import { createNotification } from "@/lib/notifications";
 import { ProjectModel } from "@/models/Project";
 import { SiteVisit } from "@/models/SiteVisit";
@@ -46,6 +46,18 @@ export async function PUT(request: Request, { params }: Props) {
           time: String(doc.time),
         }),
         text: `Hi ${doc.name}, your visit to ${projectName} is confirmed for ${doc.date} at ${doc.time}.`,
+        copySales: true,
+      });
+    } else {
+      await sendEmail({
+        to: SALES_INBOX,
+        subject: `Site visit confirmed — ${projectName}`,
+        html: siteVisitConfirmedHtml({
+          name: String(doc.name),
+          project: projectName,
+          date: String(doc.date),
+          time: String(doc.time),
+        }),
       });
     }
 

@@ -27,11 +27,11 @@ export default async function MapPage() {
                 Explore land
               </p>
               <h2 className="mt-1 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
-                Pinned inventory across corridors
+                Pinned inventory across locations
               </h2>
             </div>
             <p className="text-[12px] text-muted-foreground">
-              Photo pins · desk rates · live corridors
+              Photo pins · desk rates · live locations
             </p>
           </div>
 

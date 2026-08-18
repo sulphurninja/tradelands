@@ -122,6 +122,8 @@ export interface Project {
   appreciation?: string;
   legalStatus: string;
   featured?: boolean;
+  /** Excel / desk bulk inventory (large parcels). */
+  bulkDeal?: boolean;
   developmentStage: DevelopmentStage;
   viewCount: number;
   interestCount: number;

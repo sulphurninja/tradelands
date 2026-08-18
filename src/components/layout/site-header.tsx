@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, LayoutDashboard, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -25,10 +25,28 @@ type MeUser = {
   role: UserRole;
 };
 
-function navActive(pathname: string, href: string) {
-  const base = href.split("?")[0];
+function navActive(
+  pathname: string,
+  href: string,
+  search: string
+) {
+  const [base, qs] = href.split("?");
   if (base === "/") return pathname === "/";
-  return pathname === base || pathname.startsWith(`${base}/`);
+  if (!(pathname === base || pathname.startsWith(`${base}/`))) return false;
+  if (!qs) {
+    // Plain /market should not stay active when bulk=1 is on
+    if (base === "/market") {
+      const params = new URLSearchParams(search);
+      return params.get("bulk") !== "1";
+    }
+    return true;
+  }
+  const want = new URLSearchParams(qs);
+  const have = new URLSearchParams(search);
+  for (const [k, v] of want.entries()) {
+    if (have.get(k) !== v) return false;
+  }
+  return true;
 }
 
 function portalHome(role: UserRole) {
@@ -59,6 +77,8 @@ function portalLabel(role: UserRole) {
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -70,7 +90,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     setOpen(false);
-  }, [pathname]);
+  }, [pathname, search]);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,7 +129,7 @@ export function SiteHeader() {
                 href={item.href}
                 className={cn(
                   "inline-flex h-10 items-center rounded-md px-3 text-[12px] font-semibold tracking-[0.14em] uppercase transition-colors",
-                  navActive(pathname, item.href)
+                  navActive(pathname, item.href, search)
                     ? "text-foreground"
                     : "text-foreground/70 hover:text-foreground"
                 )}
@@ -190,7 +210,7 @@ export function SiteHeader() {
                         onClick={() => setOpen(false)}
                         className={cn(
                           "mb-1 flex h-12 items-center rounded-2xl px-3 text-[13px] font-semibold tracking-[0.14em] uppercase transition-colors",
-                          navActive(pathname, item.href)
+                          navActive(pathname, item.href, search)
                             ? "bg-primary/10 text-primary"
                             : "hover:bg-muted"
                         )}

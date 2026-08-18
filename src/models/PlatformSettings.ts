@@ -34,9 +34,9 @@ const PlatformSettingsSchema = new Schema<IPlatformSettings>(
       default:
         "Agriculture land, NA villa plots, and farm houses — clear papers, clear pricing.",
     },
-    phone: { type: String, default: "+91 98765 43210" },
+    phone: { type: String, default: "+917977076969" },
     email: { type: String, default: "invest@tradelands.ind" },
-    whatsapp: { type: String, default: "919876543210" },
+    whatsapp: { type: String, default: "917977076969" },
     address: { type: String, default: "Pune · Mumbai · Nashik · Hyderabad" },
     supportEmail: { type: String, default: "support@tradelands.ind" },
     bookingDepositInr: { type: Number, default: 25000 },

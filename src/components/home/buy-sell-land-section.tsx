@@ -61,8 +61,8 @@ export function BuySellLandSection() {
               Sell land
             </h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-              Submit your name, phone number, land size, location, and
-              documents. Our team will follow up.
+              Submit your name, email, phone number, land size, location, rate,
+              and documents. Our team will follow up.
             </p>
             <div className="mt-6">
               <SaleLandDialog

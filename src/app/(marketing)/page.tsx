@@ -12,6 +12,7 @@ import {
   WhyChoose,
 } from "@/components/home/home-sections";
 import { BuySellLandSection } from "@/components/home/buy-sell-land-section";
+import { MyRequirementSection } from "@/components/home/my-requirement-section";
 import { MarketSnapshotStrip } from "@/components/market/market-snapshot";
 import { TradeLandsIndexPanel } from "@/components/market/tradelands-index-panel";
 import { LandPerformanceChart } from "@/components/market/land-performance-chart";
@@ -115,6 +116,7 @@ export default async function HomePage() {
     <>
       <HomeHero slides={slides} trending={trendingOptions} />
       <BuySellLandSection />
+      <MyRequirementSection />
       <MarketSnapshotStrip items={deskIndices} locations={deskLocations} />
 
       <section className="container-premium section-pad py-16 sm:py-22 lg:py-28">
